@@ -2684,3 +2684,330 @@ class ClientUsageMetrics(object):
 
   def __ne__(self, other):
     return not (self == other)
+
+class RelatedQuery(object):
+  """
+  A description of the thing for which we are searching for related
+  entities.  You must choose exactly one field.
+  
+  <dl>
+  <dt>noteGuid</dt>
+  <dd>The GUID of an existing note in your account for which related
+      entities will be found.</dd>
+  
+  <dt>plainText</dt>
+  <dd>A string of plain text for which to find related entities.
+      You should provide a text block with a number of characters between
+      EDAM_RELATED_PLAINTEXT_LEN_MIN and EDAM_RELATED_PLAINTEXT_LEN_MAX.
+      </dd>
+  </dl>
+  
+  Attributes:
+   - noteGuid
+   - plainText
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'noteGuid', None, None, ), # 1
+    (2, TType.STRING, 'plainText', None, None, ), # 2
+  )
+
+  def __init__(self, noteGuid=None, plainText=None,):
+    self.noteGuid = noteGuid
+    self.plainText = plainText
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.noteGuid = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.plainText = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('RelatedQuery')
+    if self.noteGuid is not None:
+      oprot.writeFieldBegin('noteGuid', TType.STRING, 1)
+      oprot.writeString(self.noteGuid)
+      oprot.writeFieldEnd()
+    if self.plainText is not None:
+      oprot.writeFieldBegin('plainText', TType.STRING, 2)
+      oprot.writeString(self.plainText)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class RelatedResult(object):
+  """
+  The result of calling findRelated().  The contents of the notes,
+  notebooks, and tags fields will be in decreasing order of expected
+  relevance.  It is possible that fewer results than requested will be
+  returned even if there are enough distinct entities in the account
+  in cases where the relevance is estimated to be low.
+  
+  <dl>
+  <dt>notes</dt>
+  <dd>If notes have been requested to be included, this will be the
+      list of notes.</dd>
+  
+  <dt>notebooks</dt>
+  <dd>If notebooks have been requested to be included, this will be the
+      list of notebooks.</dd>
+  
+  <dt>tags</dt>
+  <dd>If tags have been requested to be included, this will be the list
+      of tags.</dd>
+  </dl>
+  
+  Attributes:
+   - notes
+   - notebooks
+   - tags
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'notes', (TType.STRUCT,(evernote.edam.type.ttypes.Note, evernote.edam.type.ttypes.Note.thrift_spec)), None, ), # 1
+    (2, TType.LIST, 'notebooks', (TType.STRUCT,(evernote.edam.type.ttypes.Notebook, evernote.edam.type.ttypes.Notebook.thrift_spec)), None, ), # 2
+    (3, TType.LIST, 'tags', (TType.STRUCT,(evernote.edam.type.ttypes.Tag, evernote.edam.type.ttypes.Tag.thrift_spec)), None, ), # 3
+  )
+
+  def __init__(self, notes=None, notebooks=None, tags=None,):
+    self.notes = notes
+    self.notebooks = notebooks
+    self.tags = tags
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.notes = []
+          (_etype184, _size181) = iprot.readListBegin()
+          for _i185 in xrange(_size181):
+            _elem186 = evernote.edam.type.ttypes.Note()
+            _elem186.read(iprot)
+            self.notes.append(_elem186)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.LIST:
+          self.notebooks = []
+          (_etype190, _size187) = iprot.readListBegin()
+          for _i191 in xrange(_size187):
+            _elem192 = evernote.edam.type.ttypes.Notebook()
+            _elem192.read(iprot)
+            self.notebooks.append(_elem192)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.LIST:
+          self.tags = []
+          (_etype196, _size193) = iprot.readListBegin()
+          for _i197 in xrange(_size193):
+            _elem198 = evernote.edam.type.ttypes.Tag()
+            _elem198.read(iprot)
+            self.tags.append(_elem198)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('RelatedResult')
+    if self.notes is not None:
+      oprot.writeFieldBegin('notes', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.notes))
+      for iter199 in self.notes:
+        iter199.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.notebooks is not None:
+      oprot.writeFieldBegin('notebooks', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.notebooks))
+      for iter200 in self.notebooks:
+        iter200.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.tags is not None:
+      oprot.writeFieldBegin('tags', TType.LIST, 3)
+      oprot.writeListBegin(TType.STRUCT, len(self.tags))
+      for iter201 in self.tags:
+        iter201.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class RelatedResultSpec(object):
+  """
+  A description of the thing for which the service will find related
+  entities, via findRelated(), together with a description of what
+  type of entities and how many you are seeking in the
+  RelatednessResult.
+  
+  <dl>
+  <dt>maxNotes</dt>
+  <dd>Return notes that are related to the query, but no more than
+      this many.  Any value greater than EDAM_RELATED_MAX_NOTES
+      will be silently capped.  If you do not set this field, then
+      no notes will be returned.</dd>
+  
+  <dt>maxNotebooks</dt>
+  <dd>Return notebooks that are related to the query, but no more than
+      this many.  Any value greater than EDAM_RELATED_MAX_NOTEBOOKS
+      will be silently capped.  If you do not set this field, then
+      no notebooks will be returned.</dd>
+  
+  <dt>maxTags</dt>
+  <dd>Return tags that are related to the query, but no more than
+      this many.  Any value greater than EDAM_RELATED_MAX_TAGS
+      will be silently capped.  If you do not set this field, then
+      no tags will be returned.</dd>
+  </dl>
+  
+  Attributes:
+   - maxNotes
+   - maxNotebooks
+   - maxTags
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'maxNotes', None, None, ), # 1
+    (2, TType.I32, 'maxNotebooks', None, None, ), # 2
+    (3, TType.I32, 'maxTags', None, None, ), # 3
+  )
+
+  def __init__(self, maxNotes=None, maxNotebooks=None, maxTags=None,):
+    self.maxNotes = maxNotes
+    self.maxNotebooks = maxNotebooks
+    self.maxTags = maxTags
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.maxNotes = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.maxNotebooks = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.maxTags = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('RelatedResultSpec')
+    if self.maxNotes is not None:
+      oprot.writeFieldBegin('maxNotes', TType.I32, 1)
+      oprot.writeI32(self.maxNotes)
+      oprot.writeFieldEnd()
+    if self.maxNotebooks is not None:
+      oprot.writeFieldBegin('maxNotebooks', TType.I32, 2)
+      oprot.writeI32(self.maxNotebooks)
+      oprot.writeFieldEnd()
+    if self.maxTags is not None:
+      oprot.writeFieldBegin('maxTags', TType.I32, 3)
+      oprot.writeI32(self.maxTags)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)

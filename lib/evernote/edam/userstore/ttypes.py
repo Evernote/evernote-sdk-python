@@ -702,6 +702,7 @@ class BootstrapSettings(object):
    - enableSingleNoteSharing
    - enableSponsoredAccounts
    - enableTwitterSharing
+   - enableLinkedInSharing
   """
 
   thrift_spec = (
@@ -717,9 +718,10 @@ class BootstrapSettings(object):
     (9, TType.BOOL, 'enableSingleNoteSharing', None, None, ), # 9
     (10, TType.BOOL, 'enableSponsoredAccounts', None, None, ), # 10
     (11, TType.BOOL, 'enableTwitterSharing', None, None, ), # 11
+    (12, TType.BOOL, 'enableLinkedInSharing', None, None, ), # 12
   )
 
-  def __init__(self, serviceHost=None, marketingUrl=None, supportUrl=None, accountEmailDomain=None, enableFacebookSharing=None, enableGiftSubscriptions=None, enableSupportTickets=None, enableSharedNotebooks=None, enableSingleNoteSharing=None, enableSponsoredAccounts=None, enableTwitterSharing=None,):
+  def __init__(self, serviceHost=None, marketingUrl=None, supportUrl=None, accountEmailDomain=None, enableFacebookSharing=None, enableGiftSubscriptions=None, enableSupportTickets=None, enableSharedNotebooks=None, enableSingleNoteSharing=None, enableSponsoredAccounts=None, enableTwitterSharing=None, enableLinkedInSharing=None,):
     self.serviceHost = serviceHost
     self.marketingUrl = marketingUrl
     self.supportUrl = supportUrl
@@ -731,6 +733,7 @@ class BootstrapSettings(object):
     self.enableSingleNoteSharing = enableSingleNoteSharing
     self.enableSponsoredAccounts = enableSponsoredAccounts
     self.enableTwitterSharing = enableTwitterSharing
+    self.enableLinkedInSharing = enableLinkedInSharing
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -796,6 +799,11 @@ class BootstrapSettings(object):
           self.enableTwitterSharing = iprot.readBool();
         else:
           iprot.skip(ftype)
+      elif fid == 12:
+        if ftype == TType.BOOL:
+          self.enableLinkedInSharing = iprot.readBool();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -849,6 +857,10 @@ class BootstrapSettings(object):
     if self.enableTwitterSharing is not None:
       oprot.writeFieldBegin('enableTwitterSharing', TType.BOOL, 11)
       oprot.writeBool(self.enableTwitterSharing)
+      oprot.writeFieldEnd()
+    if self.enableLinkedInSharing is not None:
+      oprot.writeFieldBegin('enableLinkedInSharing', TType.BOOL, 12)
+      oprot.writeBool(self.enableLinkedInSharing)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

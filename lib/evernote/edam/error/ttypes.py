@@ -21,7 +21,7 @@ class EDAMErrorCode(object):
   Numeric codes indicating the type of error that occurred on the
   service.
   <dl>
-    <dt>UNKNOWN</dt
+    <dt>UNKNOWN</dt>
       <dd>No information available about the error</dd>
     <dt>BAD_DATA_FORMAT</dt>
       <dd>The format of the request data was incorrect</dd>

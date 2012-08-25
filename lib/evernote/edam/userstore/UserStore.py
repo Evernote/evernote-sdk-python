@@ -803,7 +803,7 @@ class checkVersion_args(object):
     None, # 0
     (1, TType.STRING, 'clientName', None, None, ), # 1
     (2, TType.I16, 'edamVersionMajor', None, 1, ), # 2
-    (3, TType.I16, 'edamVersionMinor', None, 21, ), # 3
+    (3, TType.I16, 'edamVersionMinor', None, 22, ), # 3
   )
 
   def __init__(self, clientName=None, edamVersionMajor=thrift_spec[2][4], edamVersionMinor=thrift_spec[3][4],):

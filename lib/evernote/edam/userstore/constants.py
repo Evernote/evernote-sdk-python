@@ -10,4 +10,4 @@ from thrift.Thrift import TType, TMessageType, TException, TApplicationException
 from ttypes import *
 
 EDAM_VERSION_MAJOR = 1
-EDAM_VERSION_MINOR = 21
+EDAM_VERSION_MINOR = 22
