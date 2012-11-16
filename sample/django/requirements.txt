@@ -1,0 +1,5 @@
+Django==1.4.2
+evernote==1.22.0
+httplib2==0.7.6
+oauth2==1.5.211
+wsgiref==0.1.2
