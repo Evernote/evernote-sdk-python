@@ -5,35 +5,33 @@
 # Before running this sample, you must fill in your Evernote developer token.
 #
 # To run (Unix):
-#   export PYTHONPATH=../lib; python EDAMTest.py
+#   export PYTHONPATH=../../lib; python EDAMTest.py
 #
 
-import sys
 import hashlib
 import binascii
-import time
 import thrift.protocol.TBinaryProtocol as TBinaryProtocol
 import thrift.transport.THttpClient as THttpClient
 import evernote.edam.userstore.UserStore as UserStore
 import evernote.edam.userstore.constants as UserStoreConstants
 import evernote.edam.notestore.NoteStore as NoteStore
 import evernote.edam.type.ttypes as Types
-import evernote.edam.error.ttypes as Errors
 
 # Real applications authenticate with Evernote using OAuth, but for the
 # purpose of exploring the API, you can get a developer token that allows
-# you to access your own Evernote account. To get a developer token, visit 
+# you to access your own Evernote account. To get a developer token, visit
 # https://sandbox.evernote.com/api/DeveloperToken.action
 authToken = "your developer token"
 
 if authToken == "your developer token":
     print "Please fill in your developer token"
-    print "To get a developer token, visit https://sandbox.evernote.com/api/DeveloperToken.action"
+    print "To get a developer token, visit " \
+        "https://sandbox.evernote.com/api/DeveloperToken.action"
     exit(1)
 
-# Initial development is performed on our sandbox server. To use the production 
+# Initial development is performed on our sandbox server. To use the production
 # service, change "sandbox.evernote.com" to "www.evernote.com" and replace your
-# developer token above with a token from 
+# developer token above with a token from
 # https://www.evernote.com/api/DeveloperToken.action
 evernoteHost = "sandbox.evernote.com"
 userStoreUri = "https://" + evernoteHost + "/edam/user"
@@ -60,7 +58,7 @@ noteStoreHttpClient = THttpClient.THttpClient(noteStoreUrl)
 noteStoreProtocol = TBinaryProtocol.TBinaryProtocol(noteStoreHttpClient)
 noteStore = NoteStore.Client(noteStoreProtocol)
 
-# List all of the notebooks in the user's account        
+# List all of the notebooks in the user's account
 notebooks = noteStore.listNotebooks(authToken)
 print "Found ", len(notebooks), " notebooks:"
 for notebook in notebooks:
@@ -70,15 +68,15 @@ print
 print "Creating a new note in the default notebook"
 print
 
-# To create a new note, simply create a new Note object and fill in 
+# To create a new note, simply create a new Note object and fill in
 # attributes such as the note's title.
 note = Types.Note()
 note.title = "Test note from EDAMTest.py"
 
 # To include an attachment such as an image in a note, first create a Resource
-# for the attachment. At a minimum, the Resource contains the binary attachment 
-# data, an MD5 hash of the binary data, and the attachment MIME type. It can also 
-# include attributes such as filename and location.
+# for the attachment. At a minimum, the Resource contains the binary attachment
+# data, an MD5 hash of the binary data, and the attachment MIME type.
+# It can also include attributes such as filename and location.
 image = open('enlogo.png', 'rb').read()
 md5 = hashlib.md5()
 md5.update(image)
@@ -94,7 +92,7 @@ resource.mime = 'image/png'
 resource.data = data
 
 # Now, add the new Resource to the note's list of resources
-note.resources = [ resource ]
+note.resources = [resource]
 
 # To display the Resource as part of the note's content, include an <en-media>
 # tag in the note's ENML content. The en-media tag identifies the corresponding
@@ -105,7 +103,8 @@ hashHex = binascii.hexlify(hash)
 # (ENML). The full ENML specification can be found in the Evernote API Overview
 # at http://dev.evernote.com/documentation/cloud/chapters/ENML.php
 note.content = '<?xml version="1.0" encoding="UTF-8"?>'
-note.content += '<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">'
+note.content += '<!DOCTYPE en-note SYSTEM ' \
+    '"http://xml.evernote.com/pub/enml2.dtd">'
 note.content += '<en-note>Here is the Evernote logo:<br/>'
 note.content += '<en-media type="image/png" hash="' + hashHex + '"/>'
 note.content += '</en-note>'

@@ -17,7 +17,7 @@
 # under the License.
 #
 
-from TTransport import *
+from TTransport import TTransportBase
 from cStringIO import StringIO
 
 import urlparse
@@ -25,102 +25,132 @@ import httplib
 import warnings
 import socket
 
+
 class THttpClient(TTransportBase):
 
-  """Http implementation of TTransport base."""
+    """Http implementation of TTransport base."""
 
-  def __init__(self, uri_or_host, port=None, path=None):
-    """THttpClient supports two different types constructor parameters.
+    def __init__(
+        self,
+        uri_or_host,
+        port=None,
+        path=None,
+        proxy_host=None,
+        proxy_port=None
+    ):
+        """THttpClient supports two different types constructor parameters.
 
-    THttpClient(host, port, path) - deprecated
-    THttpClient(uri)
+        THttpClient(host, port, path) - deprecated
+        THttpClient(uri)
 
-    Only the second supports https."""
+        Only the second supports https."""
 
-    if port is not None:
-      warnings.warn("Please use the THttpClient('http://host:port/path') syntax", DeprecationWarning, stacklevel=2)
-      self.host = uri_or_host
-      self.port = port
-      assert path
-      self.path = path
-      self.scheme = 'http'
-    else:
-      parsed = urlparse.urlparse(uri_or_host)
-      self.scheme = parsed.scheme
-      assert self.scheme in ('http', 'https')
-      if self.scheme == 'http':
-        self.port = parsed.port or httplib.HTTP_PORT
-      elif self.scheme == 'https':
-        self.port = parsed.port or httplib.HTTPS_PORT
-      self.host = parsed.hostname
-      self.path = parsed.path
-      if parsed.query:
-        self.path += '?%s' % parsed.query
-    self.__wbuf = StringIO()
-    self.__http = None
-    self.__timeout = None
+        """THttpClient supports proxy
+        THttpClient(host, port, path, proxy_host, proxy_port) - deprecated
+        ThttpClient(uri, None, None, proxy_host, proxy_port)"""
 
-  def open(self):
-    if self.scheme == 'http':
-      self.__http = httplib.HTTP(self.host, self.port)
-    else:
-      self.__http = httplib.HTTPS(self.host, self.port)
+        if port is not None:
+            warnings.warn(
+                "Please use the THttpClient('http://host:port/path') syntax",
+                DeprecationWarning,
+                stacklevel=2)
+            self.host = uri_or_host
+            self.port = port
+            assert path
+            self.path = path
+            self.scheme = 'http'
+        else:
+            parsed = urlparse.urlparse(uri_or_host)
+            self.scheme = parsed.scheme
+            assert self.scheme in ('http', 'https')
+            if self.scheme == 'http':
+                self.port = parsed.port or httplib.HTTP_PORT
+            elif self.scheme == 'https':
+                self.port = parsed.port or httplib.HTTPS_PORT
+            self.host = parsed.hostname
+            self.path = parsed.path
+            if parsed.query:
+                self.path += '?%s' % parsed.query
 
-  def close(self):
-    self.__http.close()
-    self.__http = None
+        if proxy_host is not None and proxy_port is not None:
+            self.endpoint_host = proxy_host
+            self.endpoint_port = proxy_port
+            self.path = urlparse.urlunparse((
+                self.scheme,
+                "%s:%i" % (self.host, self.port),
+                self.path,
+                None,
+                None,
+                None
+            ))
+        else:
+            self.endpoint_host = self.host
+            self.endpoint_port = self.port
 
-  def isOpen(self):
-    return self.__http != None
+        self.__wbuf = StringIO()
+        self.__http = None
+        self.__timeout = None
 
-  def setTimeout(self, ms):
-    if not hasattr(socket, 'getdefaulttimeout'):
-      raise NotImplementedError
+    def open(self):
+        protocol = httplib.HTTP if self.scheme == 'http' else httplib.HTTPS
+        self.__http = protocol(self.endpoint_host, self.endpoint_port)
+        self.__http.set_debuglevel(1) #TODO
 
-    if ms is None:
-      self.__timeout = None
-    else:
-      self.__timeout = ms/1000.0
+    def close(self):
+        self.__http.close()
+        self.__http = None
 
-  def read(self, sz):
-    return self.__http.file.read(sz)
+    def isOpen(self):
+        return self.__http is not None
 
-  def write(self, buf):
-    self.__wbuf.write(buf)
+    def setTimeout(self, ms):
+        if not hasattr(socket, 'getdefaulttimeout'):
+            raise NotImplementedError
 
-  def __withTimeout(f):
-    def _f(*args, **kwargs):
-      orig_timeout = socket.getdefaulttimeout()
-      socket.setdefaulttimeout(args[0].__timeout)
-      result = f(*args, **kwargs)
-      socket.setdefaulttimeout(orig_timeout)
-      return result
-    return _f
+        if ms is None:
+            self.__timeout = None
+        else:
+            self.__timeout = ms / 1000.0
 
-  def flush(self):
-    if self.isOpen():
-      self.close()
-    self.open();
+    def read(self, sz):
+        return self.__http.file.read(sz)
 
-    # Pull data out of buffer
-    data = self.__wbuf.getvalue()
-    self.__wbuf = StringIO()
+    def write(self, buf):
+        self.__wbuf.write(buf)
 
-    # HTTP request
-    self.__http.putrequest('POST', self.path)
+    def __withTimeout(f):
+        def _f(*args, **kwargs):
+            orig_timeout = socket.getdefaulttimeout()
+            socket.setdefaulttimeout(args[0].__timeout)
+            result = f(*args, **kwargs)
+            socket.setdefaulttimeout(orig_timeout)
+            return result
+        return _f
 
-    # Write headers
-    self.__http.putheader('Host', self.host)
-    self.__http.putheader('Content-Type', 'application/x-thrift')
-    self.__http.putheader('Content-Length', str(len(data)))
-    self.__http.endheaders()
+    def flush(self):
+        if self.isOpen():
+            self.close()
+        self.open()
 
-    # Write payload
-    self.__http.send(data)
+        # Pull data out of buffer
+        data = self.__wbuf.getvalue()
+        self.__wbuf = StringIO()
 
-    # Get reply to flush the request
-    self.code, self.message, self.headers = self.__http.getreply()
+        # HTTP request
+        self.__http.putrequest('POST', self.path)
 
-  # Decorate if we know how to timeout
-  if hasattr(socket, 'getdefaulttimeout'):
-    flush = __withTimeout(flush)
+        # Write headers
+        self.__http.putheader('Host', self.host)
+        self.__http.putheader('Content-Type', 'application/x-thrift')
+        self.__http.putheader('Content-Length', str(len(data)))
+        self.__http.endheaders()
+
+        # Write payload
+        self.__http.send(data)
+
+        # Get reply to flush the request
+        self.code, self.message, self.headers = self.__http.getreply()
+
+    # Decorate if we know how to timeout
+    if hasattr(socket, 'getdefaulttimeout'):
+        flush = __withTimeout(flush)
