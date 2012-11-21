@@ -94,7 +94,7 @@ class THttpClient(TTransportBase):
     def open(self):
         protocol = httplib.HTTP if self.scheme == 'http' else httplib.HTTPS
         self.__http = protocol(self.endpoint_host, self.endpoint_port)
-        self.__http.set_debuglevel(1) #TODO
+        self.__http.set_debuglevel(0) #TODO
 
     def close(self):
         self.__http.close()
