@@ -1,7 +1,7 @@
 Evernote SDK for Python 
 ============================================
 
-Evernote API version 1.22
+Evernote API version 1.23
 
 Overview
 --------
