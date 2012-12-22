@@ -19,23 +19,27 @@ In order to run the client client sample code, you need a developer token. Get o
 
 Getting Started - Client
 ------------------------
-The code in sample/client/EDAMTest.py demonstrates the basics of using the Evernote API, using developer tokens to simplify the authentication process while you're learning. 
+The code in `sample/client/EDAMTest.py` demonstrates the basics of using the Evernote API, using developer tokens to simplify the authentication process while you're learning. 
 
-1. Open sample/client/EDAMTest.py
+1. Open `sample/client/EDAMTest.py`
 2. Scroll down and fill in your Evernote developer token.
 3. On the command line, run the following command to execute the script:
 
-    export PYTHONPATH=../lib; python EDAMTest.py
+    ```bash
+    $ export PYTHONPATH=../lib; python EDAMTest.py
+    ```
 
 Getting Started - OAuth
 ------------------------
 Web applications must use OAuth to authenticate to the Evernote service. The code in sample/django contains a simple web apps that demonstrate the OAuth authentication process. The application use the Django framework. You don't need to use Django for your application, but you'll need it to run the sample code.
 
-1. Install django, oauth2 and evernote library.  You can also use requirements.txt for pip.
-2. Open the file oauth/views.py
+1. Install `django`, `oauth2` and `evernote` library.  You can also use `requirements.txt` for `pip`.
+2. Open the file `oauth/views.py`
 3. Fill in your Evernote API consumer key and secret.
 4. On the command line, run the following command to start the sample app:
 
-    python manage.py runserver
+    ```bash
+    $ python manage.py runserver
+    ```
 
-5. Open the sample app in your browser: http://localhost:8000
+5. Open the sample app in your browser: `http://localhost:8000`
