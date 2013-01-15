@@ -43,3 +43,67 @@ Web applications must use OAuth to authenticate to the Evernote service. The cod
     ```
 
 5. Open the sample app in your browser: `http://localhost:8000`
+
+Usage
+-----
+### OAuth ###
+```python
+client = EvernoteOAuth::Client.new(
+    consumerKey='YOUR CONSUMER KEY',
+    consumerSecret='YOUR CONSUMER SECRET',
+    sandbox=True # Default: True
+)
+requestToken = client.getRequestToken('YOUR CALLBACK URL')
+client.getAuthorizeUrl(requestToken)
+ => https://sandbox.evernote.com/OAuth.action?oauth_token=OAUTH_TOKEN
+```
+To obtain the access token
+```python
+accessToken = client.getAccessToken(
+    requestToken['oauth_token'],
+    requestToken['oauth_token_secret'],
+    request.GET.get('oauth_verifier', '')
+)
+```
+Now you can make other API calls
+```python
+client = EvernoteClient(token=accessToken)
+noteStore = client.getNoteStore()
+notebooks = noteStore.listNotebooks()
+```
+
+### UserStore ###
+Once you acquire token, you can use UserStore. For example, if you want to call UserStore.getUser:
+```python
+client = EvernoteClient(token=accessToken)
+userStore = client.getUserStore()
+userStore.getUser()
+```
+You can omit authenticationToken in the arguments of UserStore functions.
+
+### NoteStore ###
+If you want to call NoteStore.listNotebooks:
+```python
+noteStore = client.getNoteStore()
+noteStore.listNotebooks()
+```
+
+### NoteStore for linked notebooks ###
+If you want to get tags for linked notebooks:
+```python
+linkedNotebook = noteStore.listLinkedNotebooks()[0]
+sharedNoteStore = client.getSharedNoteStore(linkedNotebook)
+sharedNotebook = sharedNoteStore.getSharedNotebookByAuth()
+sharedNoteStore.listTagsByNotebook(sharedNotebook.notebookGuid)
+```
+
+### NoteStore for Business ###
+If you want to get the list of notebooks in your business account:
+```python
+businessNoteStore = client.getBusinessNoteStore()
+businessNoteStore.listNotebooks()
+```
+
+### References ###
+- Evernote Developers: http://dev.evernote.com/
+- API Document: http://dev.evernote.com/documentation/reference/

@@ -10,12 +10,10 @@
 
 import hashlib
 import binascii
-import thrift.protocol.TBinaryProtocol as TBinaryProtocol
-import thrift.transport.THttpClient as THttpClient
-import evernote.edam.userstore.UserStore as UserStore
 import evernote.edam.userstore.constants as UserStoreConstants
-import evernote.edam.notestore.NoteStore as NoteStore
 import evernote.edam.type.ttypes as Types
+
+from evernote.client.EvernoteClient import EvernoteClient
 
 # Real applications authenticate with Evernote using OAuth, but for the
 # purpose of exploring the API, you can get a developer token that allows
@@ -30,15 +28,12 @@ if authToken == "your developer token":
     exit(1)
 
 # Initial development is performed on our sandbox server. To use the production
-# service, change "sandbox.evernote.com" to "www.evernote.com" and replace your
+# service, change sandbox=False and replace your
 # developer token above with a token from
 # https://www.evernote.com/api/DeveloperToken.action
-evernoteHost = "sandbox.evernote.com"
-userStoreUri = "https://" + evernoteHost + "/edam/user"
+evernoteClient = EvernoteClient(token=authToken, sandbox=True)
 
-userStoreHttpClient = THttpClient.THttpClient(userStoreUri)
-userStoreProtocol = TBinaryProtocol.TBinaryProtocol(userStoreHttpClient)
-userStore = UserStore.Client(userStoreProtocol)
+userStore = evernoteClient.getUserStore()
 
 versionOK = userStore.checkVersion("Evernote EDAMTest (Python)",
                                    UserStoreConstants.EDAM_VERSION_MAJOR,
@@ -48,18 +43,10 @@ print ""
 if not versionOK:
     exit(1)
 
-# Get the URL used to interact with the contents of the user's account
-# When your application authenticates using OAuth, the NoteStore URL will
-# be returned along with the auth token in the final OAuth request.
-# In that case, you don't need to make this call.
-noteStoreUrl = userStore.getNoteStoreUrl(authToken)
-
-noteStoreHttpClient = THttpClient.THttpClient(noteStoreUrl)
-noteStoreProtocol = TBinaryProtocol.TBinaryProtocol(noteStoreHttpClient)
-noteStore = NoteStore.Client(noteStoreProtocol)
+noteStore = evernoteClient.getNoteStore()
 
 # List all of the notebooks in the user's account
-notebooks = noteStore.listNotebooks(authToken)
+notebooks = noteStore.listNotebooks()
 print "Found ", len(notebooks), " notebooks:"
 for notebook in notebooks:
     print "  * ", notebook.name
@@ -112,6 +99,6 @@ note.content += '</en-note>'
 # Finally, send the new note to Evernote using the createNote method
 # The new Note object that is returned will contain server-generated
 # attributes such as the new note's unique GUID.
-createdNote = noteStore.createNote(authToken, note)
+createdNote = noteStore.createNote(note)
 
 print "Successfully created a new note with GUID: ", createdNote.guid
