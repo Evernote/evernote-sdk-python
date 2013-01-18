@@ -90,6 +90,7 @@ class THttpClient(TTransportBase):
         self.__wbuf = StringIO()
         self.__http = None
         self.__timeout = None
+        self.__headers = {}
 
     def open(self):
         protocol = httplib.HTTP if self.scheme == 'http' else httplib.HTTPS
@@ -126,6 +127,9 @@ class THttpClient(TTransportBase):
             return result
         return _f
 
+    def addHeaders(self, **kwargs):
+        self.__headers.update(kwargs)
+
     def flush(self):
         if self.isOpen():
             self.close()
@@ -142,6 +146,8 @@ class THttpClient(TTransportBase):
         self.__http.putheader('Host', self.host)
         self.__http.putheader('Content-Type', 'application/x-thrift')
         self.__http.putheader('Content-Length', str(len(data)))
+        for key, value in self.__headers.iteritems():
+            self.__http.putheader(key, value)
         self.__http.endheaders()
 
         # Write payload
