@@ -10,56 +10,45 @@
 
 import hashlib
 import binascii
-import thrift.protocol.TBinaryProtocol as TBinaryProtocol
-import thrift.transport.THttpClient as THttpClient
-import evernote.edam.userstore.UserStore as UserStore
 import evernote.edam.userstore.constants as UserStoreConstants
-import evernote.edam.notestore.NoteStore as NoteStore
 import evernote.edam.type.ttypes as Types
+
+from evernote.api.client import EvernoteClient
 
 # Real applications authenticate with Evernote using OAuth, but for the
 # purpose of exploring the API, you can get a developer token that allows
 # you to access your own Evernote account. To get a developer token, visit
 # https://sandbox.evernote.com/api/DeveloperToken.action
-authToken = "your developer token"
+auth_token = "your developer token"
 
-if authToken == "your developer token":
+if auth_token == "your developer token":
     print "Please fill in your developer token"
     print "To get a developer token, visit " \
         "https://sandbox.evernote.com/api/DeveloperToken.action"
     exit(1)
 
 # Initial development is performed on our sandbox server. To use the production
-# service, change "sandbox.evernote.com" to "www.evernote.com" and replace your
+# service, change sandbox=False and replace your
 # developer token above with a token from
 # https://www.evernote.com/api/DeveloperToken.action
-evernoteHost = "sandbox.evernote.com"
-userStoreUri = "https://" + evernoteHost + "/edam/user"
+client = EvernoteClient(token=auth_token, sandbox=True)
 
-userStoreHttpClient = THttpClient.THttpClient(userStoreUri)
-userStoreProtocol = TBinaryProtocol.TBinaryProtocol(userStoreHttpClient)
-userStore = UserStore.Client(userStoreProtocol)
+user_store = client.get_user_store()
 
-versionOK = userStore.checkVersion("Evernote EDAMTest (Python)",
-                                   UserStoreConstants.EDAM_VERSION_MAJOR,
-                                   UserStoreConstants.EDAM_VERSION_MINOR)
-print "Is my Evernote API version up to date? ", str(versionOK)
+version_ok = user_store.checkVersion(
+    "Evernote EDAMTest (Python)",
+    UserStoreConstants.EDAM_VERSION_MAJOR,
+    UserStoreConstants.EDAM_VERSION_MINOR
+)
+print "Is my Evernote API version up to date? ", str(version_ok)
 print ""
-if not versionOK:
+if not version_ok:
     exit(1)
 
-# Get the URL used to interact with the contents of the user's account
-# When your application authenticates using OAuth, the NoteStore URL will
-# be returned along with the auth token in the final OAuth request.
-# In that case, you don't need to make this call.
-noteStoreUrl = userStore.getNoteStoreUrl(authToken)
-
-noteStoreHttpClient = THttpClient.THttpClient(noteStoreUrl)
-noteStoreProtocol = TBinaryProtocol.TBinaryProtocol(noteStoreHttpClient)
-noteStore = NoteStore.Client(noteStoreProtocol)
+note_store = client.get_note_store()
 
 # List all of the notebooks in the user's account
-notebooks = noteStore.listNotebooks(authToken)
+notebooks = note_store.listNotebooks()
 print "Found ", len(notebooks), " notebooks:"
 for notebook in notebooks:
     print "  * ", notebook.name
@@ -97,7 +86,7 @@ note.resources = [resource]
 # To display the Resource as part of the note's content, include an <en-media>
 # tag in the note's ENML content. The en-media tag identifies the corresponding
 # Resource using the MD5 hash.
-hashHex = binascii.hexlify(hash)
+hash_hex = binascii.hexlify(hash)
 
 # The content of an Evernote note is represented using Evernote Markup Language
 # (ENML). The full ENML specification can be found in the Evernote API Overview
@@ -106,12 +95,12 @@ note.content = '<?xml version="1.0" encoding="UTF-8"?>'
 note.content += '<!DOCTYPE en-note SYSTEM ' \
     '"http://xml.evernote.com/pub/enml2.dtd">'
 note.content += '<en-note>Here is the Evernote logo:<br/>'
-note.content += '<en-media type="image/png" hash="' + hashHex + '"/>'
+note.content += '<en-media type="image/png" hash="' + hash_hex + '"/>'
 note.content += '</en-note>'
 
 # Finally, send the new note to Evernote using the createNote method
 # The new Note object that is returned will contain server-generated
 # attributes such as the new note's unique GUID.
-createdNote = noteStore.createNote(authToken, note)
+created_note = note_store.createNote(note)
 
-print "Successfully created a new note with GUID: ", createdNote.guid
+print "Successfully created a new note with GUID: ", created_note.guid
