@@ -1,4 +1,4 @@
-from evernote.client.EvernoteClient import EvernoteClient
+from evernote.api.client import EvernoteClient
 
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
@@ -8,13 +8,13 @@ EN_CONSUMER_KEY = 'your consumer key'
 EN_CONSUMER_SECRET = 'your consumer secret'
 
 
-def getEvernoteClient(token=None):
+def get_evernote_client(token=None):
     if token:
         return EvernoteClient(token=token, sandbox=True)
     else:
         return EvernoteClient(
-            consumerKey=EN_CONSUMER_KEY,
-            consumerSecret=EN_CONSUMER_SECRET,
+            consumer_key=EN_CONSUMER_KEY,
+            consumer_secret=EN_CONSUMER_SECRET,
             sandbox=True
         )
 
@@ -24,23 +24,23 @@ def index(request):
 
 
 def auth(request):
-    client = getEvernoteClient()
+    client = get_evernote_client()
     callbackUrl = 'http://%s%s' % (
         request.get_host(), reverse('evernote_callback'))
-    requestToken = client.getRequestToken(callbackUrl)
+    request_token = client.get_request_token(callbackUrl)
 
     # Save the request token information for later
-    request.session['oauth_token'] = requestToken['oauth_token']
-    request.session['oauth_token_secret'] = requestToken['oauth_token_secret']
+    request.session['oauth_token'] = request_token['oauth_token']
+    request.session['oauth_token_secret'] = request_token['oauth_token_secret']
 
     # Redirect the user to the Evernote authorization URL
-    return redirect(client.getAuthorizeUrl(requestToken))
+    return redirect(client.get_authorize_url(request_token))
 
 
 def callback(request):
     try:
-        client = getEvernoteClient()
-        client.getAccessToken(
+        client = get_evernote_client()
+        client.get_access_token(
             request.session['oauth_token'],
             request.session['oauth_token_secret'],
             request.GET.get('oauth_verifier', '')
@@ -48,8 +48,8 @@ def callback(request):
     except KeyError:
         return redirect('/')
 
-    noteStore = client.getNoteStore()
-    notebooks = noteStore.listNotebooks()
+    note_store = client.get_note_store()
+    notebooks = note_store.listNotebooks()
 
     return render_to_response('oauth/callback.html', {'notebooks': notebooks})
 

@@ -48,60 +48,60 @@ Usage
 -----
 ### OAuth ###
 ```python
-client = EvernoteOAuth::Client.new(
-    consumerKey='YOUR CONSUMER KEY',
-    consumerSecret='YOUR CONSUMER SECRET',
+client = EvernoteClient(
+    consumer_key='YOUR CONSUMER KEY',
+    consumer_secret='YOUR CONSUMER SECRET',
     sandbox=True # Default: True
 )
-requestToken = client.getRequestToken('YOUR CALLBACK URL')
-client.getAuthorizeUrl(requestToken)
+request_token = client.get_request_token('YOUR CALLBACK URL')
+client.get_authorize_url(request_token)
  => https://sandbox.evernote.com/OAuth.action?oauth_token=OAUTH_TOKEN
 ```
 To obtain the access token
 ```python
-accessToken = client.getAccessToken(
-    requestToken['oauth_token'],
-    requestToken['oauth_token_secret'],
+access_token = client.get_access_token(
+    request_token['oauth_token'],
+    request_token['oauth_token_secret'],
     request.GET.get('oauth_verifier', '')
 )
 ```
 Now you can make other API calls
 ```python
-client = EvernoteClient(token=accessToken)
-noteStore = client.getNoteStore()
-notebooks = noteStore.listNotebooks()
+client = EvernoteClient(token=access_token)
+note_store = client.get_note_store()
+notebooks = note_store.listNotebooks()
 ```
 
 ### UserStore ###
 Once you acquire token, you can use UserStore. For example, if you want to call UserStore.getUser:
 ```python
-client = EvernoteClient(token=accessToken)
-userStore = client.getUserStore()
-userStore.getUser()
+client = EvernoteClient(token=access_token)
+user_store = client.get_user_store()
+user_store.getUser()
 ```
 You can omit authenticationToken in the arguments of UserStore functions.
 
 ### NoteStore ###
 If you want to call NoteStore.listNotebooks:
 ```python
-noteStore = client.getNoteStore()
-noteStore.listNotebooks()
+note_store = client.get_note_store()
+note_store.listNotebooks()
 ```
 
 ### NoteStore for linked notebooks ###
 If you want to get tags for linked notebooks:
 ```python
-linkedNotebook = noteStore.listLinkedNotebooks()[0]
-sharedNoteStore = client.getSharedNoteStore(linkedNotebook)
-sharedNotebook = sharedNoteStore.getSharedNotebookByAuth()
-sharedNoteStore.listTagsByNotebook(sharedNotebook.notebookGuid)
+linked_notebook = note_store.listLinkedNotebooks()[0]
+shared_note_store = client.getSharedNoteStore(linked_notebook)
+shared_notebook = shared_note_store.getSharedNotebookByAuth()
+shared_note_store.listTagsByNotebook(shared_notebook.notebookGuid)
 ```
 
 ### NoteStore for Business ###
 If you want to get the list of notebooks in your business account:
 ```python
-businessNoteStore = client.getBusinessNoteStore()
-businessNoteStore.listNotebooks()
+business_note_store = client.get_business_note_store()
+business_note_store.listNotebooks()
 ```
 
 ### References ###
