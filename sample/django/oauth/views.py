@@ -1,48 +1,22 @@
-import evernote.edam.userstore.UserStore as UserStore
-import evernote.edam.notestore.NoteStore as NoteStore
-import thrift.protocol.TBinaryProtocol as TBinaryProtocol
-import thrift.transport.THttpClient as THttpClient
+from evernote.api.client import EvernoteClient
+
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
-import oauth2 as oauth
-import urllib
-import urlparse
 
 EN_CONSUMER_KEY = 'your consumer key'
 EN_CONSUMER_SECRET = 'your consumer secret'
-EN_HOST = "sandbox.evernote.com"
-
-EN_REQUEST_TOKEN_URL = "https://" + EN_HOST + "/oauth"
-EN_ACCESS_TOKEN_URL = "https://" + EN_HOST + "/oauth"
-EN_AUTHORIZE_URL = "https://" + EN_HOST + "/OAuth.action"
-
-EN_USERSTORE_URIBASE = "https://" + EN_HOST + "/edam/user"
 
 
-def get_oauth_client(token=None):
-    consumer = oauth.Consumer(EN_CONSUMER_KEY, EN_CONSUMER_SECRET)
+def get_evernote_client(token=None):
     if token:
-        client = oauth.Client(consumer, token)
+        return EvernoteClient(token=token, sandbox=True)
     else:
-        client = oauth.Client(consumer)
-    return client
-
-
-def getUserStore():
-    userStoreHttpClient = THttpClient.THttpClient(EN_USERSTORE_URIBASE)
-    userStoreProtocol = TBinaryProtocol.TBinaryProtocol(userStoreHttpClient)
-    userStore = UserStore.Client(userStoreProtocol)
-    return userStore
-
-
-def getNoteStore(authToken):
-    userStore = getUserStore()
-    noteStoreUrl = userStore.getNoteStoreUrl(authToken)
-    noteStoreHttpClient = THttpClient.THttpClient(noteStoreUrl)
-    noteStoreProtocol = TBinaryProtocol.TBinaryProtocol(noteStoreHttpClient)
-    noteStore = NoteStore.Client(noteStoreProtocol)
-    return noteStore
+        return EvernoteClient(
+            consumer_key=EN_CONSUMER_KEY,
+            consumer_secret=EN_CONSUMER_SECRET,
+            sandbox=True
+        )
 
 
 def index(request):
@@ -50,44 +24,32 @@ def index(request):
 
 
 def auth(request):
-    client = get_oauth_client()
-    callback_url = 'http://%s%s' % (
+    client = get_evernote_client()
+    callbackUrl = 'http://%s%s' % (
         request.get_host(), reverse('evernote_callback'))
-    request_url = '%s?oauth_callback=%s' % (
-        EN_REQUEST_TOKEN_URL, urllib.quote(callback_url))
-
-    resp, content = client.request(request_url, 'GET')
-    request_token = dict(urlparse.parse_qsl(content))
+    request_token = client.get_request_token(callbackUrl)
 
     # Save the request token information for later
     request.session['oauth_token'] = request_token['oauth_token']
     request.session['oauth_token_secret'] = request_token['oauth_token_secret']
 
     # Redirect the user to the Evernote authorization URL
-    return redirect('%s?oauth_token=%s' % (
-        EN_AUTHORIZE_URL, urllib.quote(request.session['oauth_token'])))
+    return redirect(client.get_authorize_url(request_token))
 
 
 def callback(request):
-    oauth_verifier = request.GET.get('oauth_verifier', '')
-
     try:
-        token = oauth.Token(
+        client = get_evernote_client()
+        client.get_access_token(
             request.session['oauth_token'],
-            request.session['oauth_token_secret'])
-        token.set_verifier(oauth_verifier)
-
-        client = get_oauth_client(token)
-
-        resp, content = client.request(EN_ACCESS_TOKEN_URL, 'POST')
-
-        access_token = dict(urlparse.parse_qsl(content))
-        auth_token = access_token['oauth_token']
+            request.session['oauth_token_secret'],
+            request.GET.get('oauth_verifier', '')
+        )
     except KeyError:
         return redirect('/')
 
-    noteStore = getNoteStore(auth_token)
-    notebooks = noteStore.listNotebooks(auth_token)
+    note_store = client.get_note_store()
+    notebooks = note_store.listNotebooks()
 
     return render_to_response('oauth/callback.html', {'notebooks': notebooks})
 
