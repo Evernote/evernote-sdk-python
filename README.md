@@ -48,7 +48,12 @@ Getting Started - Pyramid with OAuth
 -------------------------------------
 If you want to use Evernote API with Pyramid, the code in sample/pyramid will be good start.
 
-1. Install `pyramid`, `oauth2` and `evernote` library.  You can also use `requirements.txt` for `pip`.
+1. Install the sample project using pip on your command line like this.
+
+    ```bash
+    $ pip install -e .
+    ```
+
 2. Open the file `development.ini`
 3. Fill in your Evernote API consumer key and secret.
 4. On the command line, run the following command to start the sample app:
