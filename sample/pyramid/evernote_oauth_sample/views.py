@@ -9,8 +9,8 @@ def _get_evernote_client(request):
 
     if access_token:
         return EvernoteClient(
-                token=access_token,
-                sandbox=True)
+            token=access_token,
+            sandbox=True)
     else:
         settings = request.registry.settings
         consumer_key = settings.get('evernote.consumer_key')
@@ -21,9 +21,11 @@ def _get_evernote_client(request):
             consumer_secret=consumer_secret,
             sandbox=True)
 
+
 @view_config(route_name='home', renderer='home.mak')
 def home(request):
     return {}
+
 
 @view_config(route_name='evernote_auth')
 def evernote_oauth(request):
@@ -31,13 +33,15 @@ def evernote_oauth(request):
     session.invalidate()
 
     client = _get_evernote_client(request)
-    request_token = client.get_request_token(request.route_url('evernote_callback'))
+    request_token = client.get_request_token(
+        request.route_url('evernote_callback'))
     session['oauth_token'] = request_token['oauth_token']
     session['oauth_token_secret'] = request_token['oauth_token_secret']
 
     authorized_url = client.get_authorize_url(request_token)
 
     return HTTPFound(authorized_url)
+
 
 @view_config(route_name='evernote_callback', renderer='callback.mak')
 def evernote_callback(request):
@@ -58,13 +62,16 @@ def evernote_callback(request):
 
         return HTTPFound('notebooks')
 
-    return HTTPBadRequest('oauth_verifier, oauth_token or oauth_token_secret not found')
+    return HTTPBadRequest(
+        'oauth_verifier, oauth_token or oauth_token_secret not found')
+
 
 @view_config(route_name='notebooks', renderer='notebooks.mak')
 def notebooks(request):
     client = _get_evernote_client(request)
     note_store = client.get_note_store()
     return {'notebooks': note_store.listNotebooks()}
+
 
 @view_config(route_name='evernote_auth_reset')
 def evernote_oauth_rest(request):
