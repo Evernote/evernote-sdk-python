@@ -112,7 +112,7 @@ class Store(object):
                 return object.__getattribute__(self, name)(*args, **kwargs)
 
             org_args = inspect.getargspec(targetMethod).args
-            if len(org_args) == len(args):
+            if len(org_args) == len(args) + 1:
                 return targetMethod(*args, **kwargs)
             elif 'authenticationToken' in org_args:
                 skip_args = ['self', 'authenticationToken']
