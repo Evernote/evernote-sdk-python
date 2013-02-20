@@ -9,6 +9,8 @@ import urlparse
 import evernote.edam.userstore.UserStore as UserStore
 import evernote.edam.notestore.NoteStore as NoteStore
 import evernote.edam.userstore.constants as UserStoreConstants
+from evernote.edam.error.ttypes import EDAMUserException
+from evernote.edam.error.ttypes import EDAMSystemException
 
 import thrift.protocol.TBinaryProtocol as TBinaryProtocol
 import thrift.transport.THttpClient as THttpClient
@@ -22,12 +24,28 @@ class EvernoteClient(object):
         self.sandbox = options.get('sandbox', True)
         if self.sandbox:
             default_service_host = 'sandbox.evernote.com'
+            default_validate_token = True
         else:
             default_service_host = 'www.evernote.com'
+            default_validate_token = False
         self.service_host = options.get('service_host', default_service_host)
         self.additional_headers = options.get('additional_headers', {})
         self.token = options.get('token')
         self.secret = options.get('secret')
+        # You shouldn't make this flag False unless you really need to
+        self.use_ssl = options.get('use_ssl', True)
+
+        if options.get('validate_token_on_init', default_validate_token) and \
+                self.token is not None:
+            try:
+                user_store_uri = self._get_endpoint("/edam/user")
+                Store(self.token, UserStore.Client, user_store_uri).getUser()
+            except EDAMUserException as e:
+                raise Exception(
+                    "Please make sure you set the right token.  error:", e)
+            except EDAMSystemException as e:
+                raise Exception(
+                    "Please make sure you set the right token.  error:", e)
 
     def get_request_token(self, callback_url):
         client = self._get_oauth_client()
@@ -88,7 +106,8 @@ class EvernoteClient(object):
         return client
 
     def _get_endpoint(self, path=None):
-        url = "https://%s" % (self.service_host)
+        url = "%s://%s" % (
+            ('https' if self.use_ssl else 'http'), self.service_host)
         if path is not None:
             url += "/%s" % path
         return url
