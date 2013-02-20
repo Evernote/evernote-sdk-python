@@ -1,2 +1,6 @@
 *.pyc
 *.swp
+build
+dist
+*.egg-info
+.DS_Store
