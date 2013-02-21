@@ -75,12 +75,20 @@ class EvernoteClient(object):
 
     def get_user_store(self):
         user_store_uri = self._get_endpoint("/edam/user")
-        return Store(self.token, UserStore.Client, user_store_uri)
+        store = Store(self.token, UserStore.Client, user_store_uri)
+        if not store:  # Trick for PyDev code completion
+            store = UserStore.Client()
+            raise Exception('Should never reach here')
+        return store
 
     def get_note_store(self):
         user_store = self.get_user_store()
         note_store_uri = user_store.getNoteStoreUrl()
-        return Store(self.token, NoteStore.Client, note_store_uri)
+        store = Store(self.token, NoteStore.Client, note_store_uri)
+        if not store:  # Trick for PyDev code completion
+            store = NoteStore.Client()
+            raise Exception('Should never reach here')
+        return store
 
     def get_shared_note_store(self, linkedNotebook):
         note_store_uri = linkedNotebook.noteStoreUrl
@@ -88,14 +96,22 @@ class EvernoteClient(object):
         shared_auth = note_store.authenticateToSharedNotebook(
             linkedNotebook.shareKey)
         shared_token = shared_auth.authenticationToken
-        return Store(shared_token, NoteStore.Client, note_store_uri)
+        store = Store(shared_token, NoteStore.Client, note_store_uri)
+        if not store:  # Trick for PyDev code completion
+            store = NoteStore.Client()
+            raise Exception('Should never reach here')
+        return store
 
     def get_business_note_store(self):
         user_store = self.get_user_store()
         biz_auth = user_store.authenticateToBusiness()
         biz_token = biz_auth.authenticationToken
         note_store_uri = biz_auth.noteStoreUrl
-        return Store(biz_token, NoteStore.Client, note_store_uri)
+        store = Store(biz_token, NoteStore.Client, note_store_uri)
+        if not store:  # Trick for PyDev code completion
+            store = NoteStore.Client()
+            raise Exception('Should never reach here')
+        return store
 
     def _get_oauth_client(self, token=None):
         consumer = oauth.Consumer(self.consumer_key, self.consumer_secret)
