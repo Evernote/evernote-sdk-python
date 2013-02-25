@@ -1,8 +1,8 @@
 import os
 from setuptools import setup, find_packages
 
-
-for x in [x for x in open('lib/evernote/edam/userstore/constants.py').read().split("\n") if x.startswith('EDAM_VERSION')]:
+constants = open('lib/evernote/edam/userstore/constants.py').read().split("\n")
+for x in [x for x in constants if x.startswith('EDAM_VERSION')]:
     exec x
 
 
@@ -27,4 +27,7 @@ setup(
         'Topic :: Software Development :: Libraries',
     ],
     license='BSD',
+    install_requires=[
+        'oauth2',
+    ],
 )
