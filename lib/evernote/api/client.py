@@ -51,8 +51,8 @@ class EvernoteClient(object):
         client = self._get_oauth_client(token)
 
         resp, content = client.request(self._get_endpoint('oauth'), 'POST')
-        access_token = dict(urlparse.parse_qsl(content))
-        self.token = access_token['oauth_token']
+        self.access_token = dict(urlparse.parse_qsl(content))
+        self.token = self.access_token['oauth_token']
         return self.token
 
     def get_user_store(self):
