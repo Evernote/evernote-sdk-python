@@ -18,32 +18,6 @@ except:
 
 
 class Iface(object):
-  """
-  Service:  NoteStore
-  <p>
-  The NoteStore service is used by EDAM clients to exchange information
-  about the collection of notes in an account.  This is primarily used for
-  synchronization, but could also be used by a "thin" client without a full
-  local cache.
-  </p><p>
-  All functions take an "authenticationToken" parameter, which is the
-  value returned by the UserStore which permits access to the account.
-  This parameter is mandatory for all functions.
-  </p>
-  
-  Calls which require an authenticationToken may throw an EDAMUserException
-  for the following reasons:
-   <ul>
-    <li> AUTH_EXPIRED "authenticationToken" - token has expired
-    </li>
-    <li> BAD_DATA_FORMAT "authenticationToken" - token is malformed
-    </li>
-    <li> DATA_REQUIRED "authenticationToken" - token is empty
-    </li>
-    <li> INVALID_AUTH "authenticationToken" - token signature is invalid
-    </li>
-  </ul>
-  """
   def getSyncState(self, authenticationToken):
     """
     Asks the NoteStore to provide information about the status of the user
@@ -73,39 +47,7 @@ class Iface(object):
 
   def getSyncChunk(self, authenticationToken, afterUSN, maxEntries, fullSyncOnly):
     """
-    Asks the NoteStore to provide the state of the account in order of
-    last modification.  This request retrieves one block of the server's
-    state so that a client can make several small requests against a large
-    account rather than getting the entire state in one big message.
-    
-    @param afterUSN
-      The client can pass this value to ask only for objects that
-      have been updated after a certain point.  This allows the client to
-      receive updates after its last checkpoint rather than doing a full
-      synchronization on every pass.  The default value of "0" indicates
-      that the client wants to get objects from the start of the account.
-    
-    @param maxEntries
-      The maximum number of modified objects that should be
-      returned in the result SyncChunk. This can be used to limit the size
-      of each individual message to be friendly for network transfer.
-      Applications should not request more than 256 objects at a time,
-      and must handle the case where the service returns less than the
-      requested number of objects in a given request even though more
-      objects are available on the service.
-    
-    @param fullSyncOnly
-      If true, then the client only wants initial data for a full sync.
-      In this case, the service will not return any expunged objects,
-      and will not return any Resources, since these are also provided
-      in their corresponding Notes.
-    
-    @throws EDAMUserException <ul>
-      <li> BAD_DATA_FORMAT "afterUSN" - if negative
-      </li>
-      <li> BAD_DATA_FORMAT "maxEntries" - if less than 1
-      </li>
-    </ul>
+    DEPRECATED - use getFilteredSyncChunk.
     
     Parameters:
      - authenticationToken
@@ -121,7 +63,7 @@ class Iface(object):
     last modification.  This request retrieves one block of the server's
     state so that a client can make several small requests against a large
     account rather than getting the entire state in one big message.
-    This call gives more fine-grained control of the data that will
+    This call gives fine-grained control of the data that will
     be received by a client by omitting data elements that a client doesn't
     need. This may reduce network traffic and sync times.
     
@@ -390,7 +332,7 @@ class Iface(object):
     If the notebook contains any Notes, they will be moved to the current
     default notebook and moved into the trash (i.e. Note.active=false).
     <p/>
-    NOTE: This function is not available to third party applications.
+    NOTE: This function is generally not available to third party applications.
     Calls will result in an EDAMUserException with the error code
     PERMISSION_DENIED.
     
@@ -580,7 +522,7 @@ class Iface(object):
     """
     Permanently deletes the tag with the provided GUID, if present.
     <p/>
-    NOTE: This function is not available to third party applications.
+    NOTE: This function is generally not available to third party applications.
     Calls will result in an EDAMUserException with the error code
     PERMISSION_DENIED.
     
@@ -630,6 +572,10 @@ class Iface(object):
       </li>
       <li> PERMISSION_DENIED "SavedSearch" - private Tag, user doesn't own
       </li>
+    
+    @throws EDAMNotFoundException <ul>
+      <li> "SavedSearch.guid" - not found, by GUID
+      </li>
     </ul>
     
     Parameters:
@@ -644,8 +590,9 @@ class Iface(object):
     
     @param search
       The desired list of fields for the search are specified in this
-      object.  The caller must specify the
-      name, query, and format of the search.
+      object. The caller must specify the name and query for the
+      search, and may optionally specify a search scope.
+      The SavedSearch.format field is ignored by the service.
     
     @return
       The newly created SavedSearch.  The server-side GUID will be
@@ -655,8 +602,6 @@ class Iface(object):
       <li> BAD_DATA_FORMAT "SavedSearch.name" - invalid length or pattern
       </li>
       <li> BAD_DATA_FORMAT "SavedSearch.query" - invalid length
-      </li>
-      <li> BAD_DATA_FORMAT "SavedSearch.format" - not a valid QueryFormat value
       </li>
       <li> DATA_CONFLICT "SavedSearch.name" - name already in use
       </li>
@@ -672,9 +617,9 @@ class Iface(object):
 
   def updateSearch(self, authenticationToken, search):
     """
-    Submits search changes to the service.  The provided data must include
-    the search's guid field for identification.  The service will apply
-    updates to the following search fields:  name, query, and format
+    Submits search changes to the service. The provided data must include
+    the search's guid field for identification. The service will apply
+    updates to the following search fields: name, query, and scope.
     
     @param search
       The search object containing the requested changes.
@@ -686,8 +631,6 @@ class Iface(object):
       <li> BAD_DATA_FORMAT "SavedSearch.name" - invalid length or pattern
       </li>
       <li> BAD_DATA_FORMAT "SavedSearch.query" - invalid length
-      </li>
-      <li> BAD_DATA_FORMAT "SavedSearch.format" - not a valid QueryFormat value
       </li>
       <li> DATA_CONFLICT "SavedSearch.name" - name already in use
       </li>
@@ -710,7 +653,7 @@ class Iface(object):
     """
     Permanently deletes the saved search with the provided GUID, if present.
     <p/>
-    NOTE: This function is not available to third party applications.
+    NOTE: This function is generally not available to third party applications.
     Calls will result in an EDAMUserException with the error code
     PERMISSION_DENIED.
     
@@ -740,49 +683,7 @@ class Iface(object):
 
   def findNotes(self, authenticationToken, filter, offset, maxNotes):
     """
-    Used to find a set of the notes from a user's account based on various
-    criteria specified via a NoteFilter object.
-    The Notes (and any embedded Resources) will have empty Data bodies for
-    contents, resource data, and resource recognition fields.  These values
-    must be retrieved individually.
-    
-    @param authenticationToken
-      Must be a valid token for the user's account unless the NoteFilter
-      'notebookGuid' is the GUID of a public notebook.
-    
-    @param filter
-      The list of criteria that will constrain the notes to be returned.
-    
-    @param offset
-      The numeric index of the first note to show within the sorted
-      results.  The numbering scheme starts with "0".  This can be used for
-      pagination.
-    
-    @param maxNotes
-      The most notes to return in this query.  The service will return a set
-      of notes that is no larger than this number, but may return fewer notes
-      if needed.  The NoteList.totalNotes field in the return value will
-      indicate whether there are more values available after the returned set.
-    
-    @return
-      The list of notes that match the criteria.
-    
-    @throws EDAMUserException <ul>
-      <li> BAD_DATA_FORMAT "offset" - not between 0 and EDAM_USER_NOTES_MAX
-      </li>
-      <li> BAD_DATA_FORMAT "maxNotes" - not between 0 and EDAM_USER_NOTES_MAX
-      </li>
-      <li> BAD_DATA_FORMAT "NoteFilter.notebookGuid" - if malformed
-      </li>
-      <li> BAD_DATA_FORMAT "NoteFilter.tagGuids" - if any are malformed
-      </li>
-      <li> BAD_DATA_FORMAT "NoteFilter.words" - if search string too long
-      </li>
-    
-    @throws EDAMNotFoundException <ul>
-      <li> "Notebook.guid" - not found, by GUID
-      </li>
-    </ul>
+    DEPRECATED. Use findNotesMetadata.
     
     Parameters:
      - authenticationToken
@@ -845,10 +746,11 @@ class Iface(object):
     """
     Used to find the high-level information about a set of the notes from a
     user's account based on various criteria specified via a NoteFilter object.
-    This should be used instead of 'findNotes' whenever the client doesn't
-    really need all of the deep structure of every Note and Resource, but
-    just wants a high-level list of information.  This will save time and
-    bandwidth.
+    <p/>
+    Web applications that wish to periodically check for new content in a user's
+    Evernote account should consider using webhooks instead of polling this API.
+    See http://dev.evernote.com/documentation/cloud/chapters/polling_notification.php
+    for more information.
     
     @param authenticationToken
       Must be a valid token for the user's account unless the NoteFilter
@@ -1933,8 +1835,7 @@ class Iface(object):
        The uri string for the public notebook, from Notebook.publishing.uri.
     
     @throws EDAMNotFoundException <ul>
-      <li> "Publishing.uri" - not found, by URI
-      </li>
+      <li>"Publishing.uri" - not found, by URI</li>
     </ul>
     
     Parameters:
@@ -1950,7 +1851,7 @@ class Iface(object):
     for a user to access the notebook of the shared notebook owner.
     
     @param sharedNotebook
-      An shared notebook object populated with the email address of the share
+      A shared notebook object populated with the email address of the share
       recipient, the notebook guid and the access permissions. All other
       attributes of the shared object are ignored.
     @return
@@ -1959,11 +1860,11 @@ class Iface(object):
       SharedNotebook.
     
     @throws EDAMUserException <ul>
-      <li> BAD_DATA_FORMAT "SharedNotebook.email" - if the  email was not valid
+      <li>BAD_DATA_FORMAT "SharedNotebook.email" - if the  email was not valid
       </li>
       </ul>
     @throws EDAMNotFoundException <ul>
-      <li> Notebook.guid - if the notebookGuid is not a valid guid for the user
+      <li>Notebook.guid - if the notebookGuid is not a valid guid for the user
       </li>
       </ul>
     
@@ -1979,8 +1880,8 @@ class Iface(object):
     
     @param authenticationToken
       Must be an authentication token from the owner or a shared notebook
-      authentication token with sufficient permissions to change invitations
-      for a notebook.
+      authentication token or business authentication token with sufficient
+      permissions to change invitations for a notebook.
     
     @param sharedNotebook
      The SharedNotebook object containing the requested changes.
@@ -2031,7 +1932,8 @@ class Iface(object):
         The email can't be sent because this would exceed the user's daily
         email limit.
       </li>
-      <li> PERMISSION_DENIED "Notebook" - private note, user doesn't own
+      <li> PERMISSION_DENIED "Notebook.guid" - The user doesn't have permission to
+        send a message for the specified notebook.
       </li>
     </ul>
     
@@ -2066,7 +1968,7 @@ class Iface(object):
     Expunges the SharedNotebooks in the user's account using the
     SharedNotebook.id as the identifier.
     <p/>
-    NOTE: This function is not available to third party applications.
+    NOTE: This function is generally not available to third party applications.
     Calls will result in an EDAMUserException with the error code
     PERMISSION_DENIED.
     
@@ -2153,7 +2055,7 @@ class Iface(object):
     """
     Permanently expunges the linked notebook from the account.
     <p/>
-    NOTE: This function is not available to third party applications.
+    NOTE: This function is generally not available to third party applications.
     Calls will result in an EDAMUserException with the error code
     PERMISSION_DENIED.
     
@@ -2249,6 +2151,10 @@ class Iface(object):
   def emailNote(self, authenticationToken, parameters):
     """
     Attempts to send a single note to one or more email recipients.
+    <p/>
+    NOTE: This function is generally not available to third party applications.
+    Calls will result in an EDAMUserException with the error code
+    PERMISSION_DENIED.
     
     @param authenticationToken
        The note will be sent as the user logged in via this token, using that
@@ -2446,32 +2352,6 @@ class Iface(object):
 
 
 class Client(Iface):
-  """
-  Service:  NoteStore
-  <p>
-  The NoteStore service is used by EDAM clients to exchange information
-  about the collection of notes in an account.  This is primarily used for
-  synchronization, but could also be used by a "thin" client without a full
-  local cache.
-  </p><p>
-  All functions take an "authenticationToken" parameter, which is the
-  value returned by the UserStore which permits access to the account.
-  This parameter is mandatory for all functions.
-  </p>
-  
-  Calls which require an authenticationToken may throw an EDAMUserException
-  for the following reasons:
-   <ul>
-    <li> AUTH_EXPIRED "authenticationToken" - token has expired
-    </li>
-    <li> BAD_DATA_FORMAT "authenticationToken" - token is malformed
-    </li>
-    <li> DATA_REQUIRED "authenticationToken" - token is empty
-    </li>
-    <li> INVALID_AUTH "authenticationToken" - token signature is invalid
-    </li>
-  </ul>
-  """
   def __init__(self, iprot, oprot=None):
     self._iprot = self._oprot = iprot
     if oprot is not None:
@@ -2562,39 +2442,7 @@ class Client(Iface):
 
   def getSyncChunk(self, authenticationToken, afterUSN, maxEntries, fullSyncOnly):
     """
-    Asks the NoteStore to provide the state of the account in order of
-    last modification.  This request retrieves one block of the server's
-    state so that a client can make several small requests against a large
-    account rather than getting the entire state in one big message.
-    
-    @param afterUSN
-      The client can pass this value to ask only for objects that
-      have been updated after a certain point.  This allows the client to
-      receive updates after its last checkpoint rather than doing a full
-      synchronization on every pass.  The default value of "0" indicates
-      that the client wants to get objects from the start of the account.
-    
-    @param maxEntries
-      The maximum number of modified objects that should be
-      returned in the result SyncChunk. This can be used to limit the size
-      of each individual message to be friendly for network transfer.
-      Applications should not request more than 256 objects at a time,
-      and must handle the case where the service returns less than the
-      requested number of objects in a given request even though more
-      objects are available on the service.
-    
-    @param fullSyncOnly
-      If true, then the client only wants initial data for a full sync.
-      In this case, the service will not return any expunged objects,
-      and will not return any Resources, since these are also provided
-      in their corresponding Notes.
-    
-    @throws EDAMUserException <ul>
-      <li> BAD_DATA_FORMAT "afterUSN" - if negative
-      </li>
-      <li> BAD_DATA_FORMAT "maxEntries" - if less than 1
-      </li>
-    </ul>
+    DEPRECATED - use getFilteredSyncChunk.
     
     Parameters:
      - authenticationToken
@@ -2640,7 +2488,7 @@ class Client(Iface):
     last modification.  This request retrieves one block of the server's
     state so that a client can make several small requests against a large
     account rather than getting the entire state in one big message.
-    This call gives more fine-grained control of the data that will
+    This call gives fine-grained control of the data that will
     be received by a client by omitting data elements that a client doesn't
     need. This may reduce network traffic and sync times.
     
@@ -3144,7 +2992,7 @@ class Client(Iface):
     If the notebook contains any Notes, they will be moved to the current
     default notebook and moved into the trash (i.e. Note.active=false).
     <p/>
-    NOTE: This function is not available to third party applications.
+    NOTE: This function is generally not available to third party applications.
     Calls will result in an EDAMUserException with the error code
     PERMISSION_DENIED.
     
@@ -3539,7 +3387,7 @@ class Client(Iface):
     """
     Permanently deletes the tag with the provided GUID, if present.
     <p/>
-    NOTE: This function is not available to third party applications.
+    NOTE: This function is generally not available to third party applications.
     Calls will result in an EDAMUserException with the error code
     PERMISSION_DENIED.
     
@@ -3646,6 +3494,10 @@ class Client(Iface):
       </li>
       <li> PERMISSION_DENIED "SavedSearch" - private Tag, user doesn't own
       </li>
+    
+    @throws EDAMNotFoundException <ul>
+      <li> "SavedSearch.guid" - not found, by GUID
+      </li>
     </ul>
     
     Parameters:
@@ -3690,8 +3542,9 @@ class Client(Iface):
     
     @param search
       The desired list of fields for the search are specified in this
-      object.  The caller must specify the
-      name, query, and format of the search.
+      object. The caller must specify the name and query for the
+      search, and may optionally specify a search scope.
+      The SavedSearch.format field is ignored by the service.
     
     @return
       The newly created SavedSearch.  The server-side GUID will be
@@ -3701,8 +3554,6 @@ class Client(Iface):
       <li> BAD_DATA_FORMAT "SavedSearch.name" - invalid length or pattern
       </li>
       <li> BAD_DATA_FORMAT "SavedSearch.query" - invalid length
-      </li>
-      <li> BAD_DATA_FORMAT "SavedSearch.format" - not a valid QueryFormat value
       </li>
       <li> DATA_CONFLICT "SavedSearch.name" - name already in use
       </li>
@@ -3746,9 +3597,9 @@ class Client(Iface):
 
   def updateSearch(self, authenticationToken, search):
     """
-    Submits search changes to the service.  The provided data must include
-    the search's guid field for identification.  The service will apply
-    updates to the following search fields:  name, query, and format
+    Submits search changes to the service. The provided data must include
+    the search's guid field for identification. The service will apply
+    updates to the following search fields: name, query, and scope.
     
     @param search
       The search object containing the requested changes.
@@ -3760,8 +3611,6 @@ class Client(Iface):
       <li> BAD_DATA_FORMAT "SavedSearch.name" - invalid length or pattern
       </li>
       <li> BAD_DATA_FORMAT "SavedSearch.query" - invalid length
-      </li>
-      <li> BAD_DATA_FORMAT "SavedSearch.format" - not a valid QueryFormat value
       </li>
       <li> DATA_CONFLICT "SavedSearch.name" - name already in use
       </li>
@@ -3814,7 +3663,7 @@ class Client(Iface):
     """
     Permanently deletes the saved search with the provided GUID, if present.
     <p/>
-    NOTE: This function is not available to third party applications.
+    NOTE: This function is generally not available to third party applications.
     Calls will result in an EDAMUserException with the error code
     PERMISSION_DENIED.
     
@@ -3874,49 +3723,7 @@ class Client(Iface):
 
   def findNotes(self, authenticationToken, filter, offset, maxNotes):
     """
-    Used to find a set of the notes from a user's account based on various
-    criteria specified via a NoteFilter object.
-    The Notes (and any embedded Resources) will have empty Data bodies for
-    contents, resource data, and resource recognition fields.  These values
-    must be retrieved individually.
-    
-    @param authenticationToken
-      Must be a valid token for the user's account unless the NoteFilter
-      'notebookGuid' is the GUID of a public notebook.
-    
-    @param filter
-      The list of criteria that will constrain the notes to be returned.
-    
-    @param offset
-      The numeric index of the first note to show within the sorted
-      results.  The numbering scheme starts with "0".  This can be used for
-      pagination.
-    
-    @param maxNotes
-      The most notes to return in this query.  The service will return a set
-      of notes that is no larger than this number, but may return fewer notes
-      if needed.  The NoteList.totalNotes field in the return value will
-      indicate whether there are more values available after the returned set.
-    
-    @return
-      The list of notes that match the criteria.
-    
-    @throws EDAMUserException <ul>
-      <li> BAD_DATA_FORMAT "offset" - not between 0 and EDAM_USER_NOTES_MAX
-      </li>
-      <li> BAD_DATA_FORMAT "maxNotes" - not between 0 and EDAM_USER_NOTES_MAX
-      </li>
-      <li> BAD_DATA_FORMAT "NoteFilter.notebookGuid" - if malformed
-      </li>
-      <li> BAD_DATA_FORMAT "NoteFilter.tagGuids" - if any are malformed
-      </li>
-      <li> BAD_DATA_FORMAT "NoteFilter.words" - if search string too long
-      </li>
-    
-    @throws EDAMNotFoundException <ul>
-      <li> "Notebook.guid" - not found, by GUID
-      </li>
-    </ul>
+    DEPRECATED. Use findNotesMetadata.
     
     Parameters:
      - authenticationToken
@@ -4042,10 +3849,11 @@ class Client(Iface):
     """
     Used to find the high-level information about a set of the notes from a
     user's account based on various criteria specified via a NoteFilter object.
-    This should be used instead of 'findNotes' whenever the client doesn't
-    really need all of the deep structure of every Note and Resource, but
-    just wants a high-level list of information.  This will save time and
-    bandwidth.
+    <p/>
+    Web applications that wish to periodically check for new content in a user's
+    Evernote account should consider using webhooks instead of polling this API.
+    See http://dev.evernote.com/documentation/cloud/chapters/polling_notification.php
+    for more information.
     
     @param authenticationToken
       Must be a valid token for the user's account unless the NoteFilter
@@ -6088,8 +5896,7 @@ class Client(Iface):
        The uri string for the public notebook, from Notebook.publishing.uri.
     
     @throws EDAMNotFoundException <ul>
-      <li> "Publishing.uri" - not found, by URI
-      </li>
+      <li>"Publishing.uri" - not found, by URI</li>
     </ul>
     
     Parameters:
@@ -6133,7 +5940,7 @@ class Client(Iface):
     for a user to access the notebook of the shared notebook owner.
     
     @param sharedNotebook
-      An shared notebook object populated with the email address of the share
+      A shared notebook object populated with the email address of the share
       recipient, the notebook guid and the access permissions. All other
       attributes of the shared object are ignored.
     @return
@@ -6142,11 +5949,11 @@ class Client(Iface):
       SharedNotebook.
     
     @throws EDAMUserException <ul>
-      <li> BAD_DATA_FORMAT "SharedNotebook.email" - if the  email was not valid
+      <li>BAD_DATA_FORMAT "SharedNotebook.email" - if the  email was not valid
       </li>
       </ul>
     @throws EDAMNotFoundException <ul>
-      <li> Notebook.guid - if the notebookGuid is not a valid guid for the user
+      <li>Notebook.guid - if the notebookGuid is not a valid guid for the user
       </li>
       </ul>
     
@@ -6192,8 +5999,8 @@ class Client(Iface):
     
     @param authenticationToken
       Must be an authentication token from the owner or a shared notebook
-      authentication token with sufficient permissions to change invitations
-      for a notebook.
+      authentication token or business authentication token with sufficient
+      permissions to change invitations for a notebook.
     
     @param sharedNotebook
      The SharedNotebook object containing the requested changes.
@@ -6274,7 +6081,8 @@ class Client(Iface):
         The email can't be sent because this would exceed the user's daily
         email limit.
       </li>
-      <li> PERMISSION_DENIED "Notebook" - private note, user doesn't own
+      <li> PERMISSION_DENIED "Notebook.guid" - The user doesn't have permission to
+        send a message for the specified notebook.
       </li>
     </ul>
     
@@ -6370,7 +6178,7 @@ class Client(Iface):
     Expunges the SharedNotebooks in the user's account using the
     SharedNotebook.id as the identifier.
     <p/>
-    NOTE: This function is not available to third party applications.
+    NOTE: This function is generally not available to third party applications.
     Calls will result in an EDAMUserException with the error code
     PERMISSION_DENIED.
     
@@ -6576,7 +6384,7 @@ class Client(Iface):
     """
     Permanently expunges the linked notebook from the account.
     <p/>
-    NOTE: This function is not available to third party applications.
+    NOTE: This function is generally not available to third party applications.
     Calls will result in an EDAMUserException with the error code
     PERMISSION_DENIED.
     
@@ -6761,6 +6569,10 @@ class Client(Iface):
   def emailNote(self, authenticationToken, parameters):
     """
     Attempts to send a single note to one or more email recipients.
+    <p/>
+    NOTE: This function is generally not available to third party applications.
+    Calls will result in an EDAMUserException with the error code
+    PERMISSION_DENIED.
     
     @param authenticationToken
        The note will be sent as the user logged in via this token, using that

@@ -27,6 +27,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  BootstrapInfo getBootstrapInfo(string locale)'
   print '  AuthenticationResult authenticate(string username, string password, string consumerKey, string consumerSecret)'
   print '  AuthenticationResult authenticateLongSession(string username, string password, string consumerKey, string consumerSecret, string deviceIdentifier, string deviceDescription)'
+  print '  void revokeLongSession(string authenticationToken)'
   print '  AuthenticationResult authenticateToBusiness(string authenticationToken)'
   print '  AuthenticationResult refreshAuthentication(string authenticationToken)'
   print '  User getUser(string authenticationToken)'
@@ -107,6 +108,12 @@ elif cmd == 'authenticateLongSession':
     print 'authenticateLongSession requires 6 args'
     sys.exit(1)
   pp.pprint(client.authenticateLongSession(args[0],args[1],args[2],args[3],args[4],args[5],))
+
+elif cmd == 'revokeLongSession':
+  if len(args) != 1:
+    print 'revokeLongSession requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.revokeLongSession(args[0],))
 
 elif cmd == 'authenticateToBusiness':
   if len(args) != 1:

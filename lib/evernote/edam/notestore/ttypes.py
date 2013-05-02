@@ -200,8 +200,8 @@ class SyncChunk(object):
      If present, this is a list of non-expunged notes that
      have a USN in this chunk.  This will include notes that are "deleted"
      but not expunged (i.e. in the trash).  The notes will include their list
-     of tags and resources, but the resource content and recognition data
-     will not be supplied.
+     of tags and resources, but the note content, resource content, resource
+     recognition data and resource alternate data will not be supplied.
      </dd>
   
    <dt>notebooks</dt>
@@ -1323,6 +1323,7 @@ class NoteMetadata(object):
    - contentLength
    - created
    - updated
+   - deleted
    - updateSequenceNum
    - notebookGuid
    - tagGuids
@@ -1340,7 +1341,7 @@ class NoteMetadata(object):
     (5, TType.I32, 'contentLength', None, None, ), # 5
     (6, TType.I64, 'created', None, None, ), # 6
     (7, TType.I64, 'updated', None, None, ), # 7
-    None, # 8
+    (8, TType.I64, 'deleted', None, None, ), # 8
     None, # 9
     (10, TType.I32, 'updateSequenceNum', None, None, ), # 10
     (11, TType.STRING, 'notebookGuid', None, None, ), # 11
@@ -1356,12 +1357,13 @@ class NoteMetadata(object):
     (21, TType.I32, 'largestResourceSize', None, None, ), # 21
   )
 
-  def __init__(self, guid=None, title=None, contentLength=None, created=None, updated=None, updateSequenceNum=None, notebookGuid=None, tagGuids=None, attributes=None, largestResourceMime=None, largestResourceSize=None,):
+  def __init__(self, guid=None, title=None, contentLength=None, created=None, updated=None, deleted=None, updateSequenceNum=None, notebookGuid=None, tagGuids=None, attributes=None, largestResourceMime=None, largestResourceSize=None,):
     self.guid = guid
     self.title = title
     self.contentLength = contentLength
     self.created = created
     self.updated = updated
+    self.deleted = deleted
     self.updateSequenceNum = updateSequenceNum
     self.notebookGuid = notebookGuid
     self.tagGuids = tagGuids
@@ -1401,6 +1403,11 @@ class NoteMetadata(object):
       elif fid == 7:
         if ftype == TType.I64:
           self.updated = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 8:
+        if ftype == TType.I64:
+          self.deleted = iprot.readI64();
         else:
           iprot.skip(ftype)
       elif fid == 10:
@@ -1468,6 +1475,10 @@ class NoteMetadata(object):
     if self.updated is not None:
       oprot.writeFieldBegin('updated', TType.I64, 7)
       oprot.writeI64(self.updated)
+      oprot.writeFieldEnd()
+    if self.deleted is not None:
+      oprot.writeFieldBegin('deleted', TType.I64, 8)
+      oprot.writeI64(self.deleted)
       oprot.writeFieldEnd()
     if self.updateSequenceNum is not None:
       oprot.writeFieldBegin('updateSequenceNum', TType.I32, 10)
@@ -1739,6 +1750,7 @@ class NotesMetadataResultSpec(object):
    - includeContentLength
    - includeCreated
    - includeUpdated
+   - includeDeleted
    - includeUpdateSequenceNum
    - includeNotebookGuid
    - includeTagGuids
@@ -1756,7 +1768,7 @@ class NotesMetadataResultSpec(object):
     (5, TType.BOOL, 'includeContentLength', None, None, ), # 5
     (6, TType.BOOL, 'includeCreated', None, None, ), # 6
     (7, TType.BOOL, 'includeUpdated', None, None, ), # 7
-    None, # 8
+    (8, TType.BOOL, 'includeDeleted', None, None, ), # 8
     None, # 9
     (10, TType.BOOL, 'includeUpdateSequenceNum', None, None, ), # 10
     (11, TType.BOOL, 'includeNotebookGuid', None, None, ), # 11
@@ -1772,11 +1784,12 @@ class NotesMetadataResultSpec(object):
     (21, TType.BOOL, 'includeLargestResourceSize', None, None, ), # 21
   )
 
-  def __init__(self, includeTitle=None, includeContentLength=None, includeCreated=None, includeUpdated=None, includeUpdateSequenceNum=None, includeNotebookGuid=None, includeTagGuids=None, includeAttributes=None, includeLargestResourceMime=None, includeLargestResourceSize=None,):
+  def __init__(self, includeTitle=None, includeContentLength=None, includeCreated=None, includeUpdated=None, includeDeleted=None, includeUpdateSequenceNum=None, includeNotebookGuid=None, includeTagGuids=None, includeAttributes=None, includeLargestResourceMime=None, includeLargestResourceSize=None,):
     self.includeTitle = includeTitle
     self.includeContentLength = includeContentLength
     self.includeCreated = includeCreated
     self.includeUpdated = includeUpdated
+    self.includeDeleted = includeDeleted
     self.includeUpdateSequenceNum = includeUpdateSequenceNum
     self.includeNotebookGuid = includeNotebookGuid
     self.includeTagGuids = includeTagGuids
@@ -1811,6 +1824,11 @@ class NotesMetadataResultSpec(object):
       elif fid == 7:
         if ftype == TType.BOOL:
           self.includeUpdated = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 8:
+        if ftype == TType.BOOL:
+          self.includeDeleted = iprot.readBool();
         else:
           iprot.skip(ftype)
       elif fid == 10:
@@ -1868,6 +1886,10 @@ class NotesMetadataResultSpec(object):
     if self.includeUpdated is not None:
       oprot.writeFieldBegin('includeUpdated', TType.BOOL, 7)
       oprot.writeBool(self.includeUpdated)
+      oprot.writeFieldEnd()
+    if self.includeDeleted is not None:
+      oprot.writeFieldBegin('includeDeleted', TType.BOOL, 8)
+      oprot.writeBool(self.includeDeleted)
       oprot.writeFieldEnd()
     if self.includeUpdateSequenceNum is not None:
       oprot.writeFieldBegin('includeUpdateSequenceNum', TType.BOOL, 10)
@@ -2580,12 +2602,6 @@ class RelatedResult(object):
       list will occur once per notebook GUID and are represented as
       NotebookDescriptor objects.</dd>
   </dl>
-  
-  <dt>debugInfo</dt>
-  <dd>NOTE: This should be excluded from the public API.<br /><br />
-      If <code>includeDebugInfo</code> in RelatedResultSpec is set to
-      <code>true</code>, this field may contain debug information
-      if the service decides to do so.</dd>
   </dl>
   
   Attributes:
@@ -2593,7 +2609,6 @@ class RelatedResult(object):
    - notebooks
    - tags
    - containingNotebooks
-   - debugInfo
   """
 
   thrift_spec = (
@@ -2602,15 +2617,13 @@ class RelatedResult(object):
     (2, TType.LIST, 'notebooks', (TType.STRUCT,(evernote.edam.type.ttypes.Notebook, evernote.edam.type.ttypes.Notebook.thrift_spec)), None, ), # 2
     (3, TType.LIST, 'tags', (TType.STRUCT,(evernote.edam.type.ttypes.Tag, evernote.edam.type.ttypes.Tag.thrift_spec)), None, ), # 3
     (4, TType.LIST, 'containingNotebooks', (TType.STRUCT,(evernote.edam.type.ttypes.NotebookDescriptor, evernote.edam.type.ttypes.NotebookDescriptor.thrift_spec)), None, ), # 4
-    (5, TType.STRING, 'debugInfo', None, None, ), # 5
   )
 
-  def __init__(self, notes=None, notebooks=None, tags=None, containingNotebooks=None, debugInfo=None,):
+  def __init__(self, notes=None, notebooks=None, tags=None, containingNotebooks=None,):
     self.notes = notes
     self.notebooks = notebooks
     self.tags = tags
     self.containingNotebooks = containingNotebooks
-    self.debugInfo = debugInfo
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2665,11 +2678,6 @@ class RelatedResult(object):
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 5:
-        if ftype == TType.STRING:
-          self.debugInfo = iprot.readString();
-        else:
-          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2707,10 +2715,6 @@ class RelatedResult(object):
       for iter192 in self.containingNotebooks:
         iter192.write(oprot)
       oprot.writeListEnd()
-      oprot.writeFieldEnd()
-    if self.debugInfo is not None:
-      oprot.writeFieldBegin('debugInfo', TType.STRING, 5)
-      oprot.writeString(self.debugInfo)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2769,11 +2773,6 @@ class RelatedResultSpec(object):
       in the RelatedResult, which will contain the list of notebooks to
       to which the returned related notes belong.</dd>
   </dl>
-  
-  <dt>includeDebugInfo</dt>
-  <dd>NOTE: This should be excluded from the public API.<br /><br />
-      If set to <code>true</code>, indicate that debug information should
-      be returned in the 'debugInfo' field of RelatedResult.</dd>
   </dl>
   
   Attributes:
@@ -2782,7 +2781,6 @@ class RelatedResultSpec(object):
    - maxTags
    - writableNotebooksOnly
    - includeContainingNotebooks
-   - includeDebugInfo
   """
 
   thrift_spec = (
@@ -2792,16 +2790,14 @@ class RelatedResultSpec(object):
     (3, TType.I32, 'maxTags', None, None, ), # 3
     (4, TType.BOOL, 'writableNotebooksOnly', None, None, ), # 4
     (5, TType.BOOL, 'includeContainingNotebooks', None, None, ), # 5
-    (6, TType.BOOL, 'includeDebugInfo', None, None, ), # 6
   )
 
-  def __init__(self, maxNotes=None, maxNotebooks=None, maxTags=None, writableNotebooksOnly=None, includeContainingNotebooks=None, includeDebugInfo=None,):
+  def __init__(self, maxNotes=None, maxNotebooks=None, maxTags=None, writableNotebooksOnly=None, includeContainingNotebooks=None,):
     self.maxNotes = maxNotes
     self.maxNotebooks = maxNotebooks
     self.maxTags = maxTags
     self.writableNotebooksOnly = writableNotebooksOnly
     self.includeContainingNotebooks = includeContainingNotebooks
-    self.includeDebugInfo = includeDebugInfo
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2837,11 +2833,6 @@ class RelatedResultSpec(object):
           self.includeContainingNotebooks = iprot.readBool();
         else:
           iprot.skip(ftype)
-      elif fid == 6:
-        if ftype == TType.BOOL:
-          self.includeDebugInfo = iprot.readBool();
-        else:
-          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2871,10 +2862,6 @@ class RelatedResultSpec(object):
     if self.includeContainingNotebooks is not None:
       oprot.writeFieldBegin('includeContainingNotebooks', TType.BOOL, 5)
       oprot.writeBool(self.includeContainingNotebooks)
-      oprot.writeFieldEnd()
-    if self.includeDebugInfo is not None:
-      oprot.writeFieldBegin('includeDebugInfo', TType.BOOL, 6)
-      oprot.writeBool(self.includeDebugInfo)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
