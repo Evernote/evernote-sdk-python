@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name='evernote',
-    version="%i.%i.2" % (EDAM_VERSION_MAJOR, EDAM_VERSION_MINOR),
+    version="%i.%i.0" % (EDAM_VERSION_MAJOR, EDAM_VERSION_MINOR),
     author='Evernote Corporation',
     author_email='api@evernote.com',
     url='http://dev.evernote.com',
