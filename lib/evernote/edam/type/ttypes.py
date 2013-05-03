@@ -26,6 +26,7 @@ class PrivilegeLevel(object):
   """
   NORMAL = 1
   PREMIUM = 3
+  VIP = 5
   MANAGER = 7
   SUPPORT = 8
   ADMIN = 9
@@ -33,6 +34,7 @@ class PrivilegeLevel(object):
   _VALUES_TO_NAMES = {
     1: "NORMAL",
     3: "PREMIUM",
+    5: "VIP",
     7: "MANAGER",
     8: "SUPPORT",
     9: "ADMIN",
@@ -41,6 +43,7 @@ class PrivilegeLevel(object):
   _NAMES_TO_VALUES = {
     "NORMAL": 1,
     "PREMIUM": 3,
+    "VIP": 5,
     "MANAGER": 7,
     "SUPPORT": 8,
     "ADMIN": 9,
@@ -265,6 +268,30 @@ class SharedNotebookInstanceRestrictions(object):
   _NAMES_TO_VALUES = {
     "ONLY_JOINED_OR_PREVIEW": 1,
     "NO_SHARED_NOTEBOOKS": 2,
+  }
+
+class ReminderEmailConfig(object):
+  """
+  An enumeration describing the configuration state related to receiving
+  reminder e-mails from the service.  Reminder e-mails summarize notes
+  based on their Note.attributes.reminderTime values.
+  
+  DO_NOT_SEND: The user has selected to not receive reminder e-mail.
+  
+  SEND_DAILY_EMAIL: The user has selected to receive reminder e-mail for those
+    days when there is a reminder.
+  """
+  DO_NOT_SEND = 1
+  SEND_DAILY_EMAIL = 2
+
+  _VALUES_TO_NAMES = {
+    1: "DO_NOT_SEND",
+    2: "SEND_DAILY_EMAIL",
+  }
+
+  _NAMES_TO_VALUES = {
+    "DO_NOT_SEND": 1,
+    "SEND_DAILY_EMAIL": 2,
   }
 
 
@@ -527,11 +554,6 @@ class UserAttributes(object):
          If not set, then the 'preferredLanguage' will be used.
      </dd>
   
-   <dt>customerProfileId</dt>
-     <dd>a numeric identified which provides a linkage between the user record
-         and the direct credit card payment creditcard profile.
-     </dd>
-  
    <dt>educationalInstitution</dt>
      <dd>a flag indicating that the user is part of an educational institution which
      makes them eligible for discounts on bulk purchases
@@ -540,16 +562,27 @@ class UserAttributes(object):
    <dt>businessAddress</dt>
      <dd>A string recording the business address of a Sponsored Account user who has requested invoicing.
      </dd>
-   </dl>
   
    <dt>hideSponsorBilling</dt>
      <dd>A flag indicating whether to hide the billing information on a sponsored
          account owner's settings page
      </dd>
-   </dl>
   
    <dt>taxExempt</dt>
      <dd>A flag indicating the user's sponsored group is exempt from sale tax
+     </dd>
+  
+   <dt>useEmailAutoFiling</dt>
+     <dd>A flag indicating whether the user chooses to allow Evernote to automatically
+         file and tag emailed notes
+     </dd>
+  
+   <dt>reminderEmailConfig</dt>
+     <dd>Configuration state for whether or not the user wishes to receive
+         reminder e-mail.  This setting applies to both the reminder e-mail sent
+         for personal reminder notes and for the reminder e-mail sent for reminder
+         notes in the user's business notebooks that the user has configured for
+         e-mail notifications.
      </dd>
    </dl>
   
@@ -578,12 +611,13 @@ class UserAttributes(object):
    - twitterId
    - groupName
    - recognitionLanguage
-   - customerProfileId
    - referralProof
    - educationalDiscount
    - businessAddress
    - hideSponsorBilling
    - taxExempt
+   - useEmailAutoFiling
+   - reminderEmailConfig
   """
 
   thrift_spec = (
@@ -614,15 +648,17 @@ class UserAttributes(object):
     (24, TType.STRING, 'twitterId', None, None, ), # 24
     (25, TType.STRING, 'groupName', None, None, ), # 25
     (26, TType.STRING, 'recognitionLanguage', None, None, ), # 26
-    (27, TType.I64, 'customerProfileId', None, None, ), # 27
+    None, # 27
     (28, TType.STRING, 'referralProof', None, None, ), # 28
     (29, TType.BOOL, 'educationalDiscount', None, None, ), # 29
     (30, TType.STRING, 'businessAddress', None, None, ), # 30
     (31, TType.BOOL, 'hideSponsorBilling', None, None, ), # 31
     (32, TType.BOOL, 'taxExempt', None, None, ), # 32
+    (33, TType.BOOL, 'useEmailAutoFiling', None, None, ), # 33
+    (34, TType.I32, 'reminderEmailConfig', None, None, ), # 34
   )
 
-  def __init__(self, defaultLocationName=None, defaultLatitude=None, defaultLongitude=None, preactivation=None, viewedPromotions=None, incomingEmailAddress=None, recentMailedAddresses=None, comments=None, dateAgreedToTermsOfService=None, maxReferrals=None, referralCount=None, refererCode=None, sentEmailDate=None, sentEmailCount=None, dailyEmailLimit=None, emailOptOutDate=None, partnerEmailOptInDate=None, preferredLanguage=None, preferredCountry=None, clipFullPage=None, twitterUserName=None, twitterId=None, groupName=None, recognitionLanguage=None, customerProfileId=None, referralProof=None, educationalDiscount=None, businessAddress=None, hideSponsorBilling=None, taxExempt=None,):
+  def __init__(self, defaultLocationName=None, defaultLatitude=None, defaultLongitude=None, preactivation=None, viewedPromotions=None, incomingEmailAddress=None, recentMailedAddresses=None, comments=None, dateAgreedToTermsOfService=None, maxReferrals=None, referralCount=None, refererCode=None, sentEmailDate=None, sentEmailCount=None, dailyEmailLimit=None, emailOptOutDate=None, partnerEmailOptInDate=None, preferredLanguage=None, preferredCountry=None, clipFullPage=None, twitterUserName=None, twitterId=None, groupName=None, recognitionLanguage=None, referralProof=None, educationalDiscount=None, businessAddress=None, hideSponsorBilling=None, taxExempt=None, useEmailAutoFiling=None, reminderEmailConfig=None,):
     self.defaultLocationName = defaultLocationName
     self.defaultLatitude = defaultLatitude
     self.defaultLongitude = defaultLongitude
@@ -647,12 +683,13 @@ class UserAttributes(object):
     self.twitterId = twitterId
     self.groupName = groupName
     self.recognitionLanguage = recognitionLanguage
-    self.customerProfileId = customerProfileId
     self.referralProof = referralProof
     self.educationalDiscount = educationalDiscount
     self.businessAddress = businessAddress
     self.hideSponsorBilling = hideSponsorBilling
     self.taxExempt = taxExempt
+    self.useEmailAutoFiling = useEmailAutoFiling
+    self.reminderEmailConfig = reminderEmailConfig
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -793,11 +830,6 @@ class UserAttributes(object):
           self.recognitionLanguage = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 27:
-        if ftype == TType.I64:
-          self.customerProfileId = iprot.readI64();
-        else:
-          iprot.skip(ftype)
       elif fid == 28:
         if ftype == TType.STRING:
           self.referralProof = iprot.readString();
@@ -821,6 +853,16 @@ class UserAttributes(object):
       elif fid == 32:
         if ftype == TType.BOOL:
           self.taxExempt = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 33:
+        if ftype == TType.BOOL:
+          self.useEmailAutoFiling = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 34:
+        if ftype == TType.I32:
+          self.reminderEmailConfig = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -935,10 +977,6 @@ class UserAttributes(object):
       oprot.writeFieldBegin('recognitionLanguage', TType.STRING, 26)
       oprot.writeString(self.recognitionLanguage)
       oprot.writeFieldEnd()
-    if self.customerProfileId is not None:
-      oprot.writeFieldBegin('customerProfileId', TType.I64, 27)
-      oprot.writeI64(self.customerProfileId)
-      oprot.writeFieldEnd()
     if self.referralProof is not None:
       oprot.writeFieldBegin('referralProof', TType.STRING, 28)
       oprot.writeString(self.referralProof)
@@ -958,6 +996,14 @@ class UserAttributes(object):
     if self.taxExempt is not None:
       oprot.writeFieldBegin('taxExempt', TType.BOOL, 32)
       oprot.writeBool(self.taxExempt)
+      oprot.writeFieldEnd()
+    if self.useEmailAutoFiling is not None:
+      oprot.writeFieldBegin('useEmailAutoFiling', TType.BOOL, 33)
+      oprot.writeBool(self.useEmailAutoFiling)
+      oprot.writeFieldEnd()
+    if self.reminderEmailConfig is not None:
+      oprot.writeFieldBegin('reminderEmailConfig', TType.I32, 34)
+      oprot.writeI32(self.reminderEmailConfig)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1055,14 +1101,15 @@ class Accounting(object):
    <dt>unitPrice</dt>
      <dd>charge in the smallest unit of the currency (e.g. cents for USD)</dd>
    <dt>businessId</dt>
-     <dd>If set, the ID of the Evernote Business account that the user is a
-         member of. If not set, the user is not a member of a business.</dd>
+     <dd><i>DEPRECATED:</i>See BusinessUserInfo.</dd>
    <dt>businessName</dt>
-     <dd>The human-readable name of the Evernote Business account that
-         the user is a member of.</dd>
+     <dd><i>DEPRECATED:</i>See BusinessUserInfo.</dd>
    <dt>businessRole</dt>
-     <dd>If set, the role of the user within the Evernote Business account
-         that they are a member of.</dd>
+     <dd><i>DEPRECATED:</i>See BusinessUserInfo.</dd>
+   <dt>unitDiscount</dt>
+     <dd>discount per seat in negative amount and smallest unit of the currency (e.g. cents for USD)</dd>
+   <dt>nextChargeDate</dt>
+     <dd>The next time the user will be charged, may or may not be the same as nextPaymentDue</dd>
    </dl>
   
   Attributes:
@@ -1087,6 +1134,8 @@ class Accounting(object):
    - businessId
    - businessName
    - businessRole
+   - unitDiscount
+   - nextChargeDate
   """
 
   thrift_spec = (
@@ -1113,9 +1162,11 @@ class Accounting(object):
     (20, TType.I32, 'businessId', None, None, ), # 20
     (21, TType.STRING, 'businessName', None, None, ), # 21
     (22, TType.I32, 'businessRole', None, None, ), # 22
+    (23, TType.I32, 'unitDiscount', None, None, ), # 23
+    (24, TType.I64, 'nextChargeDate', None, None, ), # 24
   )
 
-  def __init__(self, uploadLimit=None, uploadLimitEnd=None, uploadLimitNextMonth=None, premiumServiceStatus=None, premiumOrderNumber=None, premiumCommerceService=None, premiumServiceStart=None, premiumServiceSKU=None, lastSuccessfulCharge=None, lastFailedCharge=None, lastFailedChargeReason=None, nextPaymentDue=None, premiumLockUntil=None, updated=None, premiumSubscriptionNumber=None, lastRequestedCharge=None, currency=None, unitPrice=None, businessId=None, businessName=None, businessRole=None,):
+  def __init__(self, uploadLimit=None, uploadLimitEnd=None, uploadLimitNextMonth=None, premiumServiceStatus=None, premiumOrderNumber=None, premiumCommerceService=None, premiumServiceStart=None, premiumServiceSKU=None, lastSuccessfulCharge=None, lastFailedCharge=None, lastFailedChargeReason=None, nextPaymentDue=None, premiumLockUntil=None, updated=None, premiumSubscriptionNumber=None, lastRequestedCharge=None, currency=None, unitPrice=None, businessId=None, businessName=None, businessRole=None, unitDiscount=None, nextChargeDate=None,):
     self.uploadLimit = uploadLimit
     self.uploadLimitEnd = uploadLimitEnd
     self.uploadLimitNextMonth = uploadLimitNextMonth
@@ -1137,6 +1188,8 @@ class Accounting(object):
     self.businessId = businessId
     self.businessName = businessName
     self.businessRole = businessRole
+    self.unitDiscount = unitDiscount
+    self.nextChargeDate = nextChargeDate
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1252,6 +1305,16 @@ class Accounting(object):
           self.businessRole = iprot.readI32();
         else:
           iprot.skip(ftype)
+      elif fid == 23:
+        if ftype == TType.I32:
+          self.unitDiscount = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 24:
+        if ftype == TType.I64:
+          self.nextChargeDate = iprot.readI64();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -1346,6 +1409,131 @@ class Accounting(object):
       oprot.writeFieldBegin('businessRole', TType.I32, 22)
       oprot.writeI32(self.businessRole)
       oprot.writeFieldEnd()
+    if self.unitDiscount is not None:
+      oprot.writeFieldBegin('unitDiscount', TType.I32, 23)
+      oprot.writeI32(self.unitDiscount)
+      oprot.writeFieldEnd()
+    if self.nextChargeDate is not None:
+      oprot.writeFieldBegin('nextChargeDate', TType.I64, 24)
+      oprot.writeI64(self.nextChargeDate)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class BusinessUserInfo(object):
+  """
+  This structure is used to provide information about an Evernote Business
+  membership, for members who are part of a business.
+  
+  <dl>
+  <dt>businessId</dt>
+    <dd>The ID of the Evernote Business account that the user is a member of.
+  <dt>businessName</dt>
+    <dd>The human-readable name of the Evernote Business account that the user
+        is a member of.</dd>
+  <dt>role</dt>
+    <dd>The role of the user within the Evernote Business account that
+        they are a member of.</dd>
+  <dt>email</dt>
+    <dd>An e-mail address that will be used by the service in the context of your
+        Evernote Business activities.  For example, this e-mail address will be used
+        when you e-mail a business note, when you update notes in the account of
+        your business, etc.  The business e-mail cannot be used for identification
+        purposes such as for logging into the service.
+    </dd>
+  </dl>
+  
+  Attributes:
+   - businessId
+   - businessName
+   - role
+   - email
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'businessId', None, None, ), # 1
+    (2, TType.STRING, 'businessName', None, None, ), # 2
+    (3, TType.I32, 'role', None, None, ), # 3
+    (4, TType.STRING, 'email', None, None, ), # 4
+  )
+
+  def __init__(self, businessId=None, businessName=None, role=None, email=None,):
+    self.businessId = businessId
+    self.businessName = businessName
+    self.role = role
+    self.email = email
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.businessId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.businessName = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.role = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.email = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('BusinessUserInfo')
+    if self.businessId is not None:
+      oprot.writeFieldBegin('businessId', TType.I32, 1)
+      oprot.writeI32(self.businessId)
+      oprot.writeFieldEnd()
+    if self.businessName is not None:
+      oprot.writeFieldBegin('businessName', TType.STRING, 2)
+      oprot.writeString(self.businessName)
+      oprot.writeFieldEnd()
+    if self.role is not None:
+      oprot.writeFieldBegin('role', TType.I32, 3)
+      oprot.writeI32(self.role)
+      oprot.writeFieldEnd()
+    if self.email is not None:
+      oprot.writeFieldBegin('email', TType.STRING, 4)
+      oprot.writeString(self.email)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -1383,7 +1571,7 @@ class PremiumInfo(object):
    <dt>premiumExpirationDate</dt>
      <dd>
      The date when the user's Premium account expires, or the date when the
-     user's account will be charged if it has a recurring payment method.
+     user's account is due for payment if it has a recurring payment method.
      </dd>
    <dt>premiumExtendable</dt>
      <dd>
@@ -1410,6 +1598,10 @@ class PremiumInfo(object):
      <dd>
      DEPRECATED - will be removed in a future update.
      </dd>
+   <dt>premiumUpgradable</dt>
+     <dd>
+     True if the user is eligible for purchasing Premium account upgrade.
+     </dd>
    </dl>
   
   Attributes:
@@ -1423,6 +1615,7 @@ class PremiumInfo(object):
    - canPurchaseUploadAllowance
    - sponsoredGroupName
    - sponsoredGroupRole
+   - premiumUpgradable
   """
 
   thrift_spec = (
@@ -1437,9 +1630,10 @@ class PremiumInfo(object):
     (8, TType.BOOL, 'canPurchaseUploadAllowance', None, None, ), # 8
     (9, TType.STRING, 'sponsoredGroupName', None, None, ), # 9
     (10, TType.I32, 'sponsoredGroupRole', None, None, ), # 10
+    (11, TType.BOOL, 'premiumUpgradable', None, None, ), # 11
   )
 
-  def __init__(self, currentTime=None, premium=None, premiumRecurring=None, premiumExpirationDate=None, premiumExtendable=None, premiumPending=None, premiumCancellationPending=None, canPurchaseUploadAllowance=None, sponsoredGroupName=None, sponsoredGroupRole=None,):
+  def __init__(self, currentTime=None, premium=None, premiumRecurring=None, premiumExpirationDate=None, premiumExtendable=None, premiumPending=None, premiumCancellationPending=None, canPurchaseUploadAllowance=None, sponsoredGroupName=None, sponsoredGroupRole=None, premiumUpgradable=None,):
     self.currentTime = currentTime
     self.premium = premium
     self.premiumRecurring = premiumRecurring
@@ -1450,6 +1644,7 @@ class PremiumInfo(object):
     self.canPurchaseUploadAllowance = canPurchaseUploadAllowance
     self.sponsoredGroupName = sponsoredGroupName
     self.sponsoredGroupRole = sponsoredGroupRole
+    self.premiumUpgradable = premiumUpgradable
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1510,6 +1705,11 @@ class PremiumInfo(object):
           self.sponsoredGroupRole = iprot.readI32();
         else:
           iprot.skip(ftype)
+      elif fid == 11:
+        if ftype == TType.BOOL:
+          self.premiumUpgradable = iprot.readBool();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -1559,6 +1759,10 @@ class PremiumInfo(object):
     if self.sponsoredGroupRole is not None:
       oprot.writeFieldBegin('sponsoredGroupRole', TType.I32, 10)
       oprot.writeI32(self.sponsoredGroupRole)
+      oprot.writeFieldEnd()
+    if self.premiumUpgradable is not None:
+      oprot.writeFieldBegin('premiumUpgradable', TType.BOOL, 11)
+      oprot.writeBool(self.premiumUpgradable)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1615,8 +1819,8 @@ class User(object):
    <dt>email</dt>
      <dd>The email address registered for the user.  Must comply with
      RFC 2821 and RFC 2822.<br/>
-     For privacy reasons, this field may not be populated when a User
-     is retrieved via a call to UserStore.getUser().
+     Third party applications that authenticate using OAuth do not have
+     access to this field.
      Length:  EDAM_EMAIL_LEN_MIN - EDAM_EMAIL_LEN_MAX
      <br/>
      Regex:  EDAM_EMAIL_REGEX
@@ -1688,6 +1892,12 @@ class User(object):
      <dd>If present, this will contain a set of commerce information
      relating to the user's premium service level.
      </dd>
+  
+   <dt>businessUserInfo</dt>
+     <dd>If present, this will contain a set of business information
+     relating to the user's business membership.  If not present, the
+     user is not currently part of a business.
+     </dd>
    </dl>
   
   Attributes:
@@ -1705,6 +1915,7 @@ class User(object):
    - attributes
    - accounting
    - premiumInfo
+   - businessUserInfo
   """
 
   thrift_spec = (
@@ -1726,9 +1937,10 @@ class User(object):
     (15, TType.STRUCT, 'attributes', (UserAttributes, UserAttributes.thrift_spec), None, ), # 15
     (16, TType.STRUCT, 'accounting', (Accounting, Accounting.thrift_spec), None, ), # 16
     (17, TType.STRUCT, 'premiumInfo', (PremiumInfo, PremiumInfo.thrift_spec), None, ), # 17
+    (18, TType.STRUCT, 'businessUserInfo', (BusinessUserInfo, BusinessUserInfo.thrift_spec), None, ), # 18
   )
 
-  def __init__(self, id=None, username=None, email=None, name=None, timezone=None, privilege=None, created=None, updated=None, deleted=None, active=None, shardId=None, attributes=None, accounting=None, premiumInfo=None,):
+  def __init__(self, id=None, username=None, email=None, name=None, timezone=None, privilege=None, created=None, updated=None, deleted=None, active=None, shardId=None, attributes=None, accounting=None, premiumInfo=None, businessUserInfo=None,):
     self.id = id
     self.username = username
     self.email = email
@@ -1743,6 +1955,7 @@ class User(object):
     self.attributes = attributes
     self.accounting = accounting
     self.premiumInfo = premiumInfo
+    self.businessUserInfo = businessUserInfo
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1826,6 +2039,12 @@ class User(object):
           self.premiumInfo.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 18:
+        if ftype == TType.STRUCT:
+          self.businessUserInfo = BusinessUserInfo()
+          self.businessUserInfo.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -1891,6 +2110,10 @@ class User(object):
     if self.premiumInfo is not None:
       oprot.writeFieldBegin('premiumInfo', TType.STRUCT, 17)
       self.premiumInfo.write(oprot)
+      oprot.writeFieldEnd()
+    if self.businessUserInfo is not None:
+      oprot.writeFieldBegin('businessUserInfo', TType.STRUCT, 18)
+      self.businessUserInfo.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2769,10 +2992,52 @@ class NoteAttributes(object):
   <dt>shareDate</dt>
    <dd>The date and time when this note was directly shared via its own URL.
    This is only set on notes that were individually shared - it is independent
-   of any notebook-level sharing of the containing notepbook. This field
+   of any notebook-level sharing of the containing notebook. This field
    is treated as "read-only" for clients; the server will ignore changes
    to this field from an external client.
    </dd>
+  
+  <dt>reminderOrder</dt>
+  <dd>The set of notes with this parameter set are considered
+  "reminders" and are to be treated specially by clients to give them
+  higher UI prominence within a notebook.  The value is used to sort
+  the reminder notes within the notebook with higher values
+  representing greater prominence.  Outside of the context of a
+  notebook, the value of this parameter is undefined.  The value is
+  not intended to be compared to the values of reminder notes in
+  other notebooks.  In order to allow clients to place a note at a
+  higher precedence than other notes, you should never set a value
+  greater than the current time (as defined for a Timetstamp). To
+  place a note at higher precedence than existing notes, set the
+  value to the current time as defined for a timestamp (milliseconds
+  since the epoch).  Synchronizing clients must remember the time when
+  the update was performed, using the local clock on the client,
+  and use that value when they later upload the note to the service.
+  Clients must not set the reminderOrder to the reminderTime as the
+  reminderTime could be in the future.  Those two fields are never
+  intended to be related.  The correct value for reminderOrder field
+  for new notes is the "current" time when the user indicated that
+  the note is a reminder.  Clients may implement a separate
+  "sort by date" feature to show notes ordered by reminderTime.
+  Whenever a reminderDoneTime or reminderTime is set but a
+  reminderOrder is not set, the server will fill in the current
+  server time for the reminderOrder field.</dd>
+  
+  <dt>reminderDoneTime</dt>
+  <dd>The date and time when a user dismissed/"marked done" the reminder
+  on the note.  Users typically do not manually set this value directly
+  as it is set to the time when the user dismissed/"marked done" the
+  reminder.</dd>
+  
+  <dt>reminderTime</dt>
+  <dd>The date and time a user has selected to be reminded of the note.
+  A note with this value set is known as a "reminder" and the user can
+  be reminded, via e-mail or client-specific notifications, of the note
+  when the time is reached or about to be reached.  When a user sets
+  a reminder time on a note that has a reminder done time, and that
+  reminder time is in the future, then the reminder done time should be
+  cleared.  This should happen regardless of any existing reminder time
+  that may have previously existed on the note.</dd>
   
   <dt>placeName</dt>
   <dd>Allows the user to assign a human-readable location name associated
@@ -2793,7 +3058,9 @@ class NoteAttributes(object):
   application does not specifically support the specified class,
   the client MUST treat the note as read-only. In this case, the
   client MAY modify the note's notebook and tags via the
-  Note.notebookGuid and Note.tagGuids fields.
+  Note.notebookGuid and Note.tagGuids fields.  The client MAY also
+  modify the pinProminence field as well as the reminderTime and
+  reminderDismissTime fields.
   <p>Applications should set contentClass only when they are creating notes
   that contain structured information that needs to be maintained in order
   for the user to be able to use the note within that application.
@@ -2851,6 +3118,9 @@ class NoteAttributes(object):
    - sourceURL
    - sourceApplication
    - shareDate
+   - reminderOrder
+   - reminderDoneTime
+   - reminderTime
    - placeName
    - contentClass
    - applicationData
@@ -2877,9 +3147,9 @@ class NoteAttributes(object):
     (15, TType.STRING, 'sourceURL', None, None, ), # 15
     (16, TType.STRING, 'sourceApplication', None, None, ), # 16
     (17, TType.I64, 'shareDate', None, None, ), # 17
-    None, # 18
-    None, # 19
-    None, # 20
+    (18, TType.I64, 'reminderOrder', None, None, ), # 18
+    (19, TType.I64, 'reminderDoneTime', None, None, ), # 19
+    (20, TType.I64, 'reminderTime', None, None, ), # 20
     (21, TType.STRING, 'placeName', None, None, ), # 21
     (22, TType.STRING, 'contentClass', None, None, ), # 22
     (23, TType.STRUCT, 'applicationData', (LazyMap, LazyMap.thrift_spec), None, ), # 23
@@ -2888,7 +3158,7 @@ class NoteAttributes(object):
     (26, TType.MAP, 'classifications', (TType.STRING,None,TType.STRING,None), None, ), # 26
   )
 
-  def __init__(self, subjectDate=None, latitude=None, longitude=None, altitude=None, author=None, source=None, sourceURL=None, sourceApplication=None, shareDate=None, placeName=None, contentClass=None, applicationData=None, lastEditedBy=None, classifications=None,):
+  def __init__(self, subjectDate=None, latitude=None, longitude=None, altitude=None, author=None, source=None, sourceURL=None, sourceApplication=None, shareDate=None, reminderOrder=None, reminderDoneTime=None, reminderTime=None, placeName=None, contentClass=None, applicationData=None, lastEditedBy=None, classifications=None,):
     self.subjectDate = subjectDate
     self.latitude = latitude
     self.longitude = longitude
@@ -2898,6 +3168,9 @@ class NoteAttributes(object):
     self.sourceURL = sourceURL
     self.sourceApplication = sourceApplication
     self.shareDate = shareDate
+    self.reminderOrder = reminderOrder
+    self.reminderDoneTime = reminderDoneTime
+    self.reminderTime = reminderTime
     self.placeName = placeName
     self.contentClass = contentClass
     self.applicationData = applicationData
@@ -2956,6 +3229,21 @@ class NoteAttributes(object):
       elif fid == 17:
         if ftype == TType.I64:
           self.shareDate = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 18:
+        if ftype == TType.I64:
+          self.reminderOrder = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 19:
+        if ftype == TType.I64:
+          self.reminderDoneTime = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.I64:
+          self.reminderTime = iprot.readI64();
         else:
           iprot.skip(ftype)
       elif fid == 21:
@@ -3035,6 +3323,18 @@ class NoteAttributes(object):
     if self.shareDate is not None:
       oprot.writeFieldBegin('shareDate', TType.I64, 17)
       oprot.writeI64(self.shareDate)
+      oprot.writeFieldEnd()
+    if self.reminderOrder is not None:
+      oprot.writeFieldBegin('reminderOrder', TType.I64, 18)
+      oprot.writeI64(self.reminderOrder)
+      oprot.writeFieldEnd()
+    if self.reminderDoneTime is not None:
+      oprot.writeFieldBegin('reminderDoneTime', TType.I64, 19)
+      oprot.writeI64(self.reminderDoneTime)
+      oprot.writeFieldEnd()
+    if self.reminderTime is not None:
+      oprot.writeFieldBegin('reminderTime', TType.I64, 20)
+      oprot.writeI64(self.reminderTime)
       oprot.writeFieldEnd()
     if self.placeName is not None:
       oprot.writeFieldBegin('placeName', TType.STRING, 21)
@@ -3708,6 +4008,106 @@ class BusinessNotebook(object):
   def __ne__(self, other):
     return not (self == other)
 
+class SavedSearchScope(object):
+  """
+  A structure defining the scope of a SavedSearch.
+  
+  <dl>
+    <dt>includeAccount</dt>
+    <dd>The search should include notes from the account that contains the SavedSearch.</dd>
+  
+    <dt>includePersonalLinkedNotebooks</dt>
+    <dd>The search should include notes within those shared notebooks
+    that the user has joined that are NOT business notebooks.</dd>
+  
+    <dt>includeBusinessLinkedNotebooks</dt>
+    <dd>The search should include notes within those shared notebooks
+    that the user has joined that are business notebooks in the business that
+    the user is currently a member of.</dd>
+  </dl>
+  
+  Attributes:
+   - includeAccount
+   - includePersonalLinkedNotebooks
+   - includeBusinessLinkedNotebooks
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.BOOL, 'includeAccount', None, None, ), # 1
+    (2, TType.BOOL, 'includePersonalLinkedNotebooks', None, None, ), # 2
+    (3, TType.BOOL, 'includeBusinessLinkedNotebooks', None, None, ), # 3
+  )
+
+  def __init__(self, includeAccount=None, includePersonalLinkedNotebooks=None, includeBusinessLinkedNotebooks=None,):
+    self.includeAccount = includeAccount
+    self.includePersonalLinkedNotebooks = includePersonalLinkedNotebooks
+    self.includeBusinessLinkedNotebooks = includeBusinessLinkedNotebooks
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.BOOL:
+          self.includeAccount = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.BOOL:
+          self.includePersonalLinkedNotebooks = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.BOOL:
+          self.includeBusinessLinkedNotebooks = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('SavedSearchScope')
+    if self.includeAccount is not None:
+      oprot.writeFieldBegin('includeAccount', TType.BOOL, 1)
+      oprot.writeBool(self.includeAccount)
+      oprot.writeFieldEnd()
+    if self.includePersonalLinkedNotebooks is not None:
+      oprot.writeFieldBegin('includePersonalLinkedNotebooks', TType.BOOL, 2)
+      oprot.writeBool(self.includePersonalLinkedNotebooks)
+      oprot.writeFieldEnd()
+    if self.includeBusinessLinkedNotebooks is not None:
+      oprot.writeFieldBegin('includeBusinessLinkedNotebooks', TType.BOOL, 3)
+      oprot.writeBool(self.includeBusinessLinkedNotebooks)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class SavedSearch(object):
   """
   A named search associated with the account that can be quickly re-used.
@@ -3748,6 +4148,20 @@ class SavedSearch(object):
     account, and can be used to compare the order of modifications within the
     service.
     </dd>
+  
+  <dt>scope</dt>
+    <dd><p>Specifies the set of notes that should be included in the search, if
+     possible.</p>
+     <p>Clients are expected to search as much of the desired scope as possible,
+     with the understanding that a given client may not be able to cover the full
+     specified scope. For example, when executing a search that includes notes in both
+     the owner's account and business notebooks, a mobile client may choose to only
+     search within the user's account because it is not capable of searching both
+     scopes simultaneously. When a search across multiple scopes is not possible,
+     a client may choose which scope to search based on the current application
+     context. If a client cannot search any of the desired scopes, it should refuse
+     to execute the search.</p>
+     </dd>
   </dl>
   
   Attributes:
@@ -3756,6 +4170,7 @@ class SavedSearch(object):
    - query
    - format
    - updateSequenceNum
+   - scope
   """
 
   thrift_spec = (
@@ -3765,14 +4180,16 @@ class SavedSearch(object):
     (3, TType.STRING, 'query', None, None, ), # 3
     (4, TType.I32, 'format', None, None, ), # 4
     (5, TType.I32, 'updateSequenceNum', None, None, ), # 5
+    (6, TType.STRUCT, 'scope', (SavedSearchScope, SavedSearchScope.thrift_spec), None, ), # 6
   )
 
-  def __init__(self, guid=None, name=None, query=None, format=None, updateSequenceNum=None,):
+  def __init__(self, guid=None, name=None, query=None, format=None, updateSequenceNum=None, scope=None,):
     self.guid = guid
     self.name = name
     self.query = query
     self.format = format
     self.updateSequenceNum = updateSequenceNum
+    self.scope = scope
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -3808,6 +4225,12 @@ class SavedSearch(object):
           self.updateSequenceNum = iprot.readI32();
         else:
           iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.STRUCT:
+          self.scope = SavedSearchScope()
+          self.scope.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3837,6 +4260,10 @@ class SavedSearch(object):
     if self.updateSequenceNum is not None:
       oprot.writeFieldBegin('updateSequenceNum', TType.I32, 5)
       oprot.writeI32(self.updateSequenceNum)
+      oprot.writeFieldEnd()
+    if self.scope is not None:
+      oprot.writeFieldBegin('scope', TType.STRUCT, 6)
+      self.scope.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

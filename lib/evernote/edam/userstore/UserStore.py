@@ -48,10 +48,9 @@ class Iface(object):
     @param clientName
       This string provides some information about the client for
       tracking/logging on the service.  It should provide information about
-      the client's software and platform.  The structure should be:
+      the client's software and platform. The structure should be:
       application/version; platform/version; [ device/version ]
-      E.g.   "Evernote Windows/3.0.1; Windows/XP SP3" or
-      "Evernote Clipper/1.0.1; JME/2.0; Motorola RAZR/2.0;
+      E.g. "Evernote Windows/3.0.1; Windows/XP SP3".
     
     @param edamVersionMajor
       This should be the major protocol version that was compiled by the
@@ -117,9 +116,9 @@ class Iface(object):
       by Evernote.
     
     @return
-      The result of the authentication.  If the authentication was successful,
+      <p>The result of the authentication.  If the authentication was successful,
       the AuthenticationResult.user field will be set with the full information
-      about the User.
+      about the User.</p>
     
     @throws EDAMUserException <ul>
       <li> DATA_REQUIRED "username" - username is empty
@@ -195,9 +194,9 @@ class Iface(object):
       expression EDAM_DEVICE_DESCRIPTION_REGEX.
     
     @return
-      The result of the authentication. The level of detail provided in the returned
+      <p>The result of the authentication. The level of detail provided in the returned
       AuthenticationResult.User structure depends on the access level granted by
-      calling application's API key.
+      calling application's API key.</p>
     
     @throws EDAMUserException <ul>
       <li> DATA_REQUIRED "username" - username is empty
@@ -223,6 +222,30 @@ class Iface(object):
      - consumerSecret
      - deviceIdentifier
      - deviceDescription
+    """
+    pass
+
+  def revokeLongSession(self, authenticationToken):
+    """
+    Revoke an existing long lived authentication token. This can be used to
+    revoke OAuth tokens or tokens created by calling authenticateLongSession,
+    and allows a user to effectively log out of Evernote from the perspective
+    of the application that holds the token. The authentication token that is
+    passed is immediately revoked and may not be used to call any authenticated
+    EDAM function.
+    
+    @param authenticationToken the authentication token to revoke.
+    
+    @throws EDAMUserException <ul>
+      <li> DATA_REQUIRED "authenticationToken" - no authentication token provided
+      <li> BAD_DATA_FORMAT "authenticationToken" - the authentication token is not well formed
+      <li> INVALID_AUTH "authenticationToken" - the authentication token is invalid
+      <li> AUTH_EXPIRED "authenticationToken" - the authentication token is expired or
+        is already revoked.
+    </ul>
+    
+    Parameters:
+     - authenticationToken
     """
     pass
 
@@ -375,10 +398,9 @@ class Client(Iface):
     @param clientName
       This string provides some information about the client for
       tracking/logging on the service.  It should provide information about
-      the client's software and platform.  The structure should be:
+      the client's software and platform. The structure should be:
       application/version; platform/version; [ device/version ]
-      E.g.   "Evernote Windows/3.0.1; Windows/XP SP3" or
-      "Evernote Clipper/1.0.1; JME/2.0; Motorola RAZR/2.0;
+      E.g. "Evernote Windows/3.0.1; Windows/XP SP3".
     
     @param edamVersionMajor
       This should be the major protocol version that was compiled by the
@@ -492,9 +514,9 @@ class Client(Iface):
       by Evernote.
     
     @return
-      The result of the authentication.  If the authentication was successful,
+      <p>The result of the authentication.  If the authentication was successful,
       the AuthenticationResult.user field will be set with the full information
-      about the User.
+      about the User.</p>
     
     @throws EDAMUserException <ul>
       <li> DATA_REQUIRED "username" - username is empty
@@ -600,9 +622,9 @@ class Client(Iface):
       expression EDAM_DEVICE_DESCRIPTION_REGEX.
     
     @return
-      The result of the authentication. The level of detail provided in the returned
+      <p>The result of the authentication. The level of detail provided in the returned
       AuthenticationResult.User structure depends on the access level granted by
-      calling application's API key.
+      calling application's API key.</p>
     
     @throws EDAMUserException <ul>
       <li> DATA_REQUIRED "username" - username is empty
@@ -662,6 +684,55 @@ class Client(Iface):
     if result.systemException is not None:
       raise result.systemException
     raise TApplicationException(TApplicationException.MISSING_RESULT, "authenticateLongSession failed: unknown result");
+
+  def revokeLongSession(self, authenticationToken):
+    """
+    Revoke an existing long lived authentication token. This can be used to
+    revoke OAuth tokens or tokens created by calling authenticateLongSession,
+    and allows a user to effectively log out of Evernote from the perspective
+    of the application that holds the token. The authentication token that is
+    passed is immediately revoked and may not be used to call any authenticated
+    EDAM function.
+    
+    @param authenticationToken the authentication token to revoke.
+    
+    @throws EDAMUserException <ul>
+      <li> DATA_REQUIRED "authenticationToken" - no authentication token provided
+      <li> BAD_DATA_FORMAT "authenticationToken" - the authentication token is not well formed
+      <li> INVALID_AUTH "authenticationToken" - the authentication token is invalid
+      <li> AUTH_EXPIRED "authenticationToken" - the authentication token is expired or
+        is already revoked.
+    </ul>
+    
+    Parameters:
+     - authenticationToken
+    """
+    self.send_revokeLongSession(authenticationToken)
+    self.recv_revokeLongSession()
+
+  def send_revokeLongSession(self, authenticationToken):
+    self._oprot.writeMessageBegin('revokeLongSession', TMessageType.CALL, self._seqid)
+    args = revokeLongSession_args()
+    args.authenticationToken = authenticationToken
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_revokeLongSession(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = revokeLongSession_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.userException is not None:
+      raise result.userException
+    if result.systemException is not None:
+      raise result.systemException
+    return
 
   def authenticateToBusiness(self, authenticationToken):
     """
@@ -947,6 +1018,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getBootstrapInfo"] = Processor.process_getBootstrapInfo
     self._processMap["authenticate"] = Processor.process_authenticate
     self._processMap["authenticateLongSession"] = Processor.process_authenticateLongSession
+    self._processMap["revokeLongSession"] = Processor.process_revokeLongSession
     self._processMap["authenticateToBusiness"] = Processor.process_authenticateToBusiness
     self._processMap["refreshAuthentication"] = Processor.process_refreshAuthentication
     self._processMap["getUser"] = Processor.process_getUser
@@ -1019,6 +1091,22 @@ class Processor(Iface, TProcessor):
     except evernote.edam.error.ttypes.EDAMSystemException, systemException:
       result.systemException = systemException
     oprot.writeMessageBegin("authenticateLongSession", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_revokeLongSession(self, seqid, iprot, oprot):
+    args = revokeLongSession_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = revokeLongSession_result()
+    try:
+      self._handler.revokeLongSession(args.authenticationToken)
+    except evernote.edam.error.ttypes.EDAMUserException, userException:
+      result.userException = userException
+    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+      result.systemException = systemException
+    oprot.writeMessageBegin("revokeLongSession", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -1136,7 +1224,7 @@ class checkVersion_args(object):
     None, # 0
     (1, TType.STRING, 'clientName', None, None, ), # 1
     (2, TType.I16, 'edamVersionMajor', None, 1, ), # 2
-    (3, TType.I16, 'edamVersionMinor', None, 23, ), # 3
+    (3, TType.I16, 'edamVersionMinor', None, 24, ), # 3
   )
 
   def __init__(self, clientName=None, edamVersionMajor=thrift_spec[2][4], edamVersionMinor=thrift_spec[3][4],):
@@ -1749,6 +1837,140 @@ class authenticateLongSession_result(object):
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
       oprot.writeFieldEnd()
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
+      self.userException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.systemException is not None:
+      oprot.writeFieldBegin('systemException', TType.STRUCT, 2)
+      self.systemException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class revokeLongSession_args(object):
+  """
+  Attributes:
+   - authenticationToken
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'authenticationToken', None, None, ), # 1
+  )
+
+  def __init__(self, authenticationToken=None,):
+    self.authenticationToken = authenticationToken
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.authenticationToken = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('revokeLongSession_args')
+    if self.authenticationToken is not None:
+      oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
+      oprot.writeString(self.authenticationToken)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class revokeLongSession_result(object):
+  """
+  Attributes:
+   - userException
+   - systemException
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 2
+  )
+
+  def __init__(self, userException=None, systemException=None,):
+    self.userException = userException
+    self.systemException = systemException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+          self.systemException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('revokeLongSession_result')
     if self.userException is not None:
       oprot.writeFieldBegin('userException', TType.STRUCT, 1)
       self.userException.write(oprot)

@@ -59,6 +59,12 @@ class EDAMErrorCode(object):
           too many of something.</dd>
     <dt>UNSUPPORTED_OPERATION</dt>
       <dd>Operation denied because it is currently unsupported.</dd>
+    <dt>TAKEN_DOWN</dt>
+      <dd>Operation denied because access to the corresponding object is
+          prohibited in response to a take-down notice.</dd>
+    <dt>RATE_LIMIT_REACHED</dt>
+      <dd>Operation denied because the calling application has reached
+          its hourly API call limit for this user.</dd>
   </dl>
   """
   UNKNOWN = 1
@@ -78,6 +84,8 @@ class EDAMErrorCode(object):
   TOO_FEW = 15
   TOO_MANY = 16
   UNSUPPORTED_OPERATION = 17
+  TAKEN_DOWN = 18
+  RATE_LIMIT_REACHED = 19
 
   _VALUES_TO_NAMES = {
     1: "UNKNOWN",
@@ -97,6 +105,8 @@ class EDAMErrorCode(object):
     15: "TOO_FEW",
     16: "TOO_MANY",
     17: "UNSUPPORTED_OPERATION",
+    18: "TAKEN_DOWN",
+    19: "RATE_LIMIT_REACHED",
   }
 
   _NAMES_TO_VALUES = {
@@ -117,6 +127,8 @@ class EDAMErrorCode(object):
     "TOO_FEW": 15,
     "TOO_MANY": 16,
     "UNSUPPORTED_OPERATION": 17,
+    "TAKEN_DOWN": 18,
+    "RATE_LIMIT_REACHED": 19,
   }
 
 
@@ -223,20 +235,28 @@ class EDAMSystemException(TException):
   
   message:  This may contain additional information about the error
   
+  rateLimitDuration:  Indicates the minimum number of seconds that an application should
+    expect subsequent API calls for this user to fail. The application should not retry
+    API requests for the user until at least this many seconds have passed. Present only
+    when errorCode is RATE_LIMIT_REACHED,
+  
   Attributes:
    - errorCode
    - message
+   - rateLimitDuration
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'errorCode', None, None, ), # 1
     (2, TType.STRING, 'message', None, None, ), # 2
+    (3, TType.I32, 'rateLimitDuration', None, None, ), # 3
   )
 
-  def __init__(self, errorCode=None, message=None,):
+  def __init__(self, errorCode=None, message=None, rateLimitDuration=None,):
     self.errorCode = errorCode
     self.message = message
+    self.rateLimitDuration = rateLimitDuration
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -257,6 +277,11 @@ class EDAMSystemException(TException):
           self.message = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.rateLimitDuration = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -274,6 +299,10 @@ class EDAMSystemException(TException):
     if self.message is not None:
       oprot.writeFieldBegin('message', TType.STRING, 2)
       oprot.writeString(self.message)
+      oprot.writeFieldEnd()
+    if self.rateLimitDuration is not None:
+      oprot.writeFieldBegin('rateLimitDuration', TType.I32, 3)
+      oprot.writeI32(self.rateLimitDuration)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
