@@ -3059,8 +3059,8 @@ class NoteAttributes(object):
   the client MUST treat the note as read-only. In this case, the
   client MAY modify the note's notebook and tags via the
   Note.notebookGuid and Note.tagGuids fields.  The client MAY also
-  modify the pinProminence field as well as the reminderTime and
-  reminderDismissTime fields.
+  modify the reminderOrder field as well as the reminderTime and
+  reminderDoneTime fields.
   <p>Applications should set contentClass only when they are creating notes
   that contain structured information that needs to be maintained in order
   for the user to be able to use the note within that application.
@@ -3090,6 +3090,9 @@ class NoteAttributes(object):
   Syntax regex for name (key): EDAM_APPLICATIONDATA_NAME_REGEX
   </dd>
   
+  <dt>creatorId</dt>
+  <dd>The numeric user ID of the user who originally created the note.</dd>
+  
   <dt>lastEditedBy</dt>
   <dd>An indication of who made the last change to the note.  If you are
   accessing the note via a shared notebook to which you have modification
@@ -3100,6 +3103,9 @@ class NoteAttributes(object):
   guest who made the last edit.  If you do not have access to this value,
   it will be left unset.  This field is read-only by clients.  The server
   will ignore all values set by clients into this field.</dd>
+  
+  <dt>lastEditorId</dt>
+  <dd>The numeric user ID of the user described in lastEditedBy.</dd>
   
   <dt>classifications</dt>
   <dd>A map of classifications applied to the note by clients or by the
@@ -3126,6 +3132,8 @@ class NoteAttributes(object):
    - applicationData
    - lastEditedBy
    - classifications
+   - creatorId
+   - lastEditorId
   """
 
   thrift_spec = (
@@ -3156,9 +3164,11 @@ class NoteAttributes(object):
     (24, TType.STRING, 'lastEditedBy', None, None, ), # 24
     None, # 25
     (26, TType.MAP, 'classifications', (TType.STRING,None,TType.STRING,None), None, ), # 26
+    (27, TType.I32, 'creatorId', None, None, ), # 27
+    (28, TType.I32, 'lastEditorId', None, None, ), # 28
   )
 
-  def __init__(self, subjectDate=None, latitude=None, longitude=None, altitude=None, author=None, source=None, sourceURL=None, sourceApplication=None, shareDate=None, reminderOrder=None, reminderDoneTime=None, reminderTime=None, placeName=None, contentClass=None, applicationData=None, lastEditedBy=None, classifications=None,):
+  def __init__(self, subjectDate=None, latitude=None, longitude=None, altitude=None, author=None, source=None, sourceURL=None, sourceApplication=None, shareDate=None, reminderOrder=None, reminderDoneTime=None, reminderTime=None, placeName=None, contentClass=None, applicationData=None, lastEditedBy=None, classifications=None, creatorId=None, lastEditorId=None,):
     self.subjectDate = subjectDate
     self.latitude = latitude
     self.longitude = longitude
@@ -3176,6 +3186,8 @@ class NoteAttributes(object):
     self.applicationData = applicationData
     self.lastEditedBy = lastEditedBy
     self.classifications = classifications
+    self.creatorId = creatorId
+    self.lastEditorId = lastEditorId
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -3278,6 +3290,16 @@ class NoteAttributes(object):
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
+      elif fid == 27:
+        if ftype == TType.I32:
+          self.creatorId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 28:
+        if ftype == TType.I32:
+          self.lastEditorId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3359,6 +3381,14 @@ class NoteAttributes(object):
         oprot.writeString(kiter37)
         oprot.writeString(viter38)
       oprot.writeMapEnd()
+      oprot.writeFieldEnd()
+    if self.creatorId is not None:
+      oprot.writeFieldBegin('creatorId', TType.I32, 27)
+      oprot.writeI32(self.creatorId)
+      oprot.writeFieldEnd()
+    if self.lastEditorId is not None:
+      oprot.writeFieldBegin('lastEditorId', TType.I32, 28)
+      oprot.writeI32(self.lastEditorId)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -4283,6 +4313,105 @@ class SavedSearch(object):
   def __ne__(self, other):
     return not (self == other)
 
+class SharedNotebookRecipientSettings(object):
+  """
+  Settings meant for the recipient of a shared notebook, such as
+  for indicating which types of notifications the recipient wishes
+  for reminders, etc.
+  
+  The reminderNotifyEmail and reminderNotifyInApp fields have a
+  3-state read value but a 2-state write value.  On read, it is
+  possible to observe "unset", true, or false.  The initial state is
+  "unset".  When you choose to set a value, you may set it to either
+  true or false, but you cannot unset the value.  Once one of these
+  members has a true/false value, it will always have a true/false
+  value.
+  
+  <dl>
+  <dt>reminderNotifyEmail</dt>
+  <dd>Indicates that the user wishes to receive daily e-mail notifications
+      for reminders associated with the shared notebook.  This may be
+      true only for business notebooks that belong to the business of
+      which the user is a member.  You may only set this value on a
+      notebook in your business.</dd>
+  <dt>reminderNotifyInApp</dt>
+  <dd>Indicates that the user wishes to receive notifications for
+      reminders by applications that support providing such
+      notifications.  The exact nature of the notification is defined
+      by the individual applications.</dd>
+  </dl>
+  
+  
+  Attributes:
+   - reminderNotifyEmail
+   - reminderNotifyInApp
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.BOOL, 'reminderNotifyEmail', None, None, ), # 1
+    (2, TType.BOOL, 'reminderNotifyInApp', None, None, ), # 2
+  )
+
+  def __init__(self, reminderNotifyEmail=None, reminderNotifyInApp=None,):
+    self.reminderNotifyEmail = reminderNotifyEmail
+    self.reminderNotifyInApp = reminderNotifyInApp
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.BOOL:
+          self.reminderNotifyEmail = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.BOOL:
+          self.reminderNotifyInApp = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('SharedNotebookRecipientSettings')
+    if self.reminderNotifyEmail is not None:
+      oprot.writeFieldBegin('reminderNotifyEmail', TType.BOOL, 1)
+      oprot.writeBool(self.reminderNotifyEmail)
+      oprot.writeFieldEnd()
+    if self.reminderNotifyInApp is not None:
+      oprot.writeFieldBegin('reminderNotifyInApp', TType.BOOL, 2)
+      oprot.writeBool(self.reminderNotifyInApp)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class SharedNotebook(object):
   """
   Shared notebooks represent a relationship between a notebook and a single
@@ -4338,6 +4467,12 @@ class SharedNotebook(object):
       an authorization token.  This setting expires after the first use
       of authenticateToSharedNotebook(...) with a valid authentication
       token.</dd>
+  
+  <dt>recipientSettings</dt>
+  <dd>Settings intended for use only by the recipient of this shared
+      notebook.  You should skip setting this value unless you want
+      to change the value contained inside the structure, and only if
+      you are the recipient.</dd>
   </dl>
   
   Attributes:
@@ -4353,6 +4488,7 @@ class SharedNotebook(object):
    - username
    - privilege
    - allowPreview
+   - recipientSettings
   """
 
   thrift_spec = (
@@ -4369,9 +4505,10 @@ class SharedNotebook(object):
     (10, TType.I64, 'serviceUpdated', None, None, ), # 10
     (11, TType.I32, 'privilege', None, None, ), # 11
     (12, TType.BOOL, 'allowPreview', None, None, ), # 12
+    (13, TType.STRUCT, 'recipientSettings', (SharedNotebookRecipientSettings, SharedNotebookRecipientSettings.thrift_spec), None, ), # 13
   )
 
-  def __init__(self, id=None, userId=None, notebookGuid=None, email=None, notebookModifiable=None, requireLogin=None, serviceCreated=None, serviceUpdated=None, shareKey=None, username=None, privilege=None, allowPreview=None,):
+  def __init__(self, id=None, userId=None, notebookGuid=None, email=None, notebookModifiable=None, requireLogin=None, serviceCreated=None, serviceUpdated=None, shareKey=None, username=None, privilege=None, allowPreview=None, recipientSettings=None,):
     self.id = id
     self.userId = userId
     self.notebookGuid = notebookGuid
@@ -4384,6 +4521,7 @@ class SharedNotebook(object):
     self.username = username
     self.privilege = privilege
     self.allowPreview = allowPreview
+    self.recipientSettings = recipientSettings
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -4454,6 +4592,12 @@ class SharedNotebook(object):
           self.allowPreview = iprot.readBool();
         else:
           iprot.skip(ftype)
+      elif fid == 13:
+        if ftype == TType.STRUCT:
+          self.recipientSettings = SharedNotebookRecipientSettings()
+          self.recipientSettings.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -4511,6 +4655,10 @@ class SharedNotebook(object):
     if self.allowPreview is not None:
       oprot.writeFieldBegin('allowPreview', TType.BOOL, 12)
       oprot.writeBool(self.allowPreview)
+      oprot.writeFieldEnd()
+    if self.recipientSettings is not None:
+      oprot.writeFieldBegin('recipientSettings', TType.STRUCT, 13)
+      self.recipientSettings.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

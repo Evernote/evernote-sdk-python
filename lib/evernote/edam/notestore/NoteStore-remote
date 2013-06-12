@@ -83,6 +83,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  Notebook getPublicNotebook(UserID userId, string publicUri)'
   print '  SharedNotebook createSharedNotebook(string authenticationToken, SharedNotebook sharedNotebook)'
   print '  i32 updateSharedNotebook(string authenticationToken, SharedNotebook sharedNotebook)'
+  print '  i32 setSharedNotebookRecipientSettings(string authenticationToken, i64 sharedNotebookId, SharedNotebookRecipientSettings recipientSettings)'
   print '  i32 sendMessageToSharedNotebookMembers(string authenticationToken, Guid notebookGuid, string messageText,  recipients)'
   print '   listSharedNotebooks(string authenticationToken)'
   print '  i32 expungeSharedNotebooks(string authenticationToken,  sharedNotebookIds)'
@@ -95,7 +96,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void emailNote(string authenticationToken, NoteEmailParameters parameters)'
   print '  string shareNote(string authenticationToken, Guid guid)'
   print '  void stopSharingNote(string authenticationToken, Guid guid)'
-  print '  AuthenticationResult authenticateToSharedNote(string guid, string noteKey)'
+  print '  AuthenticationResult authenticateToSharedNote(string guid, string noteKey, string authenticationToken)'
   print '  RelatedResult findRelated(string authenticationToken, RelatedQuery query, RelatedResultSpec resultSpec)'
   print ''
   sys.exit(0)
@@ -508,6 +509,12 @@ elif cmd == 'updateSharedNotebook':
     sys.exit(1)
   pp.pprint(client.updateSharedNotebook(args[0],eval(args[1]),))
 
+elif cmd == 'setSharedNotebookRecipientSettings':
+  if len(args) != 3:
+    print 'setSharedNotebookRecipientSettings requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.setSharedNotebookRecipientSettings(args[0],eval(args[1]),eval(args[2]),))
+
 elif cmd == 'sendMessageToSharedNotebookMembers':
   if len(args) != 4:
     print 'sendMessageToSharedNotebookMembers requires 4 args'
@@ -581,10 +588,10 @@ elif cmd == 'stopSharingNote':
   pp.pprint(client.stopSharingNote(args[0],eval(args[1]),))
 
 elif cmd == 'authenticateToSharedNote':
-  if len(args) != 2:
-    print 'authenticateToSharedNote requires 2 args'
+  if len(args) != 3:
+    print 'authenticateToSharedNote requires 3 args'
     sys.exit(1)
-  pp.pprint(client.authenticateToSharedNote(args[0],args[1],))
+  pp.pprint(client.authenticateToSharedNote(args[0],args[1],args[2],))
 
 elif cmd == 'findRelated':
   if len(args) != 3:

@@ -2469,7 +2469,7 @@ class RelatedQuery(object):
   entities.
   
   You must specify either <em>noteGuid</em> or <em>plainText</em>, but
-  not both. <em>filter</em> is optional.
+  not both. <em>filter</em> and <em>referenceUri</em> are optional.
   
   <dl>
   <dt>noteGuid</dt>
@@ -2488,12 +2488,18 @@ class RelatedQuery(object):
       Please note that some of the parameters may be ignored, such as
       <em>order</em> and <em>ascending</em>.
   </dd>
+  
+  <dt>referenceUri</dt>
+  <dd>A URI string specifying a reference entity, around which "relatedness"
+      should be based. This can be an URL pointing to a web page, for example.
+  </dd>
   </dl>
   
   Attributes:
    - noteGuid
    - plainText
    - filter
+   - referenceUri
   """
 
   thrift_spec = (
@@ -2501,12 +2507,14 @@ class RelatedQuery(object):
     (1, TType.STRING, 'noteGuid', None, None, ), # 1
     (2, TType.STRING, 'plainText', None, None, ), # 2
     (3, TType.STRUCT, 'filter', (NoteFilter, NoteFilter.thrift_spec), None, ), # 3
+    (4, TType.STRING, 'referenceUri', None, None, ), # 4
   )
 
-  def __init__(self, noteGuid=None, plainText=None, filter=None,):
+  def __init__(self, noteGuid=None, plainText=None, filter=None, referenceUri=None,):
     self.noteGuid = noteGuid
     self.plainText = plainText
     self.filter = filter
+    self.referenceUri = referenceUri
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2533,6 +2541,11 @@ class RelatedQuery(object):
           self.filter.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.referenceUri = iprot.readString();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2554,6 +2567,10 @@ class RelatedQuery(object):
     if self.filter is not None:
       oprot.writeFieldBegin('filter', TType.STRUCT, 3)
       self.filter.write(oprot)
+      oprot.writeFieldEnd()
+    if self.referenceUri is not None:
+      oprot.writeFieldBegin('referenceUri', TType.STRING, 4)
+      oprot.writeString(self.referenceUri)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

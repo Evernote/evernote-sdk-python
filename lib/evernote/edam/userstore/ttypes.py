@@ -230,6 +230,23 @@ class AuthenticationResult(object):
      end of this string to construct the full URL, as documented on our
      developer web site.
      </dd>
+   <dt>secondFactorRequired:</dt>
+     <dd>
+     If set to true, this field indicates that the user has enabled two-factor
+     authentication and must enter their second factor in order to complete
+     authentication. In this case the value of authenticationResult will be
+     a short-lived authentication token that may only be used to make a
+     subsequent call to completeTwoFactorAuthentication.
+     </dd>
+   <dt>secondFactorDeliveryHint:</dt>
+     <dd>
+     When secondFactorRequired is set to true, this field may contain a string
+     describing the second factor delivery method that the user has configured.
+     This will typically be an obfuscated mobile device number, such as
+     "(xxx) xxx-x095". This string can be displayed to the user to remind them
+     how to obtain the required second factor.
+     TODO do we need to differentiate between SMS and voice delivery?
+     </dd>
    </dl>
   
   Attributes:
@@ -240,6 +257,8 @@ class AuthenticationResult(object):
    - publicUserInfo
    - noteStoreUrl
    - webApiUrlPrefix
+   - secondFactorRequired
+   - secondFactorDeliveryHint
   """
 
   thrift_spec = (
@@ -251,9 +270,11 @@ class AuthenticationResult(object):
     (5, TType.STRUCT, 'publicUserInfo', (PublicUserInfo, PublicUserInfo.thrift_spec), None, ), # 5
     (6, TType.STRING, 'noteStoreUrl', None, None, ), # 6
     (7, TType.STRING, 'webApiUrlPrefix', None, None, ), # 7
+    (8, TType.BOOL, 'secondFactorRequired', None, None, ), # 8
+    (9, TType.STRING, 'secondFactorDeliveryHint', None, None, ), # 9
   )
 
-  def __init__(self, currentTime=None, authenticationToken=None, expiration=None, user=None, publicUserInfo=None, noteStoreUrl=None, webApiUrlPrefix=None,):
+  def __init__(self, currentTime=None, authenticationToken=None, expiration=None, user=None, publicUserInfo=None, noteStoreUrl=None, webApiUrlPrefix=None, secondFactorRequired=None, secondFactorDeliveryHint=None,):
     self.currentTime = currentTime
     self.authenticationToken = authenticationToken
     self.expiration = expiration
@@ -261,6 +282,8 @@ class AuthenticationResult(object):
     self.publicUserInfo = publicUserInfo
     self.noteStoreUrl = noteStoreUrl
     self.webApiUrlPrefix = webApiUrlPrefix
+    self.secondFactorRequired = secondFactorRequired
+    self.secondFactorDeliveryHint = secondFactorDeliveryHint
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -308,6 +331,16 @@ class AuthenticationResult(object):
           self.webApiUrlPrefix = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 8:
+        if ftype == TType.BOOL:
+          self.secondFactorRequired = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 9:
+        if ftype == TType.STRING:
+          self.secondFactorDeliveryHint = iprot.readString();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -345,6 +378,14 @@ class AuthenticationResult(object):
     if self.webApiUrlPrefix is not None:
       oprot.writeFieldBegin('webApiUrlPrefix', TType.STRING, 7)
       oprot.writeString(self.webApiUrlPrefix)
+      oprot.writeFieldEnd()
+    if self.secondFactorRequired is not None:
+      oprot.writeFieldBegin('secondFactorRequired', TType.BOOL, 8)
+      oprot.writeBool(self.secondFactorRequired)
+      oprot.writeFieldEnd()
+    if self.secondFactorDeliveryHint is not None:
+      oprot.writeFieldBegin('secondFactorDeliveryHint', TType.STRING, 9)
+      oprot.writeString(self.secondFactorDeliveryHint)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

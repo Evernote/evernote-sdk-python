@@ -87,7 +87,7 @@ class Iface(object):
     """
     pass
 
-  def authenticate(self, username, password, consumerKey, consumerSecret):
+  def authenticate(self, username, password, consumerKey, consumerSecret, supportsTwoFactor):
     """
     This is used to check a username and password in order to create a
     short-lived authentication session that can be used for further actions.
@@ -115,10 +115,21 @@ class Iface(object):
       The "consumer secret" portion of the API key issued to the client application
       by Evernote.
     
+    @param supportsTwoFactor
+      Whether the calling application supports two-factor authentication. If this
+      parameter is false, this method will fail with the error code INVALID_AUTH and the
+      parameter "password" when called for a user who has enabled two-factor
+      authentication.
+    
     @return
       <p>The result of the authentication.  If the authentication was successful,
       the AuthenticationResult.user field will be set with the full information
       about the User.</p>
+      <p>If the user has two-factor authentication enabled,
+      AuthenticationResult.secondFactorRequired will be set and
+      AuthenticationResult.authenticationToken will contain a short-lived token
+      that may only be used to complete the two-factor authentication process by calling
+      UserStore.completeTwoFactorAuthentication.</p>
     
     @throws EDAMUserException <ul>
       <li> DATA_REQUIRED "username" - username is empty
@@ -138,10 +149,11 @@ class Iface(object):
      - password
      - consumerKey
      - consumerSecret
+     - supportsTwoFactor
     """
     pass
 
-  def authenticateLongSession(self, username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription):
+  def authenticateLongSession(self, username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription, supportsTwoFactor):
     """
     This is used to check a username and password in order to create a
     long-lived authentication token that can be used for further actions.
@@ -193,10 +205,21 @@ class Iface(object):
       EDAM_DEVICE_DESCRIPTION_LEN_MAX characters long and must match the regular
       expression EDAM_DEVICE_DESCRIPTION_REGEX.
     
+    @param supportsTwoFactor
+      Whether the calling application supports two-factor authentication. If this
+      parameter is false, this method will fail with the error code INVALID_AUTH and the
+      parameter "password" when called for a user who has enabled two-factor
+      authentication.
+    
     @return
       <p>The result of the authentication. The level of detail provided in the returned
       AuthenticationResult.User structure depends on the access level granted by
       calling application's API key.</p>
+      <p>If the user has two-factor authentication enabled,
+      AuthenticationResult.secondFactorRequired will be set and
+      AuthenticationResult.authenticationToken will contain a short-lived token
+      that may only be used to complete the two-factor authentication process by calling
+      UserStore.completeTwoFactorAuthentication.</p>
     
     @throws EDAMUserException <ul>
       <li> DATA_REQUIRED "username" - username is empty
@@ -220,6 +243,53 @@ class Iface(object):
      - password
      - consumerKey
      - consumerSecret
+     - deviceIdentifier
+     - deviceDescription
+     - supportsTwoFactor
+    """
+    pass
+
+  def completeTwoFactorAuthentication(self, authenticationToken, oneTimeCode, deviceIdentifier, deviceDescription):
+    """
+    Complete the authentication process when a second factor is required. This
+    call is made after a successful call to authenticate or authenticateLongSession
+    when the authenticating user has enabled two-factor authentication.
+    
+    @param authenticationToken An authentication token returned by a previous
+      call to UserStore.authenticate or UserStore.authenticateLongSession that
+      could not be completed in a single call because a second factor was required.
+    
+    @param oneTimeCode The one time code entered by the user. This value is delivered
+      out-of-band, typically via SMS or an authenticator application.
+    
+    @param deviceIdentifier See the corresponding parameter in authenticateLongSession.
+    
+    @param deviceDescription See the corresponding parameter in authenticateLongSession.
+    
+    @return
+      The result of the authentication. The level of detail provided in the returned
+      AuthenticationResult.User structure depends on the access level granted by the
+      calling application's API key. If the initial authentication call was made to
+      authenticateLongSession, the AuthenticationResult will contain a long-lived
+      authentication token.
+    
+    @throws EDAMUserException <ul>
+      <li> DATA_REQUIRED "authenticationToken" - authenticationToken is empty
+      <li> DATA_REQUIRED "oneTimeCode" - oneTimeCode is empty
+      <li> BAD_DATA_FORMAT "authenticationToken" - authenticationToken is not well formed
+      <li> INVALID_AUTH "oneTimeCode" - oneTimeCode did not match
+      <li> AUTH_EXPIRED "authenticationToken" - authenticationToken has expired
+      <li> PERMISSION_DENIED "authenticationToken" - authenticationToken is not valid
+      <li> PERMISSION_DENIED "User.active" - user account is closed
+      <li> PERMISSION_DENIED "User.tooManyFailuresTryAgainLater" - user has
+        failed authentication too often
+      <li> DATA_CONFLICT "User.twoFactorAuthentication" - The user has not enabled
+         two-factor authentication.</li>
+    </ul>
+    
+    Parameters:
+     - authenticationToken
+     - oneTimeCode
      - deviceIdentifier
      - deviceDescription
     """
@@ -485,7 +555,7 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getBootstrapInfo failed: unknown result");
 
-  def authenticate(self, username, password, consumerKey, consumerSecret):
+  def authenticate(self, username, password, consumerKey, consumerSecret, supportsTwoFactor):
     """
     This is used to check a username and password in order to create a
     short-lived authentication session that can be used for further actions.
@@ -513,10 +583,21 @@ class Client(Iface):
       The "consumer secret" portion of the API key issued to the client application
       by Evernote.
     
+    @param supportsTwoFactor
+      Whether the calling application supports two-factor authentication. If this
+      parameter is false, this method will fail with the error code INVALID_AUTH and the
+      parameter "password" when called for a user who has enabled two-factor
+      authentication.
+    
     @return
       <p>The result of the authentication.  If the authentication was successful,
       the AuthenticationResult.user field will be set with the full information
       about the User.</p>
+      <p>If the user has two-factor authentication enabled,
+      AuthenticationResult.secondFactorRequired will be set and
+      AuthenticationResult.authenticationToken will contain a short-lived token
+      that may only be used to complete the two-factor authentication process by calling
+      UserStore.completeTwoFactorAuthentication.</p>
     
     @throws EDAMUserException <ul>
       <li> DATA_REQUIRED "username" - username is empty
@@ -536,17 +617,19 @@ class Client(Iface):
      - password
      - consumerKey
      - consumerSecret
+     - supportsTwoFactor
     """
-    self.send_authenticate(username, password, consumerKey, consumerSecret)
+    self.send_authenticate(username, password, consumerKey, consumerSecret, supportsTwoFactor)
     return self.recv_authenticate()
 
-  def send_authenticate(self, username, password, consumerKey, consumerSecret):
+  def send_authenticate(self, username, password, consumerKey, consumerSecret, supportsTwoFactor):
     self._oprot.writeMessageBegin('authenticate', TMessageType.CALL, self._seqid)
     args = authenticate_args()
     args.username = username
     args.password = password
     args.consumerKey = consumerKey
     args.consumerSecret = consumerSecret
+    args.supportsTwoFactor = supportsTwoFactor
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -569,7 +652,7 @@ class Client(Iface):
       raise result.systemException
     raise TApplicationException(TApplicationException.MISSING_RESULT, "authenticate failed: unknown result");
 
-  def authenticateLongSession(self, username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription):
+  def authenticateLongSession(self, username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription, supportsTwoFactor):
     """
     This is used to check a username and password in order to create a
     long-lived authentication token that can be used for further actions.
@@ -621,10 +704,21 @@ class Client(Iface):
       EDAM_DEVICE_DESCRIPTION_LEN_MAX characters long and must match the regular
       expression EDAM_DEVICE_DESCRIPTION_REGEX.
     
+    @param supportsTwoFactor
+      Whether the calling application supports two-factor authentication. If this
+      parameter is false, this method will fail with the error code INVALID_AUTH and the
+      parameter "password" when called for a user who has enabled two-factor
+      authentication.
+    
     @return
       <p>The result of the authentication. The level of detail provided in the returned
       AuthenticationResult.User structure depends on the access level granted by
       calling application's API key.</p>
+      <p>If the user has two-factor authentication enabled,
+      AuthenticationResult.secondFactorRequired will be set and
+      AuthenticationResult.authenticationToken will contain a short-lived token
+      that may only be used to complete the two-factor authentication process by calling
+      UserStore.completeTwoFactorAuthentication.</p>
     
     @throws EDAMUserException <ul>
       <li> DATA_REQUIRED "username" - username is empty
@@ -650,11 +744,12 @@ class Client(Iface):
      - consumerSecret
      - deviceIdentifier
      - deviceDescription
+     - supportsTwoFactor
     """
-    self.send_authenticateLongSession(username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription)
+    self.send_authenticateLongSession(username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription, supportsTwoFactor)
     return self.recv_authenticateLongSession()
 
-  def send_authenticateLongSession(self, username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription):
+  def send_authenticateLongSession(self, username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription, supportsTwoFactor):
     self._oprot.writeMessageBegin('authenticateLongSession', TMessageType.CALL, self._seqid)
     args = authenticateLongSession_args()
     args.username = username
@@ -663,6 +758,7 @@ class Client(Iface):
     args.consumerSecret = consumerSecret
     args.deviceIdentifier = deviceIdentifier
     args.deviceDescription = deviceDescription
+    args.supportsTwoFactor = supportsTwoFactor
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -684,6 +780,82 @@ class Client(Iface):
     if result.systemException is not None:
       raise result.systemException
     raise TApplicationException(TApplicationException.MISSING_RESULT, "authenticateLongSession failed: unknown result");
+
+  def completeTwoFactorAuthentication(self, authenticationToken, oneTimeCode, deviceIdentifier, deviceDescription):
+    """
+    Complete the authentication process when a second factor is required. This
+    call is made after a successful call to authenticate or authenticateLongSession
+    when the authenticating user has enabled two-factor authentication.
+    
+    @param authenticationToken An authentication token returned by a previous
+      call to UserStore.authenticate or UserStore.authenticateLongSession that
+      could not be completed in a single call because a second factor was required.
+    
+    @param oneTimeCode The one time code entered by the user. This value is delivered
+      out-of-band, typically via SMS or an authenticator application.
+    
+    @param deviceIdentifier See the corresponding parameter in authenticateLongSession.
+    
+    @param deviceDescription See the corresponding parameter in authenticateLongSession.
+    
+    @return
+      The result of the authentication. The level of detail provided in the returned
+      AuthenticationResult.User structure depends on the access level granted by the
+      calling application's API key. If the initial authentication call was made to
+      authenticateLongSession, the AuthenticationResult will contain a long-lived
+      authentication token.
+    
+    @throws EDAMUserException <ul>
+      <li> DATA_REQUIRED "authenticationToken" - authenticationToken is empty
+      <li> DATA_REQUIRED "oneTimeCode" - oneTimeCode is empty
+      <li> BAD_DATA_FORMAT "authenticationToken" - authenticationToken is not well formed
+      <li> INVALID_AUTH "oneTimeCode" - oneTimeCode did not match
+      <li> AUTH_EXPIRED "authenticationToken" - authenticationToken has expired
+      <li> PERMISSION_DENIED "authenticationToken" - authenticationToken is not valid
+      <li> PERMISSION_DENIED "User.active" - user account is closed
+      <li> PERMISSION_DENIED "User.tooManyFailuresTryAgainLater" - user has
+        failed authentication too often
+      <li> DATA_CONFLICT "User.twoFactorAuthentication" - The user has not enabled
+         two-factor authentication.</li>
+    </ul>
+    
+    Parameters:
+     - authenticationToken
+     - oneTimeCode
+     - deviceIdentifier
+     - deviceDescription
+    """
+    self.send_completeTwoFactorAuthentication(authenticationToken, oneTimeCode, deviceIdentifier, deviceDescription)
+    return self.recv_completeTwoFactorAuthentication()
+
+  def send_completeTwoFactorAuthentication(self, authenticationToken, oneTimeCode, deviceIdentifier, deviceDescription):
+    self._oprot.writeMessageBegin('completeTwoFactorAuthentication', TMessageType.CALL, self._seqid)
+    args = completeTwoFactorAuthentication_args()
+    args.authenticationToken = authenticationToken
+    args.oneTimeCode = oneTimeCode
+    args.deviceIdentifier = deviceIdentifier
+    args.deviceDescription = deviceDescription
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_completeTwoFactorAuthentication(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = completeTwoFactorAuthentication_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.userException is not None:
+      raise result.userException
+    if result.systemException is not None:
+      raise result.systemException
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "completeTwoFactorAuthentication failed: unknown result");
 
   def revokeLongSession(self, authenticationToken):
     """
@@ -1018,6 +1190,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getBootstrapInfo"] = Processor.process_getBootstrapInfo
     self._processMap["authenticate"] = Processor.process_authenticate
     self._processMap["authenticateLongSession"] = Processor.process_authenticateLongSession
+    self._processMap["completeTwoFactorAuthentication"] = Processor.process_completeTwoFactorAuthentication
     self._processMap["revokeLongSession"] = Processor.process_revokeLongSession
     self._processMap["authenticateToBusiness"] = Processor.process_authenticateToBusiness
     self._processMap["refreshAuthentication"] = Processor.process_refreshAuthentication
@@ -1069,7 +1242,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = authenticate_result()
     try:
-      result.success = self._handler.authenticate(args.username, args.password, args.consumerKey, args.consumerSecret)
+      result.success = self._handler.authenticate(args.username, args.password, args.consumerKey, args.consumerSecret, args.supportsTwoFactor)
     except evernote.edam.error.ttypes.EDAMUserException, userException:
       result.userException = userException
     except evernote.edam.error.ttypes.EDAMSystemException, systemException:
@@ -1085,12 +1258,28 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = authenticateLongSession_result()
     try:
-      result.success = self._handler.authenticateLongSession(args.username, args.password, args.consumerKey, args.consumerSecret, args.deviceIdentifier, args.deviceDescription)
+      result.success = self._handler.authenticateLongSession(args.username, args.password, args.consumerKey, args.consumerSecret, args.deviceIdentifier, args.deviceDescription, args.supportsTwoFactor)
     except evernote.edam.error.ttypes.EDAMUserException, userException:
       result.userException = userException
     except evernote.edam.error.ttypes.EDAMSystemException, systemException:
       result.systemException = systemException
     oprot.writeMessageBegin("authenticateLongSession", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_completeTwoFactorAuthentication(self, seqid, iprot, oprot):
+    args = completeTwoFactorAuthentication_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = completeTwoFactorAuthentication_result()
+    try:
+      result.success = self._handler.completeTwoFactorAuthentication(args.authenticationToken, args.oneTimeCode, args.deviceIdentifier, args.deviceDescription)
+    except evernote.edam.error.ttypes.EDAMUserException, userException:
+      result.userException = userException
+    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+      result.systemException = systemException
+    oprot.writeMessageBegin("completeTwoFactorAuthentication", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -1224,7 +1413,7 @@ class checkVersion_args(object):
     None, # 0
     (1, TType.STRING, 'clientName', None, None, ), # 1
     (2, TType.I16, 'edamVersionMajor', None, 1, ), # 2
-    (3, TType.I16, 'edamVersionMinor', None, 24, ), # 3
+    (3, TType.I16, 'edamVersionMinor', None, 25, ), # 3
   )
 
   def __init__(self, clientName=None, edamVersionMajor=thrift_spec[2][4], edamVersionMinor=thrift_spec[3][4],):
@@ -1482,6 +1671,7 @@ class authenticate_args(object):
    - password
    - consumerKey
    - consumerSecret
+   - supportsTwoFactor
   """
 
   thrift_spec = (
@@ -1490,13 +1680,15 @@ class authenticate_args(object):
     (2, TType.STRING, 'password', None, None, ), # 2
     (3, TType.STRING, 'consumerKey', None, None, ), # 3
     (4, TType.STRING, 'consumerSecret', None, None, ), # 4
+    (5, TType.BOOL, 'supportsTwoFactor', None, None, ), # 5
   )
 
-  def __init__(self, username=None, password=None, consumerKey=None, consumerSecret=None,):
+  def __init__(self, username=None, password=None, consumerKey=None, consumerSecret=None, supportsTwoFactor=None,):
     self.username = username
     self.password = password
     self.consumerKey = consumerKey
     self.consumerSecret = consumerSecret
+    self.supportsTwoFactor = supportsTwoFactor
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1527,6 +1719,11 @@ class authenticate_args(object):
           self.consumerSecret = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.BOOL:
+          self.supportsTwoFactor = iprot.readBool();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -1552,6 +1749,10 @@ class authenticate_args(object):
     if self.consumerSecret is not None:
       oprot.writeFieldBegin('consumerSecret', TType.STRING, 4)
       oprot.writeString(self.consumerSecret)
+      oprot.writeFieldEnd()
+    if self.supportsTwoFactor is not None:
+      oprot.writeFieldBegin('supportsTwoFactor', TType.BOOL, 5)
+      oprot.writeBool(self.supportsTwoFactor)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1666,6 +1867,7 @@ class authenticateLongSession_args(object):
    - consumerSecret
    - deviceIdentifier
    - deviceDescription
+   - supportsTwoFactor
   """
 
   thrift_spec = (
@@ -1676,15 +1878,17 @@ class authenticateLongSession_args(object):
     (4, TType.STRING, 'consumerSecret', None, None, ), # 4
     (5, TType.STRING, 'deviceIdentifier', None, None, ), # 5
     (6, TType.STRING, 'deviceDescription', None, None, ), # 6
+    (7, TType.BOOL, 'supportsTwoFactor', None, None, ), # 7
   )
 
-  def __init__(self, username=None, password=None, consumerKey=None, consumerSecret=None, deviceIdentifier=None, deviceDescription=None,):
+  def __init__(self, username=None, password=None, consumerKey=None, consumerSecret=None, deviceIdentifier=None, deviceDescription=None, supportsTwoFactor=None,):
     self.username = username
     self.password = password
     self.consumerKey = consumerKey
     self.consumerSecret = consumerSecret
     self.deviceIdentifier = deviceIdentifier
     self.deviceDescription = deviceDescription
+    self.supportsTwoFactor = supportsTwoFactor
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1725,6 +1929,11 @@ class authenticateLongSession_args(object):
           self.deviceDescription = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 7:
+        if ftype == TType.BOOL:
+          self.supportsTwoFactor = iprot.readBool();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -1758,6 +1967,10 @@ class authenticateLongSession_args(object):
     if self.deviceDescription is not None:
       oprot.writeFieldBegin('deviceDescription', TType.STRING, 6)
       oprot.writeString(self.deviceDescription)
+      oprot.writeFieldEnd()
+    if self.supportsTwoFactor is not None:
+      oprot.writeFieldBegin('supportsTwoFactor', TType.BOOL, 7)
+      oprot.writeBool(self.supportsTwoFactor)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1833,6 +2046,188 @@ class authenticateLongSession_result(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('authenticateLongSession_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
+      self.userException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.systemException is not None:
+      oprot.writeFieldBegin('systemException', TType.STRUCT, 2)
+      self.systemException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class completeTwoFactorAuthentication_args(object):
+  """
+  Attributes:
+   - authenticationToken
+   - oneTimeCode
+   - deviceIdentifier
+   - deviceDescription
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'authenticationToken', None, None, ), # 1
+    (2, TType.STRING, 'oneTimeCode', None, None, ), # 2
+    (3, TType.STRING, 'deviceIdentifier', None, None, ), # 3
+    (4, TType.STRING, 'deviceDescription', None, None, ), # 4
+  )
+
+  def __init__(self, authenticationToken=None, oneTimeCode=None, deviceIdentifier=None, deviceDescription=None,):
+    self.authenticationToken = authenticationToken
+    self.oneTimeCode = oneTimeCode
+    self.deviceIdentifier = deviceIdentifier
+    self.deviceDescription = deviceDescription
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.authenticationToken = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.oneTimeCode = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRING:
+          self.deviceIdentifier = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.deviceDescription = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('completeTwoFactorAuthentication_args')
+    if self.authenticationToken is not None:
+      oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
+      oprot.writeString(self.authenticationToken)
+      oprot.writeFieldEnd()
+    if self.oneTimeCode is not None:
+      oprot.writeFieldBegin('oneTimeCode', TType.STRING, 2)
+      oprot.writeString(self.oneTimeCode)
+      oprot.writeFieldEnd()
+    if self.deviceIdentifier is not None:
+      oprot.writeFieldBegin('deviceIdentifier', TType.STRING, 3)
+      oprot.writeString(self.deviceIdentifier)
+      oprot.writeFieldEnd()
+    if self.deviceDescription is not None:
+      oprot.writeFieldBegin('deviceDescription', TType.STRING, 4)
+      oprot.writeString(self.deviceDescription)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class completeTwoFactorAuthentication_result(object):
+  """
+  Attributes:
+   - success
+   - userException
+   - systemException
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (AuthenticationResult, AuthenticationResult.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 2
+  )
+
+  def __init__(self, success=None, userException=None, systemException=None,):
+    self.success = success
+    self.userException = userException
+    self.systemException = systemException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+          self.success = AuthenticationResult()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+          self.systemException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('completeTwoFactorAuthentication_result')
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
