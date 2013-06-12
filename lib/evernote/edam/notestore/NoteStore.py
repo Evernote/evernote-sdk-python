@@ -1838,6 +1838,13 @@ class Iface(object):
       <li>"Publishing.uri" - not found, by URI</li>
     </ul>
     
+    @throws EDAMSystemException <ul>
+      <li> TAKEN_DOWN "PublicNotebook" - The specified public notebook is
+        taken down (for all requesters).</li>
+      <li> TAKEN_DOWN "Country" - The specified public notebook is taken
+        down for the requester because of an IP-based country lookup.</li>
+    </ul>
+    
     Parameters:
      - userId
      - publicUri
@@ -1853,18 +1860,27 @@ class Iface(object):
     @param sharedNotebook
       A shared notebook object populated with the email address of the share
       recipient, the notebook guid and the access permissions. All other
-      attributes of the shared object are ignored.
+      attributes of the shared object are ignored. The SharedNotebook.allowPreview
+      field must be explicitly set with either a true or false value.
+    
     @return
       The fully populated SharedNotebook object including the server assigned
       share id and shareKey which can both be used to uniquely identify the
       SharedNotebook.
     
     @throws EDAMUserException <ul>
-      <li>BAD_DATA_FORMAT "SharedNotebook.email" - if the  email was not valid
+      <li>BAD_DATA_FORMAT "SharedNotebook.email" - if the email was not valid</li>
+      <li>BAD_DATA_FORMAT "requireLogin" - if the SharedNotebook.allowPreview field was
+          not set, and the SharedNotebook.requireLogin was also not set or was set to
+          false.</li>
+      <li>PERMISSION_DENIED "SharedNotebook.recipientSettings" - if
+          recipientSettings is set in the sharedNotebook.  Only the recipient
+          can set these values via the setSharedNotebookRecipientSettings
+          method.
       </li>
       </ul>
     @throws EDAMNotFoundException <ul>
-      <li>Notebook.guid - if the notebookGuid is not a valid guid for the user
+      <li>Notebook.guid - if the notebookGuid is not a valid GUID for the user.
       </li>
       </ul>
     
@@ -1907,6 +1923,43 @@ class Iface(object):
     Parameters:
      - authenticationToken
      - sharedNotebook
+    """
+    pass
+
+  def setSharedNotebookRecipientSettings(self, authenticationToken, sharedNotebookId, recipientSettings):
+    """
+    Set values for the recipient settings associated with a shared notebook.  Having
+    update rights to the shared notebook record itself has no effect on this call;
+    only the recipient of the shared notebook can can the recipient settings.
+    
+    If you do <i>not</i> wish to, or cannot, change one of the reminderNotifyEmail or
+    reminderNotifyInApp fields, you must leave that field unset in recipientSettings.
+    This method will skip that field for updates and leave the existing state as
+    it is.
+    
+    @return The update sequence number of the account to which the shared notebook
+      belongs, which is the account from which we are sharing a notebook.
+    
+    @throws EDAMNotFoundException "sharedNotebookId" - Thrown if the service does not
+      have a shared notebook record for the sharedNotebookId on the given shard.  If you
+      receive this exception, it is probable that the shared notebook record has
+      been revoked or expired, or that you accessed the wrong shard.
+    
+    @throws EDAMUserException <ul>
+      <li>PEMISSION_DENIED "authenticationToken" - If you do not have permission to set
+          the recipient settings for the shared notebook.  Only the recipient has
+          permission to do this.
+      <li>DATA_CONFLICT "recipientSettings.reminderNotifyEmail" - Setting whether
+          or not you want to receive reminder e-mail notifications is possible on
+          a business notebook in the business to which the user belongs.  All
+          others can safely unset the reminderNotifyEmail field from the
+          recipientSettings parameter.
+    </ul>
+    
+    Parameters:
+     - authenticationToken
+     - sharedNotebookId
+     - recipientSettings
     """
     pass
 
@@ -2265,7 +2318,7 @@ class Iface(object):
     """
     pass
 
-  def authenticateToSharedNote(self, guid, noteKey):
+  def authenticateToSharedNote(self, guid, noteKey, authenticationToken):
     """
     Asks the service to produce an authentication token that can be used to
     access the contents of a single Note which was individually shared
@@ -2280,9 +2333,17 @@ class Iface(object):
       The 'noteKey' identifier from the Note that was originally created via
       a call to shareNote() and then given to a recipient to access.
     
+    @param authenticationToken
+      An optional authenticationToken that identifies the user accessing the
+      shared note. This parameter may be required to access some shared notes.
+    
     @throws EDAMUserException <ul>
       <li> PERMISSION_DENIED "Note" - the Note with that GUID is either not
         shared, or the noteKey doesn't match the current key for this note
+      </li>
+      <li> PERMISSION_DENIED "authenticationToken" - an authentication token is
+        required to access this Note, but either no authentication token or a
+        "non-owner" authentication token was provided.
       </li>
     </ul>
     
@@ -2291,9 +2352,19 @@ class Iface(object):
       </li>
     </ul>
     
+    @throws EDAMSystemException <ul>
+      <li> TAKEN_DOWN "Note" - The specified shared note is taken down (for
+        all requesters).
+      </li>
+      <li> TAKEN_DOWN "Country" - The specified shared note is taken down
+        for the requester because of an IP-based country lookup.
+      </ul>
+    </ul>
+    
     Parameters:
      - guid
      - noteKey
+     - authenticationToken
     """
     pass
 
@@ -5899,6 +5970,13 @@ class Client(Iface):
       <li>"Publishing.uri" - not found, by URI</li>
     </ul>
     
+    @throws EDAMSystemException <ul>
+      <li> TAKEN_DOWN "PublicNotebook" - The specified public notebook is
+        taken down (for all requesters).</li>
+      <li> TAKEN_DOWN "Country" - The specified public notebook is taken
+        down for the requester because of an IP-based country lookup.</li>
+    </ul>
+    
     Parameters:
      - userId
      - publicUri
@@ -5942,18 +6020,27 @@ class Client(Iface):
     @param sharedNotebook
       A shared notebook object populated with the email address of the share
       recipient, the notebook guid and the access permissions. All other
-      attributes of the shared object are ignored.
+      attributes of the shared object are ignored. The SharedNotebook.allowPreview
+      field must be explicitly set with either a true or false value.
+    
     @return
       The fully populated SharedNotebook object including the server assigned
       share id and shareKey which can both be used to uniquely identify the
       SharedNotebook.
     
     @throws EDAMUserException <ul>
-      <li>BAD_DATA_FORMAT "SharedNotebook.email" - if the  email was not valid
+      <li>BAD_DATA_FORMAT "SharedNotebook.email" - if the email was not valid</li>
+      <li>BAD_DATA_FORMAT "requireLogin" - if the SharedNotebook.allowPreview field was
+          not set, and the SharedNotebook.requireLogin was also not set or was set to
+          false.</li>
+      <li>PERMISSION_DENIED "SharedNotebook.recipientSettings" - if
+          recipientSettings is set in the sharedNotebook.  Only the recipient
+          can set these values via the setSharedNotebookRecipientSettings
+          method.
       </li>
       </ul>
     @throws EDAMNotFoundException <ul>
-      <li>Notebook.guid - if the notebookGuid is not a valid guid for the user
+      <li>Notebook.guid - if the notebookGuid is not a valid GUID for the user.
       </li>
       </ul>
     
@@ -6058,6 +6145,74 @@ class Client(Iface):
     if result.systemException is not None:
       raise result.systemException
     raise TApplicationException(TApplicationException.MISSING_RESULT, "updateSharedNotebook failed: unknown result");
+
+  def setSharedNotebookRecipientSettings(self, authenticationToken, sharedNotebookId, recipientSettings):
+    """
+    Set values for the recipient settings associated with a shared notebook.  Having
+    update rights to the shared notebook record itself has no effect on this call;
+    only the recipient of the shared notebook can can the recipient settings.
+    
+    If you do <i>not</i> wish to, or cannot, change one of the reminderNotifyEmail or
+    reminderNotifyInApp fields, you must leave that field unset in recipientSettings.
+    This method will skip that field for updates and leave the existing state as
+    it is.
+    
+    @return The update sequence number of the account to which the shared notebook
+      belongs, which is the account from which we are sharing a notebook.
+    
+    @throws EDAMNotFoundException "sharedNotebookId" - Thrown if the service does not
+      have a shared notebook record for the sharedNotebookId on the given shard.  If you
+      receive this exception, it is probable that the shared notebook record has
+      been revoked or expired, or that you accessed the wrong shard.
+    
+    @throws EDAMUserException <ul>
+      <li>PEMISSION_DENIED "authenticationToken" - If you do not have permission to set
+          the recipient settings for the shared notebook.  Only the recipient has
+          permission to do this.
+      <li>DATA_CONFLICT "recipientSettings.reminderNotifyEmail" - Setting whether
+          or not you want to receive reminder e-mail notifications is possible on
+          a business notebook in the business to which the user belongs.  All
+          others can safely unset the reminderNotifyEmail field from the
+          recipientSettings parameter.
+    </ul>
+    
+    Parameters:
+     - authenticationToken
+     - sharedNotebookId
+     - recipientSettings
+    """
+    self.send_setSharedNotebookRecipientSettings(authenticationToken, sharedNotebookId, recipientSettings)
+    return self.recv_setSharedNotebookRecipientSettings()
+
+  def send_setSharedNotebookRecipientSettings(self, authenticationToken, sharedNotebookId, recipientSettings):
+    self._oprot.writeMessageBegin('setSharedNotebookRecipientSettings', TMessageType.CALL, self._seqid)
+    args = setSharedNotebookRecipientSettings_args()
+    args.authenticationToken = authenticationToken
+    args.sharedNotebookId = sharedNotebookId
+    args.recipientSettings = recipientSettings
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_setSharedNotebookRecipientSettings(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = setSharedNotebookRecipientSettings_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.userException is not None:
+      raise result.userException
+    if result.notFoundException is not None:
+      raise result.notFoundException
+    if result.systemException is not None:
+      raise result.systemException
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "setSharedNotebookRecipientSettings failed: unknown result");
 
   def sendMessageToSharedNotebookMembers(self, authenticationToken, notebookGuid, messageText, recipients):
     """
@@ -6769,7 +6924,7 @@ class Client(Iface):
       raise result.systemException
     return
 
-  def authenticateToSharedNote(self, guid, noteKey):
+  def authenticateToSharedNote(self, guid, noteKey, authenticationToken):
     """
     Asks the service to produce an authentication token that can be used to
     access the contents of a single Note which was individually shared
@@ -6784,9 +6939,17 @@ class Client(Iface):
       The 'noteKey' identifier from the Note that was originally created via
       a call to shareNote() and then given to a recipient to access.
     
+    @param authenticationToken
+      An optional authenticationToken that identifies the user accessing the
+      shared note. This parameter may be required to access some shared notes.
+    
     @throws EDAMUserException <ul>
       <li> PERMISSION_DENIED "Note" - the Note with that GUID is either not
         shared, or the noteKey doesn't match the current key for this note
+      </li>
+      <li> PERMISSION_DENIED "authenticationToken" - an authentication token is
+        required to access this Note, but either no authentication token or a
+        "non-owner" authentication token was provided.
       </li>
     </ul>
     
@@ -6795,18 +6958,29 @@ class Client(Iface):
       </li>
     </ul>
     
+    @throws EDAMSystemException <ul>
+      <li> TAKEN_DOWN "Note" - The specified shared note is taken down (for
+        all requesters).
+      </li>
+      <li> TAKEN_DOWN "Country" - The specified shared note is taken down
+        for the requester because of an IP-based country lookup.
+      </ul>
+    </ul>
+    
     Parameters:
      - guid
      - noteKey
+     - authenticationToken
     """
-    self.send_authenticateToSharedNote(guid, noteKey)
+    self.send_authenticateToSharedNote(guid, noteKey, authenticationToken)
     return self.recv_authenticateToSharedNote()
 
-  def send_authenticateToSharedNote(self, guid, noteKey):
+  def send_authenticateToSharedNote(self, guid, noteKey, authenticationToken):
     self._oprot.writeMessageBegin('authenticateToSharedNote', TMessageType.CALL, self._seqid)
     args = authenticateToSharedNote_args()
     args.guid = guid
     args.noteKey = noteKey
+    args.authenticationToken = authenticationToken
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -6980,6 +7154,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getPublicNotebook"] = Processor.process_getPublicNotebook
     self._processMap["createSharedNotebook"] = Processor.process_createSharedNotebook
     self._processMap["updateSharedNotebook"] = Processor.process_updateSharedNotebook
+    self._processMap["setSharedNotebookRecipientSettings"] = Processor.process_setSharedNotebookRecipientSettings
     self._processMap["sendMessageToSharedNotebookMembers"] = Processor.process_sendMessageToSharedNotebookMembers
     self._processMap["listSharedNotebooks"] = Processor.process_listSharedNotebooks
     self._processMap["expungeSharedNotebooks"] = Processor.process_expungeSharedNotebooks
@@ -8066,6 +8241,24 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
+  def process_setSharedNotebookRecipientSettings(self, seqid, iprot, oprot):
+    args = setSharedNotebookRecipientSettings_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = setSharedNotebookRecipientSettings_result()
+    try:
+      result.success = self._handler.setSharedNotebookRecipientSettings(args.authenticationToken, args.sharedNotebookId, args.recipientSettings)
+    except evernote.edam.error.ttypes.EDAMUserException, userException:
+      result.userException = userException
+    except evernote.edam.error.ttypes.EDAMNotFoundException, notFoundException:
+      result.notFoundException = notFoundException
+    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+      result.systemException = systemException
+    oprot.writeMessageBegin("setSharedNotebookRecipientSettings", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
   def process_sendMessageToSharedNotebookMembers(self, seqid, iprot, oprot):
     args = sendMessageToSharedNotebookMembers_args()
     args.read(iprot)
@@ -8288,7 +8481,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = authenticateToSharedNote_result()
     try:
-      result.success = self._handler.authenticateToSharedNote(args.guid, args.noteKey)
+      result.success = self._handler.authenticateToSharedNote(args.guid, args.noteKey, args.authenticationToken)
     except evernote.edam.error.ttypes.EDAMUserException, userException:
       result.userException = userException
     except evernote.edam.error.ttypes.EDAMNotFoundException, notFoundException:
@@ -18883,6 +19076,189 @@ class updateSharedNotebook_result(object):
   def __ne__(self, other):
     return not (self == other)
 
+class setSharedNotebookRecipientSettings_args(object):
+  """
+  Attributes:
+   - authenticationToken
+   - sharedNotebookId
+   - recipientSettings
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'authenticationToken', None, None, ), # 1
+    (2, TType.I64, 'sharedNotebookId', None, None, ), # 2
+    (3, TType.STRUCT, 'recipientSettings', (evernote.edam.type.ttypes.SharedNotebookRecipientSettings, evernote.edam.type.ttypes.SharedNotebookRecipientSettings.thrift_spec), None, ), # 3
+  )
+
+  def __init__(self, authenticationToken=None, sharedNotebookId=None, recipientSettings=None,):
+    self.authenticationToken = authenticationToken
+    self.sharedNotebookId = sharedNotebookId
+    self.recipientSettings = recipientSettings
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.authenticationToken = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I64:
+          self.sharedNotebookId = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.recipientSettings = evernote.edam.type.ttypes.SharedNotebookRecipientSettings()
+          self.recipientSettings.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('setSharedNotebookRecipientSettings_args')
+    if self.authenticationToken is not None:
+      oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
+      oprot.writeString(self.authenticationToken)
+      oprot.writeFieldEnd()
+    if self.sharedNotebookId is not None:
+      oprot.writeFieldBegin('sharedNotebookId', TType.I64, 2)
+      oprot.writeI64(self.sharedNotebookId)
+      oprot.writeFieldEnd()
+    if self.recipientSettings is not None:
+      oprot.writeFieldBegin('recipientSettings', TType.STRUCT, 3)
+      self.recipientSettings.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class setSharedNotebookRecipientSettings_result(object):
+  """
+  Attributes:
+   - success
+   - userException
+   - notFoundException
+   - systemException
+  """
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'notFoundException', (evernote.edam.error.ttypes.EDAMNotFoundException, evernote.edam.error.ttypes.EDAMNotFoundException.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 3
+  )
+
+  def __init__(self, success=None, userException=None, notFoundException=None, systemException=None,):
+    self.success = success
+    self.userException = userException
+    self.notFoundException = notFoundException
+    self.systemException = systemException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.I32:
+          self.success = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+          self.notFoundException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+          self.systemException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('setSharedNotebookRecipientSettings_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.I32, 0)
+      oprot.writeI32(self.success)
+      oprot.writeFieldEnd()
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
+      self.userException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.notFoundException is not None:
+      oprot.writeFieldBegin('notFoundException', TType.STRUCT, 2)
+      self.notFoundException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.systemException is not None:
+      oprot.writeFieldBegin('systemException', TType.STRUCT, 3)
+      self.systemException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class sendMessageToSharedNotebookMembers_args(object):
   """
   Attributes:
@@ -20934,17 +21310,20 @@ class authenticateToSharedNote_args(object):
   Attributes:
    - guid
    - noteKey
+   - authenticationToken
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'guid', None, None, ), # 1
     (2, TType.STRING, 'noteKey', None, None, ), # 2
+    (3, TType.STRING, 'authenticationToken', None, None, ), # 3
   )
 
-  def __init__(self, guid=None, noteKey=None,):
+  def __init__(self, guid=None, noteKey=None, authenticationToken=None,):
     self.guid = guid
     self.noteKey = noteKey
+    self.authenticationToken = authenticationToken
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -20965,6 +21344,11 @@ class authenticateToSharedNote_args(object):
           self.noteKey = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRING:
+          self.authenticationToken = iprot.readString();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -20982,6 +21366,10 @@ class authenticateToSharedNote_args(object):
     if self.noteKey is not None:
       oprot.writeFieldBegin('noteKey', TType.STRING, 2)
       oprot.writeString(self.noteKey)
+      oprot.writeFieldEnd()
+    if self.authenticationToken is not None:
+      oprot.writeFieldBegin('authenticationToken', TType.STRING, 3)
+      oprot.writeString(self.authenticationToken)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
