@@ -128,3 +128,9 @@ business_note_store.listNotebooks()
 ### References ###
 - Evernote Developers: http://dev.evernote.com/
 - API Document: http://dev.evernote.com/documentation/reference/
+
+
+Known Issues
+------------
+### Regular expressions ###
+In general, the ["re" regex module](http://docs.python.org/2/library/re.html) doesn't handle some of our regular expressions in [Limits](https://github.com/evernote/evernote-sdk-python/blob/master/lib/evernote/edam/limits/constants.py), but [re2](https://pypi.python.org/pypi/re2/) does.
