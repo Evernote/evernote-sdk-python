@@ -7,7 +7,7 @@
 #
 
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
-from ttypes import *
+from .ttypes import *
 
 EDAM_ATTRIBUTE_LEN_MIN = 1
 EDAM_ATTRIBUTE_LEN_MAX = 4096

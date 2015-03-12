@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 constants = open('lib/evernote/edam/userstore/constants.py').read().split("\n")
 for x in [x for x in constants if x.startswith('EDAM_VERSION')]:
-    exec x
+    exec(x)
 
 
 def read(fname):
@@ -28,6 +28,6 @@ setup(
     ],
     license='BSD',
     install_requires=[
-        'oauth2',
+        'python-oauth2',
     ],
 )

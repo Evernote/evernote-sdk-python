@@ -17,7 +17,7 @@
 # under the License.
 #
 
-from cStringIO import StringIO
+from io import StringIO
 from struct import pack,unpack
 from thrift.Thrift import TException
 

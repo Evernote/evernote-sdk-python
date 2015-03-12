@@ -7,7 +7,7 @@
 #
 
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
-from ttypes import *
+from .ttypes import *
 from thrift.Thrift import TProcessor
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol, TProtocol
@@ -1243,9 +1243,9 @@ class Processor(Iface, TProcessor):
     result = authenticate_result()
     try:
       result.success = self._handler.authenticate(args.username, args.password, args.consumerKey, args.consumerSecret, args.supportsTwoFactor)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
+    except evernote.edam.error.ttypes.EDAMUserException as userException:
       result.userException = userException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+    except evernote.edam.error.ttypes.EDAMSystemException as systemException:
       result.systemException = systemException
     oprot.writeMessageBegin("authenticate", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -1259,9 +1259,9 @@ class Processor(Iface, TProcessor):
     result = authenticateLongSession_result()
     try:
       result.success = self._handler.authenticateLongSession(args.username, args.password, args.consumerKey, args.consumerSecret, args.deviceIdentifier, args.deviceDescription, args.supportsTwoFactor)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
+    except evernote.edam.error.ttypes.EDAMUserException as userException:
       result.userException = userException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+    except evernote.edam.error.ttypes.EDAMSystemException as systemException:
       result.systemException = systemException
     oprot.writeMessageBegin("authenticateLongSession", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -1275,9 +1275,9 @@ class Processor(Iface, TProcessor):
     result = completeTwoFactorAuthentication_result()
     try:
       result.success = self._handler.completeTwoFactorAuthentication(args.authenticationToken, args.oneTimeCode, args.deviceIdentifier, args.deviceDescription)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
+    except evernote.edam.error.ttypes.EDAMUserException as userException:
       result.userException = userException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+    except evernote.edam.error.ttypes.EDAMSystemException as systemException:
       result.systemException = systemException
     oprot.writeMessageBegin("completeTwoFactorAuthentication", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -1291,9 +1291,9 @@ class Processor(Iface, TProcessor):
     result = revokeLongSession_result()
     try:
       self._handler.revokeLongSession(args.authenticationToken)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
+    except evernote.edam.error.ttypes.EDAMUserException as userException:
       result.userException = userException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+    except evernote.edam.error.ttypes.EDAMSystemException as systemException:
       result.systemException = systemException
     oprot.writeMessageBegin("revokeLongSession", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -1307,9 +1307,9 @@ class Processor(Iface, TProcessor):
     result = authenticateToBusiness_result()
     try:
       result.success = self._handler.authenticateToBusiness(args.authenticationToken)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
+    except evernote.edam.error.ttypes.EDAMUserException as userException:
       result.userException = userException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+    except evernote.edam.error.ttypes.EDAMSystemException as systemException:
       result.systemException = systemException
     oprot.writeMessageBegin("authenticateToBusiness", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -1323,9 +1323,9 @@ class Processor(Iface, TProcessor):
     result = refreshAuthentication_result()
     try:
       result.success = self._handler.refreshAuthentication(args.authenticationToken)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
+    except evernote.edam.error.ttypes.EDAMUserException as userException:
       result.userException = userException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+    except evernote.edam.error.ttypes.EDAMSystemException as systemException:
       result.systemException = systemException
     oprot.writeMessageBegin("refreshAuthentication", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -1339,9 +1339,9 @@ class Processor(Iface, TProcessor):
     result = getUser_result()
     try:
       result.success = self._handler.getUser(args.authenticationToken)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
+    except evernote.edam.error.ttypes.EDAMUserException as userException:
       result.userException = userException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+    except evernote.edam.error.ttypes.EDAMSystemException as systemException:
       result.systemException = systemException
     oprot.writeMessageBegin("getUser", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -1355,11 +1355,11 @@ class Processor(Iface, TProcessor):
     result = getPublicUserInfo_result()
     try:
       result.success = self._handler.getPublicUserInfo(args.username)
-    except evernote.edam.error.ttypes.EDAMNotFoundException, notFoundException:
+    except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
       result.notFoundException = notFoundException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+    except evernote.edam.error.ttypes.EDAMSystemException as systemException:
       result.systemException = systemException
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
+    except evernote.edam.error.ttypes.EDAMUserException as userException:
       result.userException = userException
     oprot.writeMessageBegin("getPublicUserInfo", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -1373,9 +1373,9 @@ class Processor(Iface, TProcessor):
     result = getPremiumInfo_result()
     try:
       result.success = self._handler.getPremiumInfo(args.authenticationToken)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
+    except evernote.edam.error.ttypes.EDAMUserException as userException:
       result.userException = userException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+    except evernote.edam.error.ttypes.EDAMSystemException as systemException:
       result.systemException = systemException
     oprot.writeMessageBegin("getPremiumInfo", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -1389,9 +1389,9 @@ class Processor(Iface, TProcessor):
     result = getNoteStoreUrl_result()
     try:
       result.success = self._handler.getNoteStoreUrl(args.authenticationToken)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
+    except evernote.edam.error.ttypes.EDAMUserException as userException:
       result.userException = userException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+    except evernote.edam.error.ttypes.EDAMSystemException as systemException:
       result.systemException = systemException
     oprot.writeMessageBegin("getNoteStoreUrl", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -1476,7 +1476,7 @@ class checkVersion_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1535,7 +1535,7 @@ class checkVersion_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1595,7 +1595,7 @@ class getBootstrapInfo_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1655,7 +1655,7 @@ class getBootstrapInfo_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1763,7 +1763,7 @@ class authenticate_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1849,7 +1849,7 @@ class authenticate_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1981,7 +1981,7 @@ class authenticateLongSession_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2067,7 +2067,7 @@ class authenticateLongSession_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2163,7 +2163,7 @@ class completeTwoFactorAuthentication_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2249,7 +2249,7 @@ class completeTwoFactorAuthentication_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2309,7 +2309,7 @@ class revokeLongSession_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2383,7 +2383,7 @@ class revokeLongSession_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2443,7 +2443,7 @@ class authenticateToBusiness_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2529,7 +2529,7 @@ class authenticateToBusiness_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2589,7 +2589,7 @@ class refreshAuthentication_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2675,7 +2675,7 @@ class refreshAuthentication_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2735,7 +2735,7 @@ class getUser_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2821,7 +2821,7 @@ class getUser_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2881,7 +2881,7 @@ class getPublicUserInfo_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2980,7 +2980,7 @@ class getPublicUserInfo_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -3040,7 +3040,7 @@ class getPremiumInfo_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -3126,7 +3126,7 @@ class getPremiumInfo_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -3186,7 +3186,7 @@ class getNoteStoreUrl_args(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -3271,7 +3271,7 @@ class getNoteStoreUrl_result(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
