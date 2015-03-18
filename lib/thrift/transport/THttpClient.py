@@ -93,8 +93,12 @@ class THttpClient(TTransportBase):
         self.__headers = {}
 
     def open(self):
-        protocol = http.client.HTTP if self.scheme == 'http' else http.client.HTTPS
-        self.__http = protocol(self.endpoint_host, self.endpoint_port)
+#        protocol = http.client.HTTP if self.scheme == 'http' else http.client.HTTPS
+#        self.__http = protocol(self.endpoint_host, self.endpoint_port)
+        if(self.scheme == 'http'):
+            self.__http = http.client.HTTPConnection(self.endpoint_host, self.endpoint_port)
+        else:
+            self.__http = http.client.HTTPSConnection(self.endpoint_host, self.endpoint_port)
 
     def close(self):
         self.__http.close()
@@ -113,10 +117,15 @@ class THttpClient(TTransportBase):
             self.__timeout = ms / 1000.0
 
     def read(self, sz):
-        return self.__http.file.read(sz)
+#        return self.__http.file.read(sz)
+        return self.res.read(sz).decode('utf8', 'ignore')
 
     def write(self, buf):
-        self.__wbuf.write(buf)
+#        print(type(buf))
+        try:
+            self.__wbuf.write(buf)
+        except Exception as err:
+            self.__wbuf.write(buf.decode('utf8',  'ignore'))
 
     def __withTimeout(f):
         def _f(*args, **kwargs):
@@ -136,7 +145,7 @@ class THttpClient(TTransportBase):
         self.open()
 
         # Pull data out of buffer
-        data = self.__wbuf.getvalue()
+        data = bytes(self.__wbuf.getvalue(), 'utf-8')
         self.__wbuf = StringIO()
 
         # HTTP request
@@ -154,7 +163,13 @@ class THttpClient(TTransportBase):
         self.__http.send(data)
 
         # Get reply to flush the request
-        self.code, self.message, self.headers = self.__http.getreply()
+#        self.code, self.message, self.headers = self.__http.getreply()
+        self.res = self.__http.getresponse()
+        self.code = self.res.status
+        self.message = self.res.reason
+        self.headers = self.res.getheaders()
+        print(self.code, self.message, self.headers)
+        print(self.res.read().decode('utf8', 'ignore'))
 
     # Decorate if we know how to timeout
     if hasattr(socket, 'getdefaulttimeout'):

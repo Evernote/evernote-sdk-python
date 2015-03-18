@@ -62,7 +62,7 @@ class TTransportBase:
       if len(chunk) == 0:
         raise EOFError()
 
-    return buff
+    return bytes(buff, 'utf-8')
 
   def write(self, buf):
     pass
