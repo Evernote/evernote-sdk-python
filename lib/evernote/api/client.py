@@ -20,10 +20,13 @@ class EvernoteClient(object):
         self.consumer_key = options.get('consumer_key')
         self.consumer_secret = options.get('consumer_secret')
         self.sandbox = options.get('sandbox', True)
+        self.yinxiang = options.get('yinxiang', False)
         if self.sandbox:
             default_service_host = 'sandbox.evernote.com'
         else:
             default_service_host = 'www.evernote.com'
+        if yinxiang:
+            default_service_host = 'app.yinxiang.com'    
         self.service_host = options.get('service_host', default_service_host)
         self.additional_headers = options.get('additional_headers', {})
         self.token = options.get('token')
