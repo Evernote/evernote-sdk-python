@@ -6,13 +6,13 @@
 #  options string: py:new_style
 #
 
-from thrift.Thrift import TType, TMessageType, TException, TApplicationException
+from enthrift.Thrift import TType, TMessageType, TException, TApplicationException
 from ttypes import *
-from thrift.Thrift import TProcessor
-from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol, TProtocol
+from enthrift.Thrift import TProcessor
+from enthrift.transport import TTransport
+from enthrift.protocol import TBinaryProtocol, TProtocol
 try:
-  from thrift.protocol import fastbinary
+  from enthrift.protocol import fastbinary
 except:
   fastbinary = None
 
@@ -33,6 +33,8 @@ class Iface(object):
     <li> BAD_DATA_FORMAT "authenticationToken" - token is malformed
     <li> DATA_REQUIRED "authenticationToken" - token is empty
     <li> INVALID_AUTH "authenticationToken" - token signature is invalid
+    <li> PERMISSION_DENIED "authenticationToken" - token does not convey sufficient
+      privileges
   </ul>
   """
   def checkVersion(self, clientName, edamVersionMajor, edamVersionMinor):
@@ -87,72 +89,6 @@ class Iface(object):
     """
     pass
 
-  def authenticate(self, username, password, consumerKey, consumerSecret, supportsTwoFactor):
-    """
-    This is used to check a username and password in order to create a
-    short-lived authentication session that can be used for further actions.
-    
-    This function is only available to Evernote's internal applications.
-    Third party applications must authenticate using OAuth as
-    described at
-    <a href="http://dev.evernote.com/documentation/cloud/">dev.evernote.com</a>.
-    
-    @param username
-      The username (not numeric user ID) for the account to
-      authenticate against.  This function will also accept the user's
-      registered email address in this parameter.
-    
-    @param password
-      The plaintext password to check against the account.  Since
-      this is not protected by the EDAM protocol, this information must be
-      provided over a protected transport (e.g. SSL).
-    
-    @param consumerKey
-      The "consumer key" portion of the API key issued to the client application
-      by Evernote.
-    
-    @param consumerSecret
-      The "consumer secret" portion of the API key issued to the client application
-      by Evernote.
-    
-    @param supportsTwoFactor
-      Whether the calling application supports two-factor authentication. If this
-      parameter is false, this method will fail with the error code INVALID_AUTH and the
-      parameter "password" when called for a user who has enabled two-factor
-      authentication.
-    
-    @return
-      <p>The result of the authentication.  If the authentication was successful,
-      the AuthenticationResult.user field will be set with the full information
-      about the User.</p>
-      <p>If the user has two-factor authentication enabled,
-      AuthenticationResult.secondFactorRequired will be set and
-      AuthenticationResult.authenticationToken will contain a short-lived token
-      that may only be used to complete the two-factor authentication process by calling
-      UserStore.completeTwoFactorAuthentication.</p>
-    
-    @throws EDAMUserException <ul>
-      <li> DATA_REQUIRED "username" - username is empty
-      <li> DATA_REQUIRED "password" - password is empty
-      <li> DATA_REQUIRED "consumerKey" - consumerKey is empty
-      <li> INVALID_AUTH "username" - username not found
-      <li> INVALID_AUTH "password" - password did not match
-      <li> INVALID_AUTH "consumerKey" - consumerKey is not authorized
-      <li> INVALID_AUTH "consumerSecret" - consumerSecret is incorrect
-      <li> PERMISSION_DENIED "User.active" - user account is closed
-      <li> PERMISSION_DENIED "User.tooManyFailuresTryAgainLater" - user has
-        failed authentication too often
-    </ul>
-    
-    Parameters:
-     - username
-     - password
-     - consumerKey
-     - consumerSecret
-     - supportsTwoFactor
-    """
-    pass
-
   def authenticateLongSession(self, username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription, supportsTwoFactor):
     """
     This is used to check a username and password in order to create a
@@ -185,12 +121,12 @@ class Iface(object):
       by Evernote.
     
     @param deviceIdentifier
-      An optional string, no more than 32 characters in length, that uniquely identifies
-      the device from which the authentication is being performed. This string allows
-      the service to return the same authentication token when a given application
-      requests authentication repeatedly from the same device. This may happen when the
-      user logs out of an application and then logs back in, or when the application is
-      uninstalled and later reinstalled. If no reliable device identifier can be created,
+      An optional string that uniquely identifies the device from which the
+      authentication is being performed. This string allows the service to return the
+      same authentication token when a given application requests authentication
+      repeatedly from the same device. This may happen when the user logs out of an
+      application and then logs back in, or when the application is uninstalled
+      and later reinstalled. If no reliable device identifier can be created,
       this value should be omitted. If set, the device identifier must be between
       1 and EDAM_DEVICE_ID_LEN_MAX characters long and must match the regular expression
       EDAM_DEVICE_ID_REGEX.
@@ -236,6 +172,7 @@ class Iface(object):
       <li> PERMISSION_DENIED "User.active" - user account is closed
       <li> PERMISSION_DENIED "User.tooManyFailuresTryAgainLater" - user has
         failed authentication too often
+      <li> AUTH_EXPIRED "password" - user password is expired
     </ul>
     
     Parameters:
@@ -276,6 +213,7 @@ class Iface(object):
     @throws EDAMUserException <ul>
       <li> DATA_REQUIRED "authenticationToken" - authenticationToken is empty
       <li> DATA_REQUIRED "oneTimeCode" - oneTimeCode is empty
+      <li> BAD_DATA_FORMAT "deviceIdentifier" - deviceIdentifier is not valid
       <li> BAD_DATA_FORMAT "authenticationToken" - authenticationToken is not well formed
       <li> INVALID_AUTH "oneTimeCode" - oneTimeCode did not match
       <li> AUTH_EXPIRED "authenticationToken" - authenticationToken has expired
@@ -349,28 +287,9 @@ class Iface(object):
            authentication token is not currently a member of a business. </li>
       <li> PERMISSION_DENIED "Business.status" - the business that the user is a
            member of is not currently in an active status. </li>
+      <li> BUSINESS_SECURITY_LOGIN_REQUIRED "sso" - the user must complete single
+           sign-on before authenticating to the business.
     </ul>
-    
-    Parameters:
-     - authenticationToken
-    """
-    pass
-
-  def refreshAuthentication(self, authenticationToken):
-    """
-    This is used to take an existing authentication token (returned from
-    'authenticate') and exchange it for a newer token which will not expire
-    as soon.  This must be invoked before the previous token expires.
-    
-    This function is only availabe to Evernote's internal applications.
-    
-    @param authenticationToken
-      The previous authentication token from the authenticate() result.
-    
-    @return
-      The result of the authentication, with the new token in
-      the result's 'authenticationToken' field.  The 'User' field will
-      not be set in the result.
     
     Parameters:
      - authenticationToken
@@ -409,24 +328,235 @@ class Iface(object):
     Returns information regarding a user's Premium account corresponding to the
     provided authentication token, or throws an exception if this token is not
     valid.
+    <p/>
+    NOTE: This function is generally not available to third party applications.
+    Calls will result in an EDAMUserException with the error code
+    PERMISSION_DENIED.
     
     Parameters:
      - authenticationToken
     """
     pass
 
-  def getNoteStoreUrl(self, authenticationToken):
+  def getSubscriptionInfo(self, authenticationToken):
     """
-    Returns the URL that should be used to talk to the NoteStore for the
-    account represented by the provided authenticationToken.
-    This method isn't needed by most clients, who can retrieve the correct
-    NoteStore URL from the AuthenticationResult returned from the authenticate
-    or refreshAuthentication calls. This method is typically only needed
-    to look up the correct URL for a long-lived session token (e.g. for an
-    OAuth web service).
+    Returns information regarding a user's subscription corresponding to the
+    provided authentication token, or throws an exception if this token is not
+    valid.
+    <p/>
+    NOTE: This function is generally not available to third party applications.
+    Calls will result in an EDAMUserException with the error code
+    PERMISSION_DENIED.
     
     Parameters:
      - authenticationToken
+    """
+    pass
+
+  def getUserUrls(self, authenticationToken):
+    """
+    <p>Returns the URLs that should be used when sending requests to the service on
+    behalf of the account represented by the provided authenticationToken.</p>
+    
+    <p>This method isn't needed by most clients, who can retreive the correct set of
+    UserUrls from the AuthenticationResult returned from
+    UserStore#authenticateLongSession(). This method is typically only needed to look up
+    the correct URLs for an existing long-lived authentication token.</p>
+    
+    Parameters:
+     - authenticationToken
+    """
+    pass
+
+  def inviteToBusiness(self, authenticationToken, emailAddress):
+    """
+    Invite a user to join an Evernote Business account.
+    
+    Behavior will depend on the auth token. <ol>
+      <li>
+        auth token with privileges to manage Evernote Business membership.
+          "External Provisioning" - The user will receive an email inviting
+          them to join the business. They do not need to have an existing Evernote
+          account. If the user has already been invited, a new invitation email
+          will be sent.
+      </li>
+      <li>
+        business auth token issued to an admin user. Only for first-party clients:
+          "Approve Invitation" - If there has been a request to invite the email,
+          approve it. Invited user will receive email with a link to join business.
+          "Invite User" - If no invitation for the email exists, create an approved
+          invitation for the email. An email will be sent to the emailAddress with
+          a link to join the caller's business.
+      </li>
+      </li>
+        business auth token:
+          "Request Invitation" - If no invitation exists, create a request to
+          invite the user to the business. These requests do not count towards a
+          business' max active user limit.
+      </li>
+    </ol>
+    
+    @param authenticationToken
+      the authentication token with sufficient privileges to manage Evernote Business
+      membership or a business auth token.
+    
+    @param emailAddress
+      the email address of the user to invite to join the Evernote Business account.
+    
+    @throws EDAMUserException <ul>
+      <li> DATA_REQUIRED "email" - if no email address was provided </li>
+      <li> BAD_DATA_FORMAT "email" - if the email address is not well formed </li>
+      <li> DATA_CONFLICT "BusinessUser.email" - if there is already a user in the business
+        whose business email address matches the specified email address. </li>
+      <li> LIMIT_REACHED "Business.maxActiveUsers" - if the business has reached its
+        user limit. </li>
+    </ul>
+    
+    Parameters:
+     - authenticationToken
+     - emailAddress
+    """
+    pass
+
+  def removeFromBusiness(self, authenticationToken, emailAddress):
+    """
+    Remove a user from an Evernote Business account. Once removed, the user will no
+    longer be able to access content within the Evernote Business account.
+    
+    <p>The email address of the user to remove from the business must match the email
+    address used to invite a user to join the business via UserStore.inviteToBusiness.
+    This function will only remove users who were invited by external provisioning</p>
+    
+    @param authenticationToken
+      An authentication token with sufficient privileges to manage Evernote Business
+      membership.
+    
+    @param emailAddress
+      The email address of the user to remove from the Evernote Business account.
+    
+    @throws EDAMUserException <ul>
+      <li> DATA_REQUIRED "email" - if no email address was provided </li>
+      <li> BAD_DATA_FORMAT "email" - The email address is not well formed </li>
+    </ul>
+    @throws EDAMNotFoundException <ul>
+      <li> "email" - If there is no user with the specified email address in the
+        business or that user was not invited via external provisioning. </li>
+    </ul>
+    
+    Parameters:
+     - authenticationToken
+     - emailAddress
+    """
+    pass
+
+  def updateBusinessUserIdentifier(self, authenticationToken, oldEmailAddress, newEmailAddress):
+    """
+    Update the email address used to uniquely identify an Evernote Business user.
+    
+    This will update the identifier for a user who was previously invited using
+    inviteToBusiness, ensuring that caller and the Evernote service maintain an
+    agreed-upon identifier for a specific user.
+    
+    For example, the following sequence of calls would invite a user to join
+    a business, update their email address, and then remove the user
+    from the business using the updated email address.
+    
+    inviteToBusiness("foo@bar.com")
+    updateBusinessUserIdentifier("foo@bar.com", "baz@bar.com")
+    removeFromBusiness("baz@bar.com")
+    
+    @param authenticationToken
+      An authentication token with sufficient privileges to manage Evernote Business
+      membership.
+    
+    @param oldEmailAddress
+      The existing email address used to uniquely identify the user.
+    
+    @param newEmailAddress
+      The new email address used to uniquely identify the user.
+    
+    @throws EDAMUserException <ul>
+      <li>DATA_REQUIRED "oldEmailAddress" - No old email address was provided</li>
+      <li>DATA_REQUIRED "newEmailAddress" - No new email address was provided</li>
+      <li>BAD_DATA_FORMAT "oldEmailAddress" - The old email address is not well formed</li>
+      <li>BAD_DATA_FORMAT "newEmailAddress" - The new email address is not well formed</li>
+      <li>DATA_CONFLICT "oldEmailAddress" - The old and new email addresses were the same</li>
+      <li>DATA_CONFLICT "newEmailAddress" - There is already an invitation or registered user with
+        the provided new email address.</li>
+      <li>DATA_CONFLICT "invitation.externallyProvisioned" - The user identified by
+        oldEmailAddress was not added via UserStore.inviteToBusiness and therefore cannot be
+        updated.</li>
+    </ul>
+    @throws EDAMNotFoundException <ul>
+      <li>"oldEmailAddress" - If there is no user or invitation with the specified oldEmailAddress
+        in the business.</li>
+    </ul>
+    
+    Parameters:
+     - authenticationToken
+     - oldEmailAddress
+     - newEmailAddress
+    """
+    pass
+
+  def listBusinessUsers(self, authenticationToken):
+    """
+    Returns a list of active business users in a given business.
+    
+    Clients are required to cache this information and re-fetch no more than once per day
+    or when they encountered a user ID or username that was not known to them.
+    
+    To avoid excessive look ups, clients should also track user IDs and usernames that belong
+    to users who are not in the business, since they will not be included in the result.
+    
+    I.e., when a client encounters a previously unknown user ID as a note's creator, it may query
+    listBusinessUsers to find information about this user. If the user is not in the resulting
+    list, the client should track that fact and not re-query the service the next time that it sees
+    this user on a note.
+    
+    @param authenticationToken
+      A business authentication token returned by authenticateToBusiness or with sufficient
+      privileges to manage Evernote Business membership.
+    
+    Parameters:
+     - authenticationToken
+    """
+    pass
+
+  def listBusinessInvitations(self, authenticationToken, includeRequestedInvitations):
+    """
+    Returns a list of outstanding invitations to join an Evernote Business account.
+    
+    Only outstanding invitations are returned by this function. Users who have accepted an
+    invitation and joined a business are listed using listBusinessUsers.
+    
+    @param authenticationToken
+      An authentication token with sufficient privileges to manage Evernote Business membership.
+    
+    @param includeRequestedInvitations
+      If true, invitations with a status of BusinessInvitationStatus.REQUESTED will be included
+      in the returned list. If false, only invitations with a status of
+      BusinessInvitationStatus.APPROVED will be included.
+    
+    Parameters:
+     - authenticationToken
+     - includeRequestedInvitations
+    """
+    pass
+
+  def getAccountLimits(self, serviceLevel):
+    """
+    Retrieve the standard account limits for a given service level. This should only be
+    called when necessary, e.g. to determine if a higher level is available should the
+    user upgrade, and should be cached for long periods (e.g. 30 days) as the values are
+    not expected to fluctuate frequently.
+    
+    @throws EDAMUserException <ul>
+      <li>DATA_REQUIRED "serviceLevel" - serviceLevel is null</li>
+    </ul>
+    
+    Parameters:
+     - serviceLevel
     """
     pass
 
@@ -447,6 +577,8 @@ class Client(Iface):
     <li> BAD_DATA_FORMAT "authenticationToken" - token is malformed
     <li> DATA_REQUIRED "authenticationToken" - token is empty
     <li> INVALID_AUTH "authenticationToken" - token signature is invalid
+    <li> PERMISSION_DENIED "authenticationToken" - token does not convey sufficient
+      privileges
   </ul>
   """
   def __init__(self, iprot, oprot=None):
@@ -555,103 +687,6 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getBootstrapInfo failed: unknown result");
 
-  def authenticate(self, username, password, consumerKey, consumerSecret, supportsTwoFactor):
-    """
-    This is used to check a username and password in order to create a
-    short-lived authentication session that can be used for further actions.
-    
-    This function is only available to Evernote's internal applications.
-    Third party applications must authenticate using OAuth as
-    described at
-    <a href="http://dev.evernote.com/documentation/cloud/">dev.evernote.com</a>.
-    
-    @param username
-      The username (not numeric user ID) for the account to
-      authenticate against.  This function will also accept the user's
-      registered email address in this parameter.
-    
-    @param password
-      The plaintext password to check against the account.  Since
-      this is not protected by the EDAM protocol, this information must be
-      provided over a protected transport (e.g. SSL).
-    
-    @param consumerKey
-      The "consumer key" portion of the API key issued to the client application
-      by Evernote.
-    
-    @param consumerSecret
-      The "consumer secret" portion of the API key issued to the client application
-      by Evernote.
-    
-    @param supportsTwoFactor
-      Whether the calling application supports two-factor authentication. If this
-      parameter is false, this method will fail with the error code INVALID_AUTH and the
-      parameter "password" when called for a user who has enabled two-factor
-      authentication.
-    
-    @return
-      <p>The result of the authentication.  If the authentication was successful,
-      the AuthenticationResult.user field will be set with the full information
-      about the User.</p>
-      <p>If the user has two-factor authentication enabled,
-      AuthenticationResult.secondFactorRequired will be set and
-      AuthenticationResult.authenticationToken will contain a short-lived token
-      that may only be used to complete the two-factor authentication process by calling
-      UserStore.completeTwoFactorAuthentication.</p>
-    
-    @throws EDAMUserException <ul>
-      <li> DATA_REQUIRED "username" - username is empty
-      <li> DATA_REQUIRED "password" - password is empty
-      <li> DATA_REQUIRED "consumerKey" - consumerKey is empty
-      <li> INVALID_AUTH "username" - username not found
-      <li> INVALID_AUTH "password" - password did not match
-      <li> INVALID_AUTH "consumerKey" - consumerKey is not authorized
-      <li> INVALID_AUTH "consumerSecret" - consumerSecret is incorrect
-      <li> PERMISSION_DENIED "User.active" - user account is closed
-      <li> PERMISSION_DENIED "User.tooManyFailuresTryAgainLater" - user has
-        failed authentication too often
-    </ul>
-    
-    Parameters:
-     - username
-     - password
-     - consumerKey
-     - consumerSecret
-     - supportsTwoFactor
-    """
-    self.send_authenticate(username, password, consumerKey, consumerSecret, supportsTwoFactor)
-    return self.recv_authenticate()
-
-  def send_authenticate(self, username, password, consumerKey, consumerSecret, supportsTwoFactor):
-    self._oprot.writeMessageBegin('authenticate', TMessageType.CALL, self._seqid)
-    args = authenticate_args()
-    args.username = username
-    args.password = password
-    args.consumerKey = consumerKey
-    args.consumerSecret = consumerSecret
-    args.supportsTwoFactor = supportsTwoFactor
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_authenticate(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = authenticate_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    if result.userException is not None:
-      raise result.userException
-    if result.systemException is not None:
-      raise result.systemException
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "authenticate failed: unknown result");
-
   def authenticateLongSession(self, username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription, supportsTwoFactor):
     """
     This is used to check a username and password in order to create a
@@ -684,12 +719,12 @@ class Client(Iface):
       by Evernote.
     
     @param deviceIdentifier
-      An optional string, no more than 32 characters in length, that uniquely identifies
-      the device from which the authentication is being performed. This string allows
-      the service to return the same authentication token when a given application
-      requests authentication repeatedly from the same device. This may happen when the
-      user logs out of an application and then logs back in, or when the application is
-      uninstalled and later reinstalled. If no reliable device identifier can be created,
+      An optional string that uniquely identifies the device from which the
+      authentication is being performed. This string allows the service to return the
+      same authentication token when a given application requests authentication
+      repeatedly from the same device. This may happen when the user logs out of an
+      application and then logs back in, or when the application is uninstalled
+      and later reinstalled. If no reliable device identifier can be created,
       this value should be omitted. If set, the device identifier must be between
       1 and EDAM_DEVICE_ID_LEN_MAX characters long and must match the regular expression
       EDAM_DEVICE_ID_REGEX.
@@ -735,6 +770,7 @@ class Client(Iface):
       <li> PERMISSION_DENIED "User.active" - user account is closed
       <li> PERMISSION_DENIED "User.tooManyFailuresTryAgainLater" - user has
         failed authentication too often
+      <li> AUTH_EXPIRED "password" - user password is expired
     </ul>
     
     Parameters:
@@ -808,6 +844,7 @@ class Client(Iface):
     @throws EDAMUserException <ul>
       <li> DATA_REQUIRED "authenticationToken" - authenticationToken is empty
       <li> DATA_REQUIRED "oneTimeCode" - oneTimeCode is empty
+      <li> BAD_DATA_FORMAT "deviceIdentifier" - deviceIdentifier is not valid
       <li> BAD_DATA_FORMAT "authenticationToken" - authenticationToken is not well formed
       <li> INVALID_AUTH "oneTimeCode" - oneTimeCode did not match
       <li> AUTH_EXPIRED "authenticationToken" - authenticationToken has expired
@@ -936,6 +973,8 @@ class Client(Iface):
            authentication token is not currently a member of a business. </li>
       <li> PERMISSION_DENIED "Business.status" - the business that the user is a
            member of is not currently in an active status. </li>
+      <li> BUSINESS_SECURITY_LOGIN_REQUIRED "sso" - the user must complete single
+           sign-on before authenticating to the business.
     </ul>
     
     Parameters:
@@ -969,54 +1008,6 @@ class Client(Iface):
     if result.systemException is not None:
       raise result.systemException
     raise TApplicationException(TApplicationException.MISSING_RESULT, "authenticateToBusiness failed: unknown result");
-
-  def refreshAuthentication(self, authenticationToken):
-    """
-    This is used to take an existing authentication token (returned from
-    'authenticate') and exchange it for a newer token which will not expire
-    as soon.  This must be invoked before the previous token expires.
-    
-    This function is only availabe to Evernote's internal applications.
-    
-    @param authenticationToken
-      The previous authentication token from the authenticate() result.
-    
-    @return
-      The result of the authentication, with the new token in
-      the result's 'authenticationToken' field.  The 'User' field will
-      not be set in the result.
-    
-    Parameters:
-     - authenticationToken
-    """
-    self.send_refreshAuthentication(authenticationToken)
-    return self.recv_refreshAuthentication()
-
-  def send_refreshAuthentication(self, authenticationToken):
-    self._oprot.writeMessageBegin('refreshAuthentication', TMessageType.CALL, self._seqid)
-    args = refreshAuthentication_args()
-    args.authenticationToken = authenticationToken
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_refreshAuthentication(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = refreshAuthentication_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    if result.userException is not None:
-      raise result.userException
-    if result.systemException is not None:
-      raise result.systemException
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "refreshAuthentication failed: unknown result");
 
   def getUser(self, authenticationToken):
     """
@@ -1106,6 +1097,10 @@ class Client(Iface):
     Returns information regarding a user's Premium account corresponding to the
     provided authentication token, or throws an exception if this token is not
     valid.
+    <p/>
+    NOTE: This function is generally not available to third party applications.
+    Calls will result in an EDAMUserException with the error code
+    PERMISSION_DENIED.
     
     Parameters:
      - authenticationToken
@@ -1139,38 +1134,38 @@ class Client(Iface):
       raise result.systemException
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getPremiumInfo failed: unknown result");
 
-  def getNoteStoreUrl(self, authenticationToken):
+  def getSubscriptionInfo(self, authenticationToken):
     """
-    Returns the URL that should be used to talk to the NoteStore for the
-    account represented by the provided authenticationToken.
-    This method isn't needed by most clients, who can retrieve the correct
-    NoteStore URL from the AuthenticationResult returned from the authenticate
-    or refreshAuthentication calls. This method is typically only needed
-    to look up the correct URL for a long-lived session token (e.g. for an
-    OAuth web service).
+    Returns information regarding a user's subscription corresponding to the
+    provided authentication token, or throws an exception if this token is not
+    valid.
+    <p/>
+    NOTE: This function is generally not available to third party applications.
+    Calls will result in an EDAMUserException with the error code
+    PERMISSION_DENIED.
     
     Parameters:
      - authenticationToken
     """
-    self.send_getNoteStoreUrl(authenticationToken)
-    return self.recv_getNoteStoreUrl()
+    self.send_getSubscriptionInfo(authenticationToken)
+    return self.recv_getSubscriptionInfo()
 
-  def send_getNoteStoreUrl(self, authenticationToken):
-    self._oprot.writeMessageBegin('getNoteStoreUrl', TMessageType.CALL, self._seqid)
-    args = getNoteStoreUrl_args()
+  def send_getSubscriptionInfo(self, authenticationToken):
+    self._oprot.writeMessageBegin('getSubscriptionInfo', TMessageType.CALL, self._seqid)
+    args = getSubscriptionInfo_args()
     args.authenticationToken = authenticationToken
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_getNoteStoreUrl(self, ):
+  def recv_getSubscriptionInfo(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = getNoteStoreUrl_result()
+    result = getSubscriptionInfo_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
@@ -1179,7 +1174,404 @@ class Client(Iface):
       raise result.userException
     if result.systemException is not None:
       raise result.systemException
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getNoteStoreUrl failed: unknown result");
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getSubscriptionInfo failed: unknown result");
+
+  def getUserUrls(self, authenticationToken):
+    """
+    <p>Returns the URLs that should be used when sending requests to the service on
+    behalf of the account represented by the provided authenticationToken.</p>
+    
+    <p>This method isn't needed by most clients, who can retreive the correct set of
+    UserUrls from the AuthenticationResult returned from
+    UserStore#authenticateLongSession(). This method is typically only needed to look up
+    the correct URLs for an existing long-lived authentication token.</p>
+    
+    Parameters:
+     - authenticationToken
+    """
+    self.send_getUserUrls(authenticationToken)
+    return self.recv_getUserUrls()
+
+  def send_getUserUrls(self, authenticationToken):
+    self._oprot.writeMessageBegin('getUserUrls', TMessageType.CALL, self._seqid)
+    args = getUserUrls_args()
+    args.authenticationToken = authenticationToken
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getUserUrls(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getUserUrls_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.userException is not None:
+      raise result.userException
+    if result.systemException is not None:
+      raise result.systemException
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getUserUrls failed: unknown result");
+
+  def inviteToBusiness(self, authenticationToken, emailAddress):
+    """
+    Invite a user to join an Evernote Business account.
+    
+    Behavior will depend on the auth token. <ol>
+      <li>
+        auth token with privileges to manage Evernote Business membership.
+          "External Provisioning" - The user will receive an email inviting
+          them to join the business. They do not need to have an existing Evernote
+          account. If the user has already been invited, a new invitation email
+          will be sent.
+      </li>
+      <li>
+        business auth token issued to an admin user. Only for first-party clients:
+          "Approve Invitation" - If there has been a request to invite the email,
+          approve it. Invited user will receive email with a link to join business.
+          "Invite User" - If no invitation for the email exists, create an approved
+          invitation for the email. An email will be sent to the emailAddress with
+          a link to join the caller's business.
+      </li>
+      </li>
+        business auth token:
+          "Request Invitation" - If no invitation exists, create a request to
+          invite the user to the business. These requests do not count towards a
+          business' max active user limit.
+      </li>
+    </ol>
+    
+    @param authenticationToken
+      the authentication token with sufficient privileges to manage Evernote Business
+      membership or a business auth token.
+    
+    @param emailAddress
+      the email address of the user to invite to join the Evernote Business account.
+    
+    @throws EDAMUserException <ul>
+      <li> DATA_REQUIRED "email" - if no email address was provided </li>
+      <li> BAD_DATA_FORMAT "email" - if the email address is not well formed </li>
+      <li> DATA_CONFLICT "BusinessUser.email" - if there is already a user in the business
+        whose business email address matches the specified email address. </li>
+      <li> LIMIT_REACHED "Business.maxActiveUsers" - if the business has reached its
+        user limit. </li>
+    </ul>
+    
+    Parameters:
+     - authenticationToken
+     - emailAddress
+    """
+    self.send_inviteToBusiness(authenticationToken, emailAddress)
+    self.recv_inviteToBusiness()
+
+  def send_inviteToBusiness(self, authenticationToken, emailAddress):
+    self._oprot.writeMessageBegin('inviteToBusiness', TMessageType.CALL, self._seqid)
+    args = inviteToBusiness_args()
+    args.authenticationToken = authenticationToken
+    args.emailAddress = emailAddress
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_inviteToBusiness(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = inviteToBusiness_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.userException is not None:
+      raise result.userException
+    if result.systemException is not None:
+      raise result.systemException
+    return
+
+  def removeFromBusiness(self, authenticationToken, emailAddress):
+    """
+    Remove a user from an Evernote Business account. Once removed, the user will no
+    longer be able to access content within the Evernote Business account.
+    
+    <p>The email address of the user to remove from the business must match the email
+    address used to invite a user to join the business via UserStore.inviteToBusiness.
+    This function will only remove users who were invited by external provisioning</p>
+    
+    @param authenticationToken
+      An authentication token with sufficient privileges to manage Evernote Business
+      membership.
+    
+    @param emailAddress
+      The email address of the user to remove from the Evernote Business account.
+    
+    @throws EDAMUserException <ul>
+      <li> DATA_REQUIRED "email" - if no email address was provided </li>
+      <li> BAD_DATA_FORMAT "email" - The email address is not well formed </li>
+    </ul>
+    @throws EDAMNotFoundException <ul>
+      <li> "email" - If there is no user with the specified email address in the
+        business or that user was not invited via external provisioning. </li>
+    </ul>
+    
+    Parameters:
+     - authenticationToken
+     - emailAddress
+    """
+    self.send_removeFromBusiness(authenticationToken, emailAddress)
+    self.recv_removeFromBusiness()
+
+  def send_removeFromBusiness(self, authenticationToken, emailAddress):
+    self._oprot.writeMessageBegin('removeFromBusiness', TMessageType.CALL, self._seqid)
+    args = removeFromBusiness_args()
+    args.authenticationToken = authenticationToken
+    args.emailAddress = emailAddress
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_removeFromBusiness(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = removeFromBusiness_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.userException is not None:
+      raise result.userException
+    if result.systemException is not None:
+      raise result.systemException
+    if result.notFoundException is not None:
+      raise result.notFoundException
+    return
+
+  def updateBusinessUserIdentifier(self, authenticationToken, oldEmailAddress, newEmailAddress):
+    """
+    Update the email address used to uniquely identify an Evernote Business user.
+    
+    This will update the identifier for a user who was previously invited using
+    inviteToBusiness, ensuring that caller and the Evernote service maintain an
+    agreed-upon identifier for a specific user.
+    
+    For example, the following sequence of calls would invite a user to join
+    a business, update their email address, and then remove the user
+    from the business using the updated email address.
+    
+    inviteToBusiness("foo@bar.com")
+    updateBusinessUserIdentifier("foo@bar.com", "baz@bar.com")
+    removeFromBusiness("baz@bar.com")
+    
+    @param authenticationToken
+      An authentication token with sufficient privileges to manage Evernote Business
+      membership.
+    
+    @param oldEmailAddress
+      The existing email address used to uniquely identify the user.
+    
+    @param newEmailAddress
+      The new email address used to uniquely identify the user.
+    
+    @throws EDAMUserException <ul>
+      <li>DATA_REQUIRED "oldEmailAddress" - No old email address was provided</li>
+      <li>DATA_REQUIRED "newEmailAddress" - No new email address was provided</li>
+      <li>BAD_DATA_FORMAT "oldEmailAddress" - The old email address is not well formed</li>
+      <li>BAD_DATA_FORMAT "newEmailAddress" - The new email address is not well formed</li>
+      <li>DATA_CONFLICT "oldEmailAddress" - The old and new email addresses were the same</li>
+      <li>DATA_CONFLICT "newEmailAddress" - There is already an invitation or registered user with
+        the provided new email address.</li>
+      <li>DATA_CONFLICT "invitation.externallyProvisioned" - The user identified by
+        oldEmailAddress was not added via UserStore.inviteToBusiness and therefore cannot be
+        updated.</li>
+    </ul>
+    @throws EDAMNotFoundException <ul>
+      <li>"oldEmailAddress" - If there is no user or invitation with the specified oldEmailAddress
+        in the business.</li>
+    </ul>
+    
+    Parameters:
+     - authenticationToken
+     - oldEmailAddress
+     - newEmailAddress
+    """
+    self.send_updateBusinessUserIdentifier(authenticationToken, oldEmailAddress, newEmailAddress)
+    self.recv_updateBusinessUserIdentifier()
+
+  def send_updateBusinessUserIdentifier(self, authenticationToken, oldEmailAddress, newEmailAddress):
+    self._oprot.writeMessageBegin('updateBusinessUserIdentifier', TMessageType.CALL, self._seqid)
+    args = updateBusinessUserIdentifier_args()
+    args.authenticationToken = authenticationToken
+    args.oldEmailAddress = oldEmailAddress
+    args.newEmailAddress = newEmailAddress
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_updateBusinessUserIdentifier(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = updateBusinessUserIdentifier_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.userException is not None:
+      raise result.userException
+    if result.systemException is not None:
+      raise result.systemException
+    if result.notFoundException is not None:
+      raise result.notFoundException
+    return
+
+  def listBusinessUsers(self, authenticationToken):
+    """
+    Returns a list of active business users in a given business.
+    
+    Clients are required to cache this information and re-fetch no more than once per day
+    or when they encountered a user ID or username that was not known to them.
+    
+    To avoid excessive look ups, clients should also track user IDs and usernames that belong
+    to users who are not in the business, since they will not be included in the result.
+    
+    I.e., when a client encounters a previously unknown user ID as a note's creator, it may query
+    listBusinessUsers to find information about this user. If the user is not in the resulting
+    list, the client should track that fact and not re-query the service the next time that it sees
+    this user on a note.
+    
+    @param authenticationToken
+      A business authentication token returned by authenticateToBusiness or with sufficient
+      privileges to manage Evernote Business membership.
+    
+    Parameters:
+     - authenticationToken
+    """
+    self.send_listBusinessUsers(authenticationToken)
+    return self.recv_listBusinessUsers()
+
+  def send_listBusinessUsers(self, authenticationToken):
+    self._oprot.writeMessageBegin('listBusinessUsers', TMessageType.CALL, self._seqid)
+    args = listBusinessUsers_args()
+    args.authenticationToken = authenticationToken
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_listBusinessUsers(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = listBusinessUsers_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.userException is not None:
+      raise result.userException
+    if result.systemException is not None:
+      raise result.systemException
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "listBusinessUsers failed: unknown result");
+
+  def listBusinessInvitations(self, authenticationToken, includeRequestedInvitations):
+    """
+    Returns a list of outstanding invitations to join an Evernote Business account.
+    
+    Only outstanding invitations are returned by this function. Users who have accepted an
+    invitation and joined a business are listed using listBusinessUsers.
+    
+    @param authenticationToken
+      An authentication token with sufficient privileges to manage Evernote Business membership.
+    
+    @param includeRequestedInvitations
+      If true, invitations with a status of BusinessInvitationStatus.REQUESTED will be included
+      in the returned list. If false, only invitations with a status of
+      BusinessInvitationStatus.APPROVED will be included.
+    
+    Parameters:
+     - authenticationToken
+     - includeRequestedInvitations
+    """
+    self.send_listBusinessInvitations(authenticationToken, includeRequestedInvitations)
+    return self.recv_listBusinessInvitations()
+
+  def send_listBusinessInvitations(self, authenticationToken, includeRequestedInvitations):
+    self._oprot.writeMessageBegin('listBusinessInvitations', TMessageType.CALL, self._seqid)
+    args = listBusinessInvitations_args()
+    args.authenticationToken = authenticationToken
+    args.includeRequestedInvitations = includeRequestedInvitations
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_listBusinessInvitations(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = listBusinessInvitations_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.userException is not None:
+      raise result.userException
+    if result.systemException is not None:
+      raise result.systemException
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "listBusinessInvitations failed: unknown result");
+
+  def getAccountLimits(self, serviceLevel):
+    """
+    Retrieve the standard account limits for a given service level. This should only be
+    called when necessary, e.g. to determine if a higher level is available should the
+    user upgrade, and should be cached for long periods (e.g. 30 days) as the values are
+    not expected to fluctuate frequently.
+    
+    @throws EDAMUserException <ul>
+      <li>DATA_REQUIRED "serviceLevel" - serviceLevel is null</li>
+    </ul>
+    
+    Parameters:
+     - serviceLevel
+    """
+    self.send_getAccountLimits(serviceLevel)
+    return self.recv_getAccountLimits()
+
+  def send_getAccountLimits(self, serviceLevel):
+    self._oprot.writeMessageBegin('getAccountLimits', TMessageType.CALL, self._seqid)
+    args = getAccountLimits_args()
+    args.serviceLevel = serviceLevel
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getAccountLimits(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getAccountLimits_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.userException is not None:
+      raise result.userException
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getAccountLimits failed: unknown result");
 
 
 class Processor(Iface, TProcessor):
@@ -1188,16 +1580,21 @@ class Processor(Iface, TProcessor):
     self._processMap = {}
     self._processMap["checkVersion"] = Processor.process_checkVersion
     self._processMap["getBootstrapInfo"] = Processor.process_getBootstrapInfo
-    self._processMap["authenticate"] = Processor.process_authenticate
     self._processMap["authenticateLongSession"] = Processor.process_authenticateLongSession
     self._processMap["completeTwoFactorAuthentication"] = Processor.process_completeTwoFactorAuthentication
     self._processMap["revokeLongSession"] = Processor.process_revokeLongSession
     self._processMap["authenticateToBusiness"] = Processor.process_authenticateToBusiness
-    self._processMap["refreshAuthentication"] = Processor.process_refreshAuthentication
     self._processMap["getUser"] = Processor.process_getUser
     self._processMap["getPublicUserInfo"] = Processor.process_getPublicUserInfo
     self._processMap["getPremiumInfo"] = Processor.process_getPremiumInfo
-    self._processMap["getNoteStoreUrl"] = Processor.process_getNoteStoreUrl
+    self._processMap["getSubscriptionInfo"] = Processor.process_getSubscriptionInfo
+    self._processMap["getUserUrls"] = Processor.process_getUserUrls
+    self._processMap["inviteToBusiness"] = Processor.process_inviteToBusiness
+    self._processMap["removeFromBusiness"] = Processor.process_removeFromBusiness
+    self._processMap["updateBusinessUserIdentifier"] = Processor.process_updateBusinessUserIdentifier
+    self._processMap["listBusinessUsers"] = Processor.process_listBusinessUsers
+    self._processMap["listBusinessInvitations"] = Processor.process_listBusinessInvitations
+    self._processMap["getAccountLimits"] = Processor.process_getAccountLimits
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -1232,22 +1629,6 @@ class Processor(Iface, TProcessor):
     result = getBootstrapInfo_result()
     result.success = self._handler.getBootstrapInfo(args.locale)
     oprot.writeMessageBegin("getBootstrapInfo", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_authenticate(self, seqid, iprot, oprot):
-    args = authenticate_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = authenticate_result()
-    try:
-      result.success = self._handler.authenticate(args.username, args.password, args.consumerKey, args.consumerSecret, args.supportsTwoFactor)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
-      result.userException = userException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
-      result.systemException = systemException
-    oprot.writeMessageBegin("authenticate", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -1316,22 +1697,6 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_refreshAuthentication(self, seqid, iprot, oprot):
-    args = refreshAuthentication_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = refreshAuthentication_result()
-    try:
-      result.success = self._handler.refreshAuthentication(args.authenticationToken)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
-      result.userException = userException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
-      result.systemException = systemException
-    oprot.writeMessageBegin("refreshAuthentication", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_getUser(self, seqid, iprot, oprot):
     args = getUser_args()
     args.read(iprot)
@@ -1382,18 +1747,132 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_getNoteStoreUrl(self, seqid, iprot, oprot):
-    args = getNoteStoreUrl_args()
+  def process_getSubscriptionInfo(self, seqid, iprot, oprot):
+    args = getSubscriptionInfo_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = getNoteStoreUrl_result()
+    result = getSubscriptionInfo_result()
     try:
-      result.success = self._handler.getNoteStoreUrl(args.authenticationToken)
+      result.success = self._handler.getSubscriptionInfo(args.authenticationToken)
     except evernote.edam.error.ttypes.EDAMUserException, userException:
       result.userException = userException
     except evernote.edam.error.ttypes.EDAMSystemException, systemException:
       result.systemException = systemException
-    oprot.writeMessageBegin("getNoteStoreUrl", TMessageType.REPLY, seqid)
+    oprot.writeMessageBegin("getSubscriptionInfo", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getUserUrls(self, seqid, iprot, oprot):
+    args = getUserUrls_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getUserUrls_result()
+    try:
+      result.success = self._handler.getUserUrls(args.authenticationToken)
+    except evernote.edam.error.ttypes.EDAMUserException, userException:
+      result.userException = userException
+    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+      result.systemException = systemException
+    oprot.writeMessageBegin("getUserUrls", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_inviteToBusiness(self, seqid, iprot, oprot):
+    args = inviteToBusiness_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = inviteToBusiness_result()
+    try:
+      self._handler.inviteToBusiness(args.authenticationToken, args.emailAddress)
+    except evernote.edam.error.ttypes.EDAMUserException, userException:
+      result.userException = userException
+    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+      result.systemException = systemException
+    oprot.writeMessageBegin("inviteToBusiness", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_removeFromBusiness(self, seqid, iprot, oprot):
+    args = removeFromBusiness_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = removeFromBusiness_result()
+    try:
+      self._handler.removeFromBusiness(args.authenticationToken, args.emailAddress)
+    except evernote.edam.error.ttypes.EDAMUserException, userException:
+      result.userException = userException
+    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+      result.systemException = systemException
+    except evernote.edam.error.ttypes.EDAMNotFoundException, notFoundException:
+      result.notFoundException = notFoundException
+    oprot.writeMessageBegin("removeFromBusiness", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_updateBusinessUserIdentifier(self, seqid, iprot, oprot):
+    args = updateBusinessUserIdentifier_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = updateBusinessUserIdentifier_result()
+    try:
+      self._handler.updateBusinessUserIdentifier(args.authenticationToken, args.oldEmailAddress, args.newEmailAddress)
+    except evernote.edam.error.ttypes.EDAMUserException, userException:
+      result.userException = userException
+    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+      result.systemException = systemException
+    except evernote.edam.error.ttypes.EDAMNotFoundException, notFoundException:
+      result.notFoundException = notFoundException
+    oprot.writeMessageBegin("updateBusinessUserIdentifier", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_listBusinessUsers(self, seqid, iprot, oprot):
+    args = listBusinessUsers_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = listBusinessUsers_result()
+    try:
+      result.success = self._handler.listBusinessUsers(args.authenticationToken)
+    except evernote.edam.error.ttypes.EDAMUserException, userException:
+      result.userException = userException
+    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+      result.systemException = systemException
+    oprot.writeMessageBegin("listBusinessUsers", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_listBusinessInvitations(self, seqid, iprot, oprot):
+    args = listBusinessInvitations_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = listBusinessInvitations_result()
+    try:
+      result.success = self._handler.listBusinessInvitations(args.authenticationToken, args.includeRequestedInvitations)
+    except evernote.edam.error.ttypes.EDAMUserException, userException:
+      result.userException = userException
+    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
+      result.systemException = systemException
+    oprot.writeMessageBegin("listBusinessInvitations", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getAccountLimits(self, seqid, iprot, oprot):
+    args = getAccountLimits_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getAccountLimits_result()
+    try:
+      result.success = self._handler.getAccountLimits(args.serviceLevel)
+    except evernote.edam.error.ttypes.EDAMUserException, userException:
+      result.userException = userException
+    oprot.writeMessageBegin("getAccountLimits", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -1413,7 +1892,7 @@ class checkVersion_args(object):
     None, # 0
     (1, TType.STRING, 'clientName', None, None, ), # 1
     (2, TType.I16, 'edamVersionMajor', None, 1, ), # 2
-    (3, TType.I16, 'edamVersionMinor', None, 25, ), # 3
+    (3, TType.I16, 'edamVersionMinor', None, 28, ), # 3
   )
 
   def __init__(self, clientName=None, edamVersionMajor=thrift_spec[2][4], edamVersionMinor=thrift_spec[3][4],):
@@ -1645,200 +2124,6 @@ class getBootstrapInfo_result(object):
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class authenticate_args(object):
-  """
-  Attributes:
-   - username
-   - password
-   - consumerKey
-   - consumerSecret
-   - supportsTwoFactor
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'username', None, None, ), # 1
-    (2, TType.STRING, 'password', None, None, ), # 2
-    (3, TType.STRING, 'consumerKey', None, None, ), # 3
-    (4, TType.STRING, 'consumerSecret', None, None, ), # 4
-    (5, TType.BOOL, 'supportsTwoFactor', None, None, ), # 5
-  )
-
-  def __init__(self, username=None, password=None, consumerKey=None, consumerSecret=None, supportsTwoFactor=None,):
-    self.username = username
-    self.password = password
-    self.consumerKey = consumerKey
-    self.consumerSecret = consumerSecret
-    self.supportsTwoFactor = supportsTwoFactor
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.username = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRING:
-          self.password = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 3:
-        if ftype == TType.STRING:
-          self.consumerKey = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 4:
-        if ftype == TType.STRING:
-          self.consumerSecret = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 5:
-        if ftype == TType.BOOL:
-          self.supportsTwoFactor = iprot.readBool();
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('authenticate_args')
-    if self.username is not None:
-      oprot.writeFieldBegin('username', TType.STRING, 1)
-      oprot.writeString(self.username)
-      oprot.writeFieldEnd()
-    if self.password is not None:
-      oprot.writeFieldBegin('password', TType.STRING, 2)
-      oprot.writeString(self.password)
-      oprot.writeFieldEnd()
-    if self.consumerKey is not None:
-      oprot.writeFieldBegin('consumerKey', TType.STRING, 3)
-      oprot.writeString(self.consumerKey)
-      oprot.writeFieldEnd()
-    if self.consumerSecret is not None:
-      oprot.writeFieldBegin('consumerSecret', TType.STRING, 4)
-      oprot.writeString(self.consumerSecret)
-      oprot.writeFieldEnd()
-    if self.supportsTwoFactor is not None:
-      oprot.writeFieldBegin('supportsTwoFactor', TType.BOOL, 5)
-      oprot.writeBool(self.supportsTwoFactor)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class authenticate_result(object):
-  """
-  Attributes:
-   - success
-   - userException
-   - systemException
-  """
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (AuthenticationResult, AuthenticationResult.thrift_spec), None, ), # 0
-    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
-    (2, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 2
-  )
-
-  def __init__(self, success=None, userException=None, systemException=None,):
-    self.success = success
-    self.userException = userException
-    self.systemException = systemException
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRUCT:
-          self.success = AuthenticationResult()
-          self.success.read(iprot)
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.userException = evernote.edam.error.ttypes.EDAMUserException()
-          self.userException.read(iprot)
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRUCT:
-          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
-          self.systemException.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('authenticate_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRUCT, 0)
-      self.success.write(oprot)
-      oprot.writeFieldEnd()
-    if self.userException is not None:
-      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
-      self.userException.write(oprot)
-      oprot.writeFieldEnd()
-    if self.systemException is not None:
-      oprot.writeFieldBegin('systemException', TType.STRUCT, 2)
-      self.systemException.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2538,152 +2823,6 @@ class authenticateToBusiness_result(object):
   def __ne__(self, other):
     return not (self == other)
 
-class refreshAuthentication_args(object):
-  """
-  Attributes:
-   - authenticationToken
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'authenticationToken', None, None, ), # 1
-  )
-
-  def __init__(self, authenticationToken=None,):
-    self.authenticationToken = authenticationToken
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.authenticationToken = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('refreshAuthentication_args')
-    if self.authenticationToken is not None:
-      oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
-      oprot.writeString(self.authenticationToken)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class refreshAuthentication_result(object):
-  """
-  Attributes:
-   - success
-   - userException
-   - systemException
-  """
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (AuthenticationResult, AuthenticationResult.thrift_spec), None, ), # 0
-    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
-    (2, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 2
-  )
-
-  def __init__(self, success=None, userException=None, systemException=None,):
-    self.success = success
-    self.userException = userException
-    self.systemException = systemException
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRUCT:
-          self.success = AuthenticationResult()
-          self.success.read(iprot)
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.userException = evernote.edam.error.ttypes.EDAMUserException()
-          self.userException.read(iprot)
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRUCT:
-          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
-          self.systemException.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('refreshAuthentication_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRUCT, 0)
-      self.success.write(oprot)
-      oprot.writeFieldEnd()
-    if self.userException is not None:
-      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
-      self.userException.write(oprot)
-      oprot.writeFieldEnd()
-    if self.systemException is not None:
-      oprot.writeFieldBegin('systemException', TType.STRUCT, 2)
-      self.systemException.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
 class getUser_args(object):
   """
   Attributes:
@@ -3135,7 +3274,7 @@ class getPremiumInfo_result(object):
   def __ne__(self, other):
     return not (self == other)
 
-class getNoteStoreUrl_args(object):
+class getSubscriptionInfo_args(object):
   """
   Attributes:
    - authenticationToken
@@ -3172,7 +3311,7 @@ class getNoteStoreUrl_args(object):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('getNoteStoreUrl_args')
+    oprot.writeStructBegin('getSubscriptionInfo_args')
     if self.authenticationToken is not None:
       oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
       oprot.writeString(self.authenticationToken)
@@ -3195,7 +3334,7 @@ class getNoteStoreUrl_args(object):
   def __ne__(self, other):
     return not (self == other)
 
-class getNoteStoreUrl_result(object):
+class getSubscriptionInfo_result(object):
   """
   Attributes:
    - success
@@ -3204,7 +3343,7 @@ class getNoteStoreUrl_result(object):
   """
 
   thrift_spec = (
-    (0, TType.STRING, 'success', None, None, ), # 0
+    (0, TType.STRUCT, 'success', (evernote.edam.type.ttypes.SubscriptionInfo, evernote.edam.type.ttypes.SubscriptionInfo.thrift_spec), None, ), # 0
     (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 2
   )
@@ -3224,8 +3363,9 @@ class getNoteStoreUrl_result(object):
       if ftype == TType.STOP:
         break
       if fid == 0:
-        if ftype == TType.STRING:
-          self.success = iprot.readString();
+        if ftype == TType.STRUCT:
+          self.success = evernote.edam.type.ttypes.SubscriptionInfo()
+          self.success.read(iprot)
         else:
           iprot.skip(ftype)
       elif fid == 1:
@@ -3249,10 +3389,10 @@ class getNoteStoreUrl_result(object):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('getNoteStoreUrl_result')
+    oprot.writeStructBegin('getSubscriptionInfo_result')
     if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRING, 0)
-      oprot.writeString(self.success)
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
       oprot.writeFieldEnd()
     if self.userException is not None:
       oprot.writeFieldBegin('userException', TType.STRUCT, 1)
@@ -3261,6 +3401,1081 @@ class getNoteStoreUrl_result(object):
     if self.systemException is not None:
       oprot.writeFieldBegin('systemException', TType.STRUCT, 2)
       self.systemException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getUserUrls_args(object):
+  """
+  Attributes:
+   - authenticationToken
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'authenticationToken', None, None, ), # 1
+  )
+
+  def __init__(self, authenticationToken=None,):
+    self.authenticationToken = authenticationToken
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.authenticationToken = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getUserUrls_args')
+    if self.authenticationToken is not None:
+      oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
+      oprot.writeString(self.authenticationToken)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getUserUrls_result(object):
+  """
+  Attributes:
+   - success
+   - userException
+   - systemException
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (UserUrls, UserUrls.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 2
+  )
+
+  def __init__(self, success=None, userException=None, systemException=None,):
+    self.success = success
+    self.userException = userException
+    self.systemException = systemException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+          self.success = UserUrls()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+          self.systemException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getUserUrls_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
+      self.userException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.systemException is not None:
+      oprot.writeFieldBegin('systemException', TType.STRUCT, 2)
+      self.systemException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class inviteToBusiness_args(object):
+  """
+  Attributes:
+   - authenticationToken
+   - emailAddress
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'authenticationToken', None, None, ), # 1
+    (2, TType.STRING, 'emailAddress', None, None, ), # 2
+  )
+
+  def __init__(self, authenticationToken=None, emailAddress=None,):
+    self.authenticationToken = authenticationToken
+    self.emailAddress = emailAddress
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.authenticationToken = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.emailAddress = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('inviteToBusiness_args')
+    if self.authenticationToken is not None:
+      oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
+      oprot.writeString(self.authenticationToken)
+      oprot.writeFieldEnd()
+    if self.emailAddress is not None:
+      oprot.writeFieldBegin('emailAddress', TType.STRING, 2)
+      oprot.writeString(self.emailAddress)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class inviteToBusiness_result(object):
+  """
+  Attributes:
+   - userException
+   - systemException
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 2
+  )
+
+  def __init__(self, userException=None, systemException=None,):
+    self.userException = userException
+    self.systemException = systemException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+          self.systemException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('inviteToBusiness_result')
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
+      self.userException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.systemException is not None:
+      oprot.writeFieldBegin('systemException', TType.STRUCT, 2)
+      self.systemException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class removeFromBusiness_args(object):
+  """
+  Attributes:
+   - authenticationToken
+   - emailAddress
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'authenticationToken', None, None, ), # 1
+    (2, TType.STRING, 'emailAddress', None, None, ), # 2
+  )
+
+  def __init__(self, authenticationToken=None, emailAddress=None,):
+    self.authenticationToken = authenticationToken
+    self.emailAddress = emailAddress
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.authenticationToken = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.emailAddress = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('removeFromBusiness_args')
+    if self.authenticationToken is not None:
+      oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
+      oprot.writeString(self.authenticationToken)
+      oprot.writeFieldEnd()
+    if self.emailAddress is not None:
+      oprot.writeFieldBegin('emailAddress', TType.STRING, 2)
+      oprot.writeString(self.emailAddress)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class removeFromBusiness_result(object):
+  """
+  Attributes:
+   - userException
+   - systemException
+   - notFoundException
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'notFoundException', (evernote.edam.error.ttypes.EDAMNotFoundException, evernote.edam.error.ttypes.EDAMNotFoundException.thrift_spec), None, ), # 3
+  )
+
+  def __init__(self, userException=None, systemException=None, notFoundException=None,):
+    self.userException = userException
+    self.systemException = systemException
+    self.notFoundException = notFoundException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+          self.systemException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+          self.notFoundException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('removeFromBusiness_result')
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
+      self.userException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.systemException is not None:
+      oprot.writeFieldBegin('systemException', TType.STRUCT, 2)
+      self.systemException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.notFoundException is not None:
+      oprot.writeFieldBegin('notFoundException', TType.STRUCT, 3)
+      self.notFoundException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class updateBusinessUserIdentifier_args(object):
+  """
+  Attributes:
+   - authenticationToken
+   - oldEmailAddress
+   - newEmailAddress
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'authenticationToken', None, None, ), # 1
+    (2, TType.STRING, 'oldEmailAddress', None, None, ), # 2
+    (3, TType.STRING, 'newEmailAddress', None, None, ), # 3
+  )
+
+  def __init__(self, authenticationToken=None, oldEmailAddress=None, newEmailAddress=None,):
+    self.authenticationToken = authenticationToken
+    self.oldEmailAddress = oldEmailAddress
+    self.newEmailAddress = newEmailAddress
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.authenticationToken = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.oldEmailAddress = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRING:
+          self.newEmailAddress = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('updateBusinessUserIdentifier_args')
+    if self.authenticationToken is not None:
+      oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
+      oprot.writeString(self.authenticationToken)
+      oprot.writeFieldEnd()
+    if self.oldEmailAddress is not None:
+      oprot.writeFieldBegin('oldEmailAddress', TType.STRING, 2)
+      oprot.writeString(self.oldEmailAddress)
+      oprot.writeFieldEnd()
+    if self.newEmailAddress is not None:
+      oprot.writeFieldBegin('newEmailAddress', TType.STRING, 3)
+      oprot.writeString(self.newEmailAddress)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class updateBusinessUserIdentifier_result(object):
+  """
+  Attributes:
+   - userException
+   - systemException
+   - notFoundException
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'notFoundException', (evernote.edam.error.ttypes.EDAMNotFoundException, evernote.edam.error.ttypes.EDAMNotFoundException.thrift_spec), None, ), # 3
+  )
+
+  def __init__(self, userException=None, systemException=None, notFoundException=None,):
+    self.userException = userException
+    self.systemException = systemException
+    self.notFoundException = notFoundException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+          self.systemException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+          self.notFoundException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('updateBusinessUserIdentifier_result')
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
+      self.userException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.systemException is not None:
+      oprot.writeFieldBegin('systemException', TType.STRUCT, 2)
+      self.systemException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.notFoundException is not None:
+      oprot.writeFieldBegin('notFoundException', TType.STRUCT, 3)
+      self.notFoundException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class listBusinessUsers_args(object):
+  """
+  Attributes:
+   - authenticationToken
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'authenticationToken', None, None, ), # 1
+  )
+
+  def __init__(self, authenticationToken=None,):
+    self.authenticationToken = authenticationToken
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.authenticationToken = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('listBusinessUsers_args')
+    if self.authenticationToken is not None:
+      oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
+      oprot.writeString(self.authenticationToken)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class listBusinessUsers_result(object):
+  """
+  Attributes:
+   - success
+   - userException
+   - systemException
+  """
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(evernote.edam.type.ttypes.UserProfile, evernote.edam.type.ttypes.UserProfile.thrift_spec)), None, ), # 0
+    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 2
+  )
+
+  def __init__(self, success=None, userException=None, systemException=None,):
+    self.success = success
+    self.userException = userException
+    self.systemException = systemException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype10, _size7) = iprot.readListBegin()
+          for _i11 in xrange(_size7):
+            _elem12 = evernote.edam.type.ttypes.UserProfile()
+            _elem12.read(iprot)
+            self.success.append(_elem12)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+          self.systemException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('listBusinessUsers_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRUCT, len(self.success))
+      for iter13 in self.success:
+        iter13.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
+      self.userException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.systemException is not None:
+      oprot.writeFieldBegin('systemException', TType.STRUCT, 2)
+      self.systemException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class listBusinessInvitations_args(object):
+  """
+  Attributes:
+   - authenticationToken
+   - includeRequestedInvitations
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'authenticationToken', None, None, ), # 1
+    (2, TType.BOOL, 'includeRequestedInvitations', None, None, ), # 2
+  )
+
+  def __init__(self, authenticationToken=None, includeRequestedInvitations=None,):
+    self.authenticationToken = authenticationToken
+    self.includeRequestedInvitations = includeRequestedInvitations
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.authenticationToken = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.BOOL:
+          self.includeRequestedInvitations = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('listBusinessInvitations_args')
+    if self.authenticationToken is not None:
+      oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
+      oprot.writeString(self.authenticationToken)
+      oprot.writeFieldEnd()
+    if self.includeRequestedInvitations is not None:
+      oprot.writeFieldBegin('includeRequestedInvitations', TType.BOOL, 2)
+      oprot.writeBool(self.includeRequestedInvitations)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class listBusinessInvitations_result(object):
+  """
+  Attributes:
+   - success
+   - userException
+   - systemException
+  """
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(evernote.edam.type.ttypes.BusinessInvitation, evernote.edam.type.ttypes.BusinessInvitation.thrift_spec)), None, ), # 0
+    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 2
+  )
+
+  def __init__(self, success=None, userException=None, systemException=None,):
+    self.success = success
+    self.userException = userException
+    self.systemException = systemException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype17, _size14) = iprot.readListBegin()
+          for _i18 in xrange(_size14):
+            _elem19 = evernote.edam.type.ttypes.BusinessInvitation()
+            _elem19.read(iprot)
+            self.success.append(_elem19)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+          self.systemException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('listBusinessInvitations_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRUCT, len(self.success))
+      for iter20 in self.success:
+        iter20.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
+      self.userException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.systemException is not None:
+      oprot.writeFieldBegin('systemException', TType.STRUCT, 2)
+      self.systemException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getAccountLimits_args(object):
+  """
+  Attributes:
+   - serviceLevel
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'serviceLevel', None, None, ), # 1
+  )
+
+  def __init__(self, serviceLevel=None,):
+    self.serviceLevel = serviceLevel
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.serviceLevel = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getAccountLimits_args')
+    if self.serviceLevel is not None:
+      oprot.writeFieldBegin('serviceLevel', TType.I32, 1)
+      oprot.writeI32(self.serviceLevel)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getAccountLimits_result(object):
+  """
+  Attributes:
+   - success
+   - userException
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (evernote.edam.type.ttypes.AccountLimits, evernote.edam.type.ttypes.AccountLimits.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, userException=None,):
+    self.success = success
+    self.userException = userException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+          self.success = evernote.edam.type.ttypes.AccountLimits()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getAccountLimits_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
+      self.userException.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

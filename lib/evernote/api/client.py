@@ -10,9 +10,10 @@ import evernote.edam.userstore.UserStore as UserStore
 import evernote.edam.notestore.NoteStore as NoteStore
 import evernote.edam.userstore.constants as UserStoreConstants
 
-import thrift.protocol.TBinaryProtocol as TBinaryProtocol
-import thrift.transport.THttpClient as THttpClient
+import enthrift.protocol.TBinaryProtocol as TBinaryProtocol
+import enthrift.transport.THttpClient as THttpClient
 
+print "EDAM Version: " + str(UserStoreConstants.EDAM_VERSION_MAJOR) + "." + str(UserStoreConstants.EDAM_VERSION_MINOR)
 
 class EvernoteClient(object):
 
@@ -58,18 +59,12 @@ class EvernoteClient(object):
     def get_user_store(self):
         user_store_uri = self._get_endpoint("/edam/user")
         store = Store(self.token, UserStore.Client, user_store_uri)
-        if not store:  # Trick for PyDev code completion
-            store = UserStore.Client()
-            raise Exception('Should never reach here')
         return store
 
     def get_note_store(self):
         user_store = self.get_user_store()
-        note_store_uri = user_store.getNoteStoreUrl()
+        note_store_uri = user_store.getUserUrls().noteStoreUrl
         store = Store(self.token, NoteStore.Client, note_store_uri)
-        if not store:  # Trick for PyDev code completion
-            store = NoteStore.Client()
-            raise Exception('Should never reach here')
         return store
 
     def get_shared_note_store(self, linkedNotebook):
@@ -79,9 +74,6 @@ class EvernoteClient(object):
             linkedNotebook.shareKey)
         shared_token = shared_auth.authenticationToken
         store = Store(shared_token, NoteStore.Client, note_store_uri)
-        if not store:  # Trick for PyDev code completion
-            store = NoteStore.Client()
-            raise Exception('Should never reach here')
         return store
 
     def get_business_note_store(self):
@@ -90,9 +82,6 @@ class EvernoteClient(object):
         biz_token = biz_auth.authenticationToken
         note_store_uri = biz_auth.noteStoreUrl
         store = Store(biz_token, NoteStore.Client, note_store_uri)
-        if not store:  # Trick for PyDev code completion
-            store = NoteStore.Client()
-            raise Exception('Should never reach here')
         return store
 
     def _get_oauth_client(self, token=None):
@@ -145,7 +134,7 @@ class Store(object):
         http_client = THttpClient.THttpClient(url)
         http_client.addHeaders(**{
             'User-Agent': "%s / %s; Python / %s;"
-            % (self._user_agent_id, self._get_sdk_version(), sys.version)
+            % (self._user_agent_id, self._get_sdk_version(), sys.version.replace('\n',""))
         })
 
         thrift_protocol = TBinaryProtocol.TBinaryProtocol(http_client)

@@ -6,15 +6,15 @@
 #  options string: py:new_style
 #
 
-from thrift.Thrift import TType, TMessageType, TException, TApplicationException
+from enthrift.Thrift import TType, TMessageType, TException, TApplicationException
 import evernote.edam.type.ttypes
 import evernote.edam.error.ttypes
 
 
-from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol, TProtocol
+from enthrift.transport import TTransport
+from enthrift.protocol import TBinaryProtocol, TProtocol
 try:
-  from thrift.protocol import fastbinary
+  from enthrift.protocol import fastbinary
 except:
   fastbinary = None
 
@@ -35,8 +35,12 @@ class PublicUserInfo(object):
      </dd>
    <dt>privilege:</dt>
      <dd>
-     The privilege level of the account, to determine whether
-     this is a Premium or Free account.
+     DEPRECATED - ServiceLevel field should be used instead to determine which features
+                  to offer to the user.
+     </dd>
+   <dt>serviceLevel:</dt>
+     <dd>
+     The service level of the account.
      </dd>
    <dt>noteStoreUrl:</dt>
      <dd>
@@ -59,8 +63,7 @@ class PublicUserInfo(object):
   
   Attributes:
    - userId
-   - shardId
-   - privilege
+   - serviceLevel
    - username
    - noteStoreUrl
    - webApiUrlPrefix
@@ -69,17 +72,17 @@ class PublicUserInfo(object):
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'userId', None, None, ), # 1
-    (2, TType.STRING, 'shardId', None, None, ), # 2
-    (3, TType.I32, 'privilege', None, None, ), # 3
+    None, # 2
+    None, # 3
     (4, TType.STRING, 'username', None, None, ), # 4
     (5, TType.STRING, 'noteStoreUrl', None, None, ), # 5
     (6, TType.STRING, 'webApiUrlPrefix', None, None, ), # 6
+    (7, TType.I32, 'serviceLevel', None, None, ), # 7
   )
 
-  def __init__(self, userId=None, shardId=None, privilege=None, username=None, noteStoreUrl=None, webApiUrlPrefix=None,):
+  def __init__(self, userId=None, serviceLevel=None, username=None, noteStoreUrl=None, webApiUrlPrefix=None,):
     self.userId = userId
-    self.shardId = shardId
-    self.privilege = privilege
+    self.serviceLevel = serviceLevel
     self.username = username
     self.noteStoreUrl = noteStoreUrl
     self.webApiUrlPrefix = webApiUrlPrefix
@@ -98,14 +101,9 @@ class PublicUserInfo(object):
           self.userId = iprot.readI32();
         else:
           iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRING:
-          self.shardId = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 3:
+      elif fid == 7:
         if ftype == TType.I32:
-          self.privilege = iprot.readI32();
+          self.serviceLevel = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 4:
@@ -137,14 +135,6 @@ class PublicUserInfo(object):
       oprot.writeFieldBegin('userId', TType.I32, 1)
       oprot.writeI32(self.userId)
       oprot.writeFieldEnd()
-    if self.shardId is not None:
-      oprot.writeFieldBegin('shardId', TType.STRING, 2)
-      oprot.writeString(self.shardId)
-      oprot.writeFieldEnd()
-    if self.privilege is not None:
-      oprot.writeFieldBegin('privilege', TType.I32, 3)
-      oprot.writeI32(self.privilege)
-      oprot.writeFieldEnd()
     if self.username is not None:
       oprot.writeFieldBegin('username', TType.STRING, 4)
       oprot.writeString(self.username)
@@ -157,14 +147,182 @@ class PublicUserInfo(object):
       oprot.writeFieldBegin('webApiUrlPrefix', TType.STRING, 6)
       oprot.writeString(self.webApiUrlPrefix)
       oprot.writeFieldEnd()
+    if self.serviceLevel is not None:
+      oprot.writeFieldBegin('serviceLevel', TType.I32, 7)
+      oprot.writeI32(self.serviceLevel)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
     if self.userId is None:
       raise TProtocol.TProtocolException(message='Required field userId is unset!')
-    if self.shardId is None:
-      raise TProtocol.TProtocolException(message='Required field shardId is unset!')
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class UserUrls(object):
+  """
+  <dl>
+  <dt>noteStoreUrl:</dt>
+    <dd>
+    This field will contain the full URL that clients should use to make
+    NoteStore requests to the server shard that contains that user's data.
+    I.e. this is the URL that should be used to create the Thrift HTTP client
+    transport to send messages to the NoteStore service for the account.
+    </dd>
+  <dt>webApiUrlPrefix:</dt>
+    <dd>
+    This field will contain the initial part of the URLs that should be used
+    to make requests to Evernote's thin client "web API", which provide
+    optimized operations for clients that aren't capable of manipulating
+    the full contents of accounts via the full Thrift data model. Clients
+    should concatenate the relative path for the various servlets onto the
+    end of this string to construct the full URL, as documented on our
+    developer web site.
+    </dd>
+  <dt>userStoreUrl:</dt>
+    <dd>
+    This field will contain the full URL that clients should use to make UserStore
+    requests after successfully authenticating. I.e. this is the URL that should be used
+    to create the Thrift HTTP client transport to send messages to the UserStore service
+    for this account.
+    </dd>
+  <dt>utilityUrl:</dt>
+    <dd>
+    This field will contain the full URL that clients should use to make Utility requests
+    to the server shard that contains that user's data. I.e. this is the URL that should
+    be used to create the Thrift HTTP client transport to send messages to the Utility
+    service for the account.
+    </dd>
+  <dt>messageStoreUrl:</dt>
+    <dd>
+    This field will contain the full URL that clients should use to make MessageStore
+    requests to the server. I.e. this is the URL that should be used to create the
+    Thrift HTTP client transport to send messages to the MessageStore service for the
+    account.
+    </dd>
+  <dt>userWebSocketUrl:</dt>
+    <dd>
+    This field will contain the full URL that clients should use when opening a
+    persistent web socket to recieve notification of events for the authenticated user.
+    </dd>
+  </dl>
+  
+  Attributes:
+   - noteStoreUrl
+   - webApiUrlPrefix
+   - userStoreUrl
+   - utilityUrl
+   - messageStoreUrl
+   - userWebSocketUrl
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'noteStoreUrl', None, None, ), # 1
+    (2, TType.STRING, 'webApiUrlPrefix', None, None, ), # 2
+    (3, TType.STRING, 'userStoreUrl', None, None, ), # 3
+    (4, TType.STRING, 'utilityUrl', None, None, ), # 4
+    (5, TType.STRING, 'messageStoreUrl', None, None, ), # 5
+    (6, TType.STRING, 'userWebSocketUrl', None, None, ), # 6
+  )
+
+  def __init__(self, noteStoreUrl=None, webApiUrlPrefix=None, userStoreUrl=None, utilityUrl=None, messageStoreUrl=None, userWebSocketUrl=None,):
+    self.noteStoreUrl = noteStoreUrl
+    self.webApiUrlPrefix = webApiUrlPrefix
+    self.userStoreUrl = userStoreUrl
+    self.utilityUrl = utilityUrl
+    self.messageStoreUrl = messageStoreUrl
+    self.userWebSocketUrl = userWebSocketUrl
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.noteStoreUrl = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.webApiUrlPrefix = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRING:
+          self.userStoreUrl = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.utilityUrl = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRING:
+          self.messageStoreUrl = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.STRING:
+          self.userWebSocketUrl = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('UserUrls')
+    if self.noteStoreUrl is not None:
+      oprot.writeFieldBegin('noteStoreUrl', TType.STRING, 1)
+      oprot.writeString(self.noteStoreUrl)
+      oprot.writeFieldEnd()
+    if self.webApiUrlPrefix is not None:
+      oprot.writeFieldBegin('webApiUrlPrefix', TType.STRING, 2)
+      oprot.writeString(self.webApiUrlPrefix)
+      oprot.writeFieldEnd()
+    if self.userStoreUrl is not None:
+      oprot.writeFieldBegin('userStoreUrl', TType.STRING, 3)
+      oprot.writeString(self.userStoreUrl)
+      oprot.writeFieldEnd()
+    if self.utilityUrl is not None:
+      oprot.writeFieldBegin('utilityUrl', TType.STRING, 4)
+      oprot.writeString(self.utilityUrl)
+      oprot.writeFieldEnd()
+    if self.messageStoreUrl is not None:
+      oprot.writeFieldBegin('messageStoreUrl', TType.STRING, 5)
+      oprot.writeString(self.messageStoreUrl)
+      oprot.writeFieldEnd()
+    if self.userWebSocketUrl is not None:
+      oprot.writeFieldBegin('userWebSocketUrl', TType.STRING, 6)
+      oprot.writeString(self.userWebSocketUrl)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
     return
 
 
@@ -215,20 +373,11 @@ class AuthenticationResult(object):
      </dd>
    <dt>noteStoreUrl:</dt>
      <dd>
-     This field will contain the full URL that clients should use to make
-     NoteStore requests to the server shard that contains that user's data.
-     I.e. this is the URL that should be used to create the Thrift HTTP client
-     transport to send messages to the NoteStore service for the account.
+     DEPRECATED - Client applications should use urls.noteStoreUrl.
      </dd>
    <dt>webApiUrlPrefix:</dt>
      <dd>
-     This field will contain the initial part of the URLs that should be used
-     to make requests to Evernote's thin client "web API", which provide
-     optimized operations for clients that aren't capable of manipulating
-     the full contents of accounts via the full Thrift data model. Clients
-     should concatenate the relative path for the various servlets onto the
-     end of this string to construct the full URL, as documented on our
-     developer web site.
+     DEPRECATED - Client applications should use urls.webApiUrlPrefix.
      </dd>
    <dt>secondFactorRequired:</dt>
      <dd>
@@ -245,7 +394,11 @@ class AuthenticationResult(object):
      This will typically be an obfuscated mobile device number, such as
      "(xxx) xxx-x095". This string can be displayed to the user to remind them
      how to obtain the required second factor.
-     TODO do we need to differentiate between SMS and voice delivery?
+     </dd>
+   <dt>urls</dt>
+     <dd>
+     This structure will contain all of the URLs that clients need to make requests to the
+     Evernote service on behalf of the authenticated User.
      </dd>
    </dl>
   
@@ -259,6 +412,7 @@ class AuthenticationResult(object):
    - webApiUrlPrefix
    - secondFactorRequired
    - secondFactorDeliveryHint
+   - urls
   """
 
   thrift_spec = (
@@ -272,9 +426,10 @@ class AuthenticationResult(object):
     (7, TType.STRING, 'webApiUrlPrefix', None, None, ), # 7
     (8, TType.BOOL, 'secondFactorRequired', None, None, ), # 8
     (9, TType.STRING, 'secondFactorDeliveryHint', None, None, ), # 9
+    (10, TType.STRUCT, 'urls', (UserUrls, UserUrls.thrift_spec), None, ), # 10
   )
 
-  def __init__(self, currentTime=None, authenticationToken=None, expiration=None, user=None, publicUserInfo=None, noteStoreUrl=None, webApiUrlPrefix=None, secondFactorRequired=None, secondFactorDeliveryHint=None,):
+  def __init__(self, currentTime=None, authenticationToken=None, expiration=None, user=None, publicUserInfo=None, noteStoreUrl=None, webApiUrlPrefix=None, secondFactorRequired=None, secondFactorDeliveryHint=None, urls=None,):
     self.currentTime = currentTime
     self.authenticationToken = authenticationToken
     self.expiration = expiration
@@ -284,6 +439,7 @@ class AuthenticationResult(object):
     self.webApiUrlPrefix = webApiUrlPrefix
     self.secondFactorRequired = secondFactorRequired
     self.secondFactorDeliveryHint = secondFactorDeliveryHint
+    self.urls = urls
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -341,6 +497,12 @@ class AuthenticationResult(object):
           self.secondFactorDeliveryHint = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 10:
+        if ftype == TType.STRUCT:
+          self.urls = UserUrls()
+          self.urls.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -386,6 +548,10 @@ class AuthenticationResult(object):
     if self.secondFactorDeliveryHint is not None:
       oprot.writeFieldBegin('secondFactorDeliveryHint', TType.STRING, 9)
       oprot.writeString(self.secondFactorDeliveryHint)
+      oprot.writeFieldEnd()
+    if self.urls is not None:
+      oprot.writeFieldBegin('urls', TType.STRUCT, 10)
+      self.urls.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -441,6 +607,15 @@ class BootstrapSettings(object):
      The domain used for an Evernote user's incoming email address, which allows notes to
      be emailed into an account. E.g. m.evernote.com.
      </dd>
+   <dt>cardscanUrl:</dt>
+     <dd>
+     The full URL for the business card scanning service, e.g.
+     https://cscan.evernote.com/cardagain.
+     </dd>
+   <dt>announcementsUrl</dt>
+     <dd>
+     The base URL for the Announcements service, e.g. https://announce.evernote.com.
+     </dd>
    <dt>enableFacebookSharing:</dt>
      <dd>
      Whether the client application should enable sharing of notes on Facebook.
@@ -469,6 +644,10 @@ class BootstrapSettings(object):
      <dd>
      Whether the client application should enable sharing of notes on Twitter.
      </dd>
+   <dt>enableGoogle:</dt>
+     <dd>
+     Whether the client application should enable authentication with Google,
+     for example to allow integration with a user's Gmail contacts.
    </dl>
   
   Attributes:
@@ -476,6 +655,8 @@ class BootstrapSettings(object):
    - marketingUrl
    - supportUrl
    - accountEmailDomain
+   - cardscanUrl
+   - announcementsUrl
    - enableFacebookSharing
    - enableGiftSubscriptions
    - enableSupportTickets
@@ -485,6 +666,7 @@ class BootstrapSettings(object):
    - enableTwitterSharing
    - enableLinkedInSharing
    - enablePublicNotebooks
+   - enableGoogle
   """
 
   thrift_spec = (
@@ -502,13 +684,18 @@ class BootstrapSettings(object):
     (11, TType.BOOL, 'enableTwitterSharing', None, None, ), # 11
     (12, TType.BOOL, 'enableLinkedInSharing', None, None, ), # 12
     (13, TType.BOOL, 'enablePublicNotebooks', None, None, ), # 13
+    (14, TType.STRING, 'cardscanUrl', None, None, ), # 14
+    (15, TType.STRING, 'announcementsUrl', None, None, ), # 15
+    (16, TType.BOOL, 'enableGoogle', None, None, ), # 16
   )
 
-  def __init__(self, serviceHost=None, marketingUrl=None, supportUrl=None, accountEmailDomain=None, enableFacebookSharing=None, enableGiftSubscriptions=None, enableSupportTickets=None, enableSharedNotebooks=None, enableSingleNoteSharing=None, enableSponsoredAccounts=None, enableTwitterSharing=None, enableLinkedInSharing=None, enablePublicNotebooks=None,):
+  def __init__(self, serviceHost=None, marketingUrl=None, supportUrl=None, accountEmailDomain=None, cardscanUrl=None, announcementsUrl=None, enableFacebookSharing=None, enableGiftSubscriptions=None, enableSupportTickets=None, enableSharedNotebooks=None, enableSingleNoteSharing=None, enableSponsoredAccounts=None, enableTwitterSharing=None, enableLinkedInSharing=None, enablePublicNotebooks=None, enableGoogle=None,):
     self.serviceHost = serviceHost
     self.marketingUrl = marketingUrl
     self.supportUrl = supportUrl
     self.accountEmailDomain = accountEmailDomain
+    self.cardscanUrl = cardscanUrl
+    self.announcementsUrl = announcementsUrl
     self.enableFacebookSharing = enableFacebookSharing
     self.enableGiftSubscriptions = enableGiftSubscriptions
     self.enableSupportTickets = enableSupportTickets
@@ -518,6 +705,7 @@ class BootstrapSettings(object):
     self.enableTwitterSharing = enableTwitterSharing
     self.enableLinkedInSharing = enableLinkedInSharing
     self.enablePublicNotebooks = enablePublicNotebooks
+    self.enableGoogle = enableGoogle
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -546,6 +734,16 @@ class BootstrapSettings(object):
       elif fid == 4:
         if ftype == TType.STRING:
           self.accountEmailDomain = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 14:
+        if ftype == TType.STRING:
+          self.cardscanUrl = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 15:
+        if ftype == TType.STRING:
+          self.announcementsUrl = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 5:
@@ -591,6 +789,11 @@ class BootstrapSettings(object):
       elif fid == 13:
         if ftype == TType.BOOL:
           self.enablePublicNotebooks = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 16:
+        if ftype == TType.BOOL:
+          self.enableGoogle = iprot.readBool();
         else:
           iprot.skip(ftype)
       else:
@@ -654,6 +857,18 @@ class BootstrapSettings(object):
     if self.enablePublicNotebooks is not None:
       oprot.writeFieldBegin('enablePublicNotebooks', TType.BOOL, 13)
       oprot.writeBool(self.enablePublicNotebooks)
+      oprot.writeFieldEnd()
+    if self.cardscanUrl is not None:
+      oprot.writeFieldBegin('cardscanUrl', TType.STRING, 14)
+      oprot.writeString(self.cardscanUrl)
+      oprot.writeFieldEnd()
+    if self.announcementsUrl is not None:
+      oprot.writeFieldBegin('announcementsUrl', TType.STRING, 15)
+      oprot.writeString(self.announcementsUrl)
+      oprot.writeFieldEnd()
+    if self.enableGoogle is not None:
+      oprot.writeFieldBegin('enableGoogle', TType.BOOL, 16)
+      oprot.writeBool(self.enableGoogle)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

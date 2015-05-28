@@ -17,17 +17,26 @@
 # under the License.
 #
 
-from os import path
-from SCons.Builder import Builder
+from enthrift.protocol.TProtocol import TProtocolBase
+from types import *
 
-def scons_env(env, add=''):
-  opath = path.dirname(path.abspath('$TARGET'))
-  lstr = 'thrift --gen cpp -o ' + opath + ' ' + add + ' $SOURCE'
-  cppbuild = Builder(action = lstr)
-  env.Append(BUILDERS = {'ThriftCpp' : cppbuild})
+class TProtocolDecorator():
+  def __init__(self, protocol):
+    TProtocolBase(protocol)
+    self.protocol = protocol
 
-def gen_cpp(env, dir, file):
-  scons_env(env)
-  suffixes = ['_types.h', '_types.cpp']
-  targets = map(lambda s: 'gen-cpp/' + file + s, suffixes)
-  return env.ThriftCpp(targets, dir+file+'.thrift')
+  def __getattr__(self, name):
+    if hasattr(self.protocol, name):
+      member = getattr(self.protocol, name)
+      if type(member) in [MethodType, UnboundMethodType, FunctionType, LambdaType, BuiltinFunctionType, BuiltinMethodType]:
+        return lambda *args, **kwargs: self._wrap(member, args, kwargs)
+      else:
+        return member
+    raise AttributeError(name)
+
+  def _wrap(self, func, args, kwargs):
+    if type(func) == MethodType:
+      result = func(*args, **kwargs)
+    else:
+      result = func(self.protocol, *args, **kwargs)
+    return result

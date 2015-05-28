@@ -17,27 +17,30 @@
 # under the License.
 #
 
-import logging
-import sys
-import os
-import traceback
-import threading
 import Queue
+import os
+import sys
+import threading
+import traceback
 
-from thrift.Thrift import TProcessor
-from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol
+import logging
+logger = logging.getLogger(__name__)
+
+from enthrift.Thrift import TProcessor
+from enthrift.protocol import TBinaryProtocol
+from enthrift.transport import TTransport
+
 
 class TServer:
+  """Base interface for a server, which must have a serve() method.
 
-  """Base interface for a server, which must have a serve method."""
-
-  """ 3 constructors for all servers:
+  Three constructors for all servers:
   1) (processor, serverTransport)
   2) (processor, serverTransport, transportFactory, protocolFactory)
   3) (processor, serverTransport,
       inputTransportFactory, outputTransportFactory,
-      inputProtocolFactory, outputProtocolFactory)"""
+      inputProtocolFactory, outputProtocolFactory)
+  """
   def __init__(self, *args):
     if (len(args) == 2):
       self.__initArgs__(args[0], args[1],
@@ -63,8 +66,8 @@ class TServer:
   def serve(self):
     pass
 
-class TSimpleServer(TServer):
 
+class TSimpleServer(TServer):
   """Simple single-threaded server that just pumps around one transport."""
 
   def __init__(self, *args):
@@ -74,6 +77,8 @@ class TSimpleServer(TServer):
     self.serverTransport.listen()
     while True:
       client = self.serverTransport.accept()
+      if not client:
+        continue
       itrans = self.inputTransportFactory.getTransport(client)
       otrans = self.outputTransportFactory.getTransport(client)
       iprot = self.inputProtocolFactory.getProtocol(itrans)
@@ -81,16 +86,16 @@ class TSimpleServer(TServer):
       try:
         while True:
           self.processor.process(iprot, oprot)
-      except TTransport.TTransportException, tx:
+      except TTransport.TTransportException as tx:
         pass
-      except Exception, x:
-        logging.exception(x)
+      except Exception as x:
+        logger.exception(x)
 
       itrans.close()
       otrans.close()
 
-class TThreadedServer(TServer):
 
+class TThreadedServer(TServer):
   """Threaded server that spawns a new thread per each connection."""
 
   def __init__(self, *args, **kwargs):
@@ -102,13 +107,15 @@ class TThreadedServer(TServer):
     while True:
       try:
         client = self.serverTransport.accept()
-        t = threading.Thread(target = self.handle, args=(client,))
+        if not client:
+          continue
+        t = threading.Thread(target=self.handle, args=(client,))
         t.setDaemon(self.daemon)
         t.start()
       except KeyboardInterrupt:
         raise
-      except Exception, x:
-        logging.exception(x)
+      except Exception as x:
+        logger.exception(x)
 
   def handle(self, client):
     itrans = self.inputTransportFactory.getTransport(client)
@@ -118,16 +125,16 @@ class TThreadedServer(TServer):
     try:
       while True:
         self.processor.process(iprot, oprot)
-    except TTransport.TTransportException, tx:
+    except TTransport.TTransportException as tx:
       pass
-    except Exception, x:
-      logging.exception(x)
+    except Exception as x:
+      logger.exception(x)
 
     itrans.close()
     otrans.close()
 
-class TThreadPoolServer(TServer):
 
+class TThreadPoolServer(TServer):
   """Server with a fixed size pool of threads which service requests."""
 
   def __init__(self, *args, **kwargs):
@@ -146,8 +153,8 @@ class TThreadPoolServer(TServer):
       try:
         client = self.clients.get()
         self.serveClient(client)
-      except Exception, x:
-        logging.exception(x)
+      except Exception as x:
+        logger.exception(x)
 
   def serveClient(self, client):
     """Process input/output from a client for as long as possible"""
@@ -158,10 +165,10 @@ class TThreadPoolServer(TServer):
     try:
       while True:
         self.processor.process(iprot, oprot)
-    except TTransport.TTransportException, tx:
+    except TTransport.TTransportException as tx:
       pass
-    except Exception, x:
-      logging.exception(x)
+    except Exception as x:
+      logger.exception(x)
 
     itrans.close()
     otrans.close()
@@ -170,26 +177,27 @@ class TThreadPoolServer(TServer):
     """Start a fixed number of worker threads and put client into a queue"""
     for i in range(self.threads):
       try:
-        t = threading.Thread(target = self.serveThread)
+        t = threading.Thread(target=self.serveThread)
         t.setDaemon(self.daemon)
         t.start()
-      except Exception, x:
-        logging.exception(x)
+      except Exception as x:
+        logger.exception(x)
 
     # Pump the socket for clients
     self.serverTransport.listen()
     while True:
       try:
         client = self.serverTransport.accept()
+        if not client:
+          continue
         self.clients.put(client)
-      except Exception, x:
-        logging.exception(x)
+      except Exception as x:
+        logger.exception(x)
 
 
 class TForkingServer(TServer):
+  """A Thrift server that forks a new process for each request
 
-  """A Thrift server that forks a new process for each request"""
-  """
   This is more scalable than the threaded server as it does not cause
   GIL contention.
 
@@ -200,7 +208,6 @@ class TForkingServer(TServer):
   This code is heavily inspired by SocketServer.ForkingMixIn in the
   Python stdlib.
   """
-
   def __init__(self, *args):
     TServer.__init__(self, *args)
     self.children = []
@@ -209,17 +216,18 @@ class TForkingServer(TServer):
     def try_close(file):
       try:
         file.close()
-      except IOError, e:
-        logging.warning(e, exc_info=True)
-
+      except IOError as e:
+        logger.warning(e, exc_info=True)
 
     self.serverTransport.listen()
     while True:
       client = self.serverTransport.accept()
+      if not client:
+        continue
       try:
         pid = os.fork()
 
-        if pid: # parent
+        if pid:  # parent
           # add before collect, otherwise you race w/ waitpid
           self.children.append(pid)
           self.collect_children()
@@ -242,10 +250,10 @@ class TForkingServer(TServer):
             try:
               while True:
                 self.processor.process(iprot, oprot)
-            except TTransport.TTransportException, tx:
+            except TTransport.TTransportException as tx:
               pass
-            except Exception, e:
-              logging.exception(e)
+            except Exception as e:
+              logger.exception(e)
               ecode = 1
           finally:
             try_close(itrans)
@@ -253,11 +261,10 @@ class TForkingServer(TServer):
 
           os._exit(ecode)
 
-      except TTransport.TTransportException, tx:
+      except TTransport.TTransportException as tx:
         pass
-      except Exception, x:
-        logging.exception(x)
-
+      except Exception as x:
+        logger.exception(x)
 
   def collect_children(self):
     while self.children:
@@ -270,5 +277,3 @@ class TForkingServer(TServer):
         self.children.remove(pid)
       else:
         break
-
-

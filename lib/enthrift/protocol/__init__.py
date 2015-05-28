@@ -17,4 +17,4 @@
 # under the License.
 #
 
-__all__ = ['TTransport', 'TSocket', 'THttpClient','TZlibTransport']
+__all__ = ['fastbinary', 'TBase', 'TBinaryProtocol', 'TCompactProtocol', 'TJSONProtocol', 'TProtocol']

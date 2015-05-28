@@ -6,12 +6,14 @@
 #  options string: py:new_style
 #
 
-from thrift.Thrift import TType, TMessageType, TException, TApplicationException
+from enthrift.Thrift import TType, TMessageType, TException, TApplicationException
+import evernote.edam.type.ttypes
 
-from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol, TProtocol
+
+from enthrift.transport import TTransport
+from enthrift.protocol import TBinaryProtocol, TProtocol
 try:
-  from thrift.protocol import fastbinary
+  from enthrift.protocol import fastbinary
 except:
   fastbinary = None
 
@@ -65,6 +67,9 @@ class EDAMErrorCode(object):
     <dt>RATE_LIMIT_REACHED</dt>
       <dd>Operation denied because the calling application has reached
           its hourly API call limit for this user.</dd>
+    <dt>BUSINESS_SECURITY_LOGIN_REQUIRED</dt>
+      <dd>Access to a business account has been denied because the user must complete
+         additional steps in order to comply with business security requirements.</dd>
   </dl>
   """
   UNKNOWN = 1
@@ -86,6 +91,7 @@ class EDAMErrorCode(object):
   UNSUPPORTED_OPERATION = 17
   TAKEN_DOWN = 18
   RATE_LIMIT_REACHED = 19
+  BUSINESS_SECURITY_LOGIN_REQUIRED = 20
 
   _VALUES_TO_NAMES = {
     1: "UNKNOWN",
@@ -107,6 +113,7 @@ class EDAMErrorCode(object):
     17: "UNSUPPORTED_OPERATION",
     18: "TAKEN_DOWN",
     19: "RATE_LIMIT_REACHED",
+    20: "BUSINESS_SECURITY_LOGIN_REQUIRED",
   }
 
   _NAMES_TO_VALUES = {
@@ -129,6 +136,57 @@ class EDAMErrorCode(object):
     "UNSUPPORTED_OPERATION": 17,
     "TAKEN_DOWN": 18,
     "RATE_LIMIT_REACHED": 19,
+    "BUSINESS_SECURITY_LOGIN_REQUIRED": 20,
+  }
+
+class EDAMInvalidContactReason(object):
+  """
+  An enumeration that provides a reason for why a given contact was invalid, for example,
+  as thrown via an EDAMInvalidContactsException.
+  
+  <dl>
+    <dt>BAD_ADDRESS</dt>
+      <dd>The contact information does not represent a valid address for a recipient.
+          Clients should be validating and normalizing contacts, so receiving this
+          error code commonly represents a client error.
+          </dd>
+    <dt>DUPLICATE_CONTACT</dt>
+      <dd>If the method throwing this exception accepts a list of contacts, this error
+          code indicates that the given contact is a duplicate of another contact in
+          the list.  Note that the server may clean up contacts, and that this cleanup
+          occurs before checking for duplication.  Receiving this error is commonly
+          an indication of a client issue, since client should be normalizing contacts
+          and removing duplicates. All instances that are duplicates are returned.  For
+          example, if a list of 5 contacts has the same e-mail address twice, the two
+          conflicting e-mail address contacts will be returned.
+          </dd>
+    <dt>NO_CONNECTION</dt>
+      <dd>Indicates that the given contact, an Evernote type contact, is not connected
+          to the user for which the call is being made. It is possible that clients are
+          out of sync with the server and should re-synchronize their identities and
+          business user state. See Identity.userConnected for more information on user
+          connections.
+          </dd>
+  </dl>
+  
+  Note that if multiple reasons may apply, only one is returned. The precedence order
+  is BAD_ADDRESS, DUPLICATE_CONTACT, NO_CONNECTION, meaning that if a contact has a bad
+  address and is also duplicated, it will be returned as a BAD_ADDRESS.
+  """
+  BAD_ADDRESS = 0
+  DUPLICATE_CONTACT = 1
+  NO_CONNECTION = 2
+
+  _VALUES_TO_NAMES = {
+    0: "BAD_ADDRESS",
+    1: "DUPLICATE_CONTACT",
+    2: "NO_CONNECTION",
+  }
+
+  _NAMES_TO_VALUES = {
+    "BAD_ADDRESS": 0,
+    "DUPLICATE_CONTACT": 1,
+    "NO_CONNECTION": 2,
   }
 
 
@@ -397,6 +455,133 @@ class EDAMNotFoundException(TException):
     oprot.writeStructEnd()
 
   def validate(self):
+    return
+
+
+  def __str__(self):
+    return repr(self)
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class EDAMInvalidContactsException(TException):
+  """
+  An exception thrown when the provided Contacts fail validation. For instance,
+  email domains could be invalid, phone numbers might not be valid for SMS,
+  etc.
+  
+  We will not provide individual reasons for each Contact's validation failure.
+  The presence of the Contact in this exception means that the user must figure
+  out how to take appropriate action to fix this Contact.
+  
+  <dl>
+    <dt>contacts</dt>
+    <dd>The list of Contacts that are considered invalid by the service</dd>
+  
+    <dt>parameter</dt>
+    <dd>If the error applied to a particular input parameter, this will
+    indicate which parameter.</dd>
+  
+    <dt>reasons</dt>
+    <dd>If supplied, the list of reasons why the server considered a contact invalid,
+    matching, in order, the list returned in the contacts field.</dd>
+  </dl>
+  
+  Attributes:
+   - contacts
+   - parameter
+   - reasons
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'contacts', (TType.STRUCT,(evernote.edam.type.ttypes.Contact, evernote.edam.type.ttypes.Contact.thrift_spec)), None, ), # 1
+    (2, TType.STRING, 'parameter', None, None, ), # 2
+    (3, TType.LIST, 'reasons', (TType.I32,None), None, ), # 3
+  )
+
+  def __init__(self, contacts=None, parameter=None, reasons=None,):
+    self.contacts = contacts
+    self.parameter = parameter
+    self.reasons = reasons
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.contacts = []
+          (_etype3, _size0) = iprot.readListBegin()
+          for _i4 in xrange(_size0):
+            _elem5 = evernote.edam.type.ttypes.Contact()
+            _elem5.read(iprot)
+            self.contacts.append(_elem5)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.parameter = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.LIST:
+          self.reasons = []
+          (_etype9, _size6) = iprot.readListBegin()
+          for _i10 in xrange(_size6):
+            _elem11 = iprot.readI32();
+            self.reasons.append(_elem11)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('EDAMInvalidContactsException')
+    if self.contacts is not None:
+      oprot.writeFieldBegin('contacts', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.contacts))
+      for iter12 in self.contacts:
+        iter12.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.parameter is not None:
+      oprot.writeFieldBegin('parameter', TType.STRING, 2)
+      oprot.writeString(self.parameter)
+      oprot.writeFieldEnd()
+    if self.reasons is not None:
+      oprot.writeFieldBegin('reasons', TType.LIST, 3)
+      oprot.writeListBegin(TType.I32, len(self.reasons))
+      for iter13 in self.reasons:
+        oprot.writeI32(iter13)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.contacts is None:
+      raise TProtocol.TProtocolException(message='Required field contacts is unset!')
     return
 
 

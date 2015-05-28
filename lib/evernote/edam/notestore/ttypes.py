@@ -6,67 +6,172 @@
 #  options string: py:new_style
 #
 
-from thrift.Thrift import TType, TMessageType, TException, TApplicationException
+from enthrift.Thrift import TType, TMessageType, TException, TApplicationException
 import evernote.edam.userstore.ttypes
 import evernote.edam.type.ttypes
 import evernote.edam.error.ttypes
 import evernote.edam.limits.ttypes
 
 
-from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol, TProtocol
+from enthrift.transport import TTransport
+from enthrift.protocol import TBinaryProtocol, TProtocol
 try:
-  from thrift.protocol import fastbinary
+  from enthrift.protocol import fastbinary
 except:
   fastbinary = None
 
 
+class UserSetting(object):
+  """
+  An enumeration of the user settings that can be set via the
+  updateUserSetting method.  See that method for details.
+  """
+  RECEIVE_REMINDER_EMAIL = 1
+  TIMEZONE = 2
+
+  _VALUES_TO_NAMES = {
+    1: "RECEIVE_REMINDER_EMAIL",
+    2: "TIMEZONE",
+  }
+
+  _NAMES_TO_VALUES = {
+    "RECEIVE_REMINDER_EMAIL": 1,
+    "TIMEZONE": 2,
+  }
+
+class ShareRelationshipPrivilegeLevel(object):
+  """
+  Privilege levels for accessing shared notebooks.
+  
+  READ_NOTEBOOK: Recipient is able to read the contents of the shared notebook
+    but does not have access to information about other recipients of the
+    notebook or the activity stream information.
+  
+  READ_NOTEBOOK_PLUS_ACTIVITY: Recipient has READ_NOTEBOOK rights and can also
+    access information about other recipients and the activity stream.
+  
+  MODIFY_NOTEBOOK_PLUS_ACTIVITY: Recipient has rights to read and modify the contents
+    of the shared notebook, including the right to move notes to the trash and to create
+    notes in the notebook.  The recipient can also access information about other
+    recipients and the activity stream.
+  
+  FULL_ACCESS: Recipient has full rights to the shared notebook and recipient lists,
+    including privilege to revoke and create invitations and to change privilege
+    levels on invitations for individuals. If the user is a member of the same group,
+    (e.g. the same business) as the shared notebook, they will additionally be granted
+    permissions to update the publishing status of the notebook.
+  """
+  READ_NOTEBOOK = 0
+  READ_NOTEBOOK_PLUS_ACTIVITY = 10
+  MODIFY_NOTEBOOK_PLUS_ACTIVITY = 20
+  FULL_ACCESS = 30
+
+  _VALUES_TO_NAMES = {
+    0: "READ_NOTEBOOK",
+    10: "READ_NOTEBOOK_PLUS_ACTIVITY",
+    20: "MODIFY_NOTEBOOK_PLUS_ACTIVITY",
+    30: "FULL_ACCESS",
+  }
+
+  _NAMES_TO_VALUES = {
+    "READ_NOTEBOOK": 0,
+    "READ_NOTEBOOK_PLUS_ACTIVITY": 10,
+    "MODIFY_NOTEBOOK_PLUS_ACTIVITY": 20,
+    "FULL_ACCESS": 30,
+  }
+
 
 class SyncState(object):
   """
-   This structure encapsulates the information about the state of the
-   user's account for the purpose of "state based" synchronization.
+  This structure encapsulates the information about the state of the
+  user's account for the purpose of "state based" synchronization.
   <dl>
-   <dt>currentTime</dt>
-     <dd>
-     The server's current date and time.
-     </dd>
+  <dt>currentTime</dt>
+    <dd>
+    The server's current date and time.
+    </dd>
   
-   <dt>fullSyncBefore</dt>
-     <dd>
-     The cutoff date and time for client caches to be
-     updated via incremental synchronization.  Any clients that were last
-     synched with the server before this date/time must do a full resync of all
-     objects.  This cutoff point will change over time as archival data is
-     deleted or special circumstances on the service require resynchronization.
-     </dd>
+  <dt>fullSyncBefore</dt>
+    <dd>
+    The cutoff date and time for client caches to be
+    updated via incremental synchronization.  Any clients that were last
+    synched with the server before this date/time must do a full resync of all
+    objects.  This cutoff point will change over time as archival data is
+    deleted or special circumstances on the service require resynchronization.
+    </dd>
   
-   <dt>updateCount</dt>
-     <dd>
-     Indicates the total number of transactions that have
-     been committed within the account.  This reflects (for example) the
-     number of discrete additions or modifications that have been made to
-     the data in this account (tags, notes, resources, etc.).
-     This number is the "high water mark" for Update Sequence Numbers (USN)
-     within the account.
-     </dd>
+  <dt>updateCount</dt>
+    <dd>
+    Indicates the total number of transactions that have
+    been committed within the account.  This reflects (for example) the
+    number of discrete additions or modifications that have been made to
+    the data in this account (tags, notes, resources, etc.).
+    This number is the "high water mark" for Update Sequence Numbers (USN)
+    within the account.
+    </dd>
   
-   <dt>uploaded</dt>
-     <dd>
-     The total number of bytes that have been uploaded to
-     this account in the current monthly period.  This can be compared against
-     Accounting.uploadLimit (from the UserStore) to determine how close the user
-     is to their monthly upload limit.
-     This value may not be present if the SyncState has been retrieved by
-     a caller that only has read access to the account.
-     </dd>
-   </dl>
+  <dt>uploaded</dt>
+    <dd>
+    The total number of bytes that have been uploaded to
+    this account in the current monthly period.  This can be compared against
+    Accounting.uploadLimit (from the UserStore) to determine how close the user
+    is to their monthly upload limit.
+    This value may not be present if the SyncState has been retrieved by
+    a caller that only has read access to the account.
+    </dd>
+  
+  <dt>userLastUpdated</dt>
+    <dd>
+    The last time when a user's account level information was changed. This value
+    is the latest time when a modification was made to any of the following:
+    accounting information (billing, quota, premium status, etc.), user attributes
+    and business user information (business name, business user attributes, etc.) if
+    the user is in a business.
+    Clients who need to maintain account information about a User should watch this
+    field for updates rather than polling UserStore.getUser for updates. Here is the
+    basic flow that clients should follow:
+    <ol>
+      <li>Call NoteStore.getSyncState to retrieve the SyncState object</li>
+      <li>Compare SyncState.userLastUpdated to previously stored value:
+          if (SyncState.userLastUpdated > previousValue)
+            call UserStore.getUser to get the latest User object;
+          else
+            do nothing;</li>
+      <li>Update previousValue = SyncState.userLastUpdated</li>
+    </ol>
+    </dd>
+  
+  <dt>userMaxMessageEventId</dt>
+    <dd>
+    The greatest MessageEventID for this user's account. Clients that do a full
+    sync should store this value locally and compare their local copy to the
+    value returned by getSyncState to determine if they need to sync with
+    MessageStore. This value will be omitted if the user has never sent or
+    received a message.
+    </dd>
+  </dl>
+  
+  <dt>businessSummaryUpdated</dt>
+    <dd>
+    The date when the user's Business Summary recommendations were last
+    updated. This is set only if the SyncState being requested is for a
+    user who is currently a member of a business and has had business
+    summary recommendations generated at least once. It is not set for calls
+    made using a business authentication token. Depending on server-side
+    cache status it may occasionally be unset even if these criteria are met.
+    The Business Summary should be fetched by clients only if the date
+    reported here is later than than the date of the last fetch. INTERNAL
+    ONLY!
+    </dd>
+  </dl>
   
   Attributes:
    - currentTime
    - fullSyncBefore
    - updateCount
    - uploaded
+   - userLastUpdated
+   - userMaxMessageEventId
   """
 
   thrift_spec = (
@@ -75,13 +180,17 @@ class SyncState(object):
     (2, TType.I64, 'fullSyncBefore', None, None, ), # 2
     (3, TType.I32, 'updateCount', None, None, ), # 3
     (4, TType.I64, 'uploaded', None, None, ), # 4
+    (5, TType.I64, 'userLastUpdated', None, None, ), # 5
+    (6, TType.I64, 'userMaxMessageEventId', None, None, ), # 6
   )
 
-  def __init__(self, currentTime=None, fullSyncBefore=None, updateCount=None, uploaded=None,):
+  def __init__(self, currentTime=None, fullSyncBefore=None, updateCount=None, uploaded=None, userLastUpdated=None, userMaxMessageEventId=None,):
     self.currentTime = currentTime
     self.fullSyncBefore = fullSyncBefore
     self.updateCount = updateCount
     self.uploaded = uploaded
+    self.userLastUpdated = userLastUpdated
+    self.userMaxMessageEventId = userMaxMessageEventId
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -112,6 +221,16 @@ class SyncState(object):
           self.uploaded = iprot.readI64();
         else:
           iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.I64:
+          self.userLastUpdated = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.I64:
+          self.userMaxMessageEventId = iprot.readI64();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -137,6 +256,14 @@ class SyncState(object):
     if self.uploaded is not None:
       oprot.writeFieldBegin('uploaded', TType.I64, 4)
       oprot.writeI64(self.uploaded)
+      oprot.writeFieldEnd()
+    if self.userLastUpdated is not None:
+      oprot.writeFieldBegin('userLastUpdated', TType.I64, 5)
+      oprot.writeI64(self.userLastUpdated)
+      oprot.writeFieldEnd()
+    if self.userMaxMessageEventId is not None:
+      oprot.writeFieldBegin('userMaxMessageEventId', TType.I64, 6)
+      oprot.writeI64(self.userMaxMessageEventId)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -207,8 +334,7 @@ class SyncChunk(object):
    <dt>notebooks</dt>
      <dd>
      If present, this is a list of non-expunged notebooks that
-     have a USN in this chunk.  This will include notebooks that are "deleted"
-     but not expunged (i.e. in the trash).
+     have a USN in this chunk.
      </dd>
   
    <dt>tags</dt>
@@ -267,6 +393,12 @@ class SyncChunk(object):
      <dd>
      If present, the GUIDs of all of the LinkedNotebooks
      that were permanently expunged in this chunk.
+     </dd>
+  
+   <dt>Preferences</dt>
+     <dd>
+     If present, this is a Preferences structure that has
+     a USN in this chunk. INTERNAL ONLY!
      </dd>
    </dl>
   
@@ -669,11 +801,56 @@ class SyncChunkFilter(object):
      only the keysOnly field will be filled in.
      </dd>
   
+   <dt>includePreferences</dt>
+     <dd>
+     If true, then the server will include the "preferences" field.
+     INTERNAL ONLY!
+     </dd>
+  
+   <dt>omitSharedNotebooks<dt>
+     <dd>
+     Normally, if 'includeNotebooks' is true, then the SyncChunks will
+     include Notebooks that may include a set of SharedNotebook
+     invitations via Notebook.sharedNotebookIds and Notebook.sharedNotebooks.
+     However, if omitSharedNotebooks is set to true, then the Notebooks
+     will omit those two fields and leave them unset. This should be used
+     by clients who want to know their own set of Notebooks (and the
+     associated permissions via Notebook.recipientSettings), and who
+     do not need to know the full set of other people who can also see
+     that same notebook.
+     </dd>
+  
    <dt>requireNoteContentClass</dt>
      <dd>
      If set, then only send notes whose content class matches this value.
      The value can be a literal match or, if the last character is an
      asterisk, a prefix match.
+     </dd>
+  
+   <dt>notebookGuids</dt>
+     <dd>
+     If set, then restrict the returned notebooks, notes, and
+     resources to those associated with one of the notebooks whose
+     GUID is provided in this list.  If not set, then no filtering on
+     notebook GUID will be performed.  If you set this field, you may
+     not also set includeExpunged else an EDAMUserException with an
+     error code of DATA_CONFLICT will be thrown.  You only need to set
+     this field if you want to restrict the returned entities more
+     than what your authentication token allows you to access.  For
+     example, there is no need to set this field for single notebook
+     tokens such as for shared notebooks.  You can use this field to
+     synchronize a newly discovered business notebook while
+     incrementally synchronizing a business account, in which case you
+     will only need to consider setting includeNotes,
+     includeNotebooks, includeNoteAttributes, includeNoteResources,
+     and maybe some of the "FullMap" fields.
+     </dd>
+  
+   <dt>includeSharedNotes</dt>
+     <dd>
+     If true, then the service will include the sharedNotes field on all
+     notes that are in SyncChunk.notes. If 'includeNotes' is false, then
+     this will have no effect.
      </dd>
    </dl>
   
@@ -690,7 +867,10 @@ class SyncChunkFilter(object):
    - includeNoteApplicationDataFullMap
    - includeResourceApplicationDataFullMap
    - includeNoteResourceApplicationDataFullMap
+   - includedSharedNotes
+   - omitSharedNotebooks
    - requireNoteContentClass
+   - notebookGuids
   """
 
   thrift_spec = (
@@ -708,9 +888,13 @@ class SyncChunkFilter(object):
     (11, TType.STRING, 'requireNoteContentClass', None, None, ), # 11
     (12, TType.BOOL, 'includeResourceApplicationDataFullMap', None, None, ), # 12
     (13, TType.BOOL, 'includeNoteResourceApplicationDataFullMap', None, None, ), # 13
+    None, # 14
+    (15, TType.SET, 'notebookGuids', (TType.STRING,None), None, ), # 15
+    (16, TType.BOOL, 'omitSharedNotebooks', None, None, ), # 16
+    (17, TType.BOOL, 'includedSharedNotes', None, None, ), # 17
   )
 
-  def __init__(self, includeNotes=None, includeNoteResources=None, includeNoteAttributes=None, includeNotebooks=None, includeTags=None, includeSearches=None, includeResources=None, includeLinkedNotebooks=None, includeExpunged=None, includeNoteApplicationDataFullMap=None, includeResourceApplicationDataFullMap=None, includeNoteResourceApplicationDataFullMap=None, requireNoteContentClass=None,):
+  def __init__(self, includeNotes=None, includeNoteResources=None, includeNoteAttributes=None, includeNotebooks=None, includeTags=None, includeSearches=None, includeResources=None, includeLinkedNotebooks=None, includeExpunged=None, includeNoteApplicationDataFullMap=None, includeResourceApplicationDataFullMap=None, includeNoteResourceApplicationDataFullMap=None, includedSharedNotes=None, omitSharedNotebooks=None, requireNoteContentClass=None, notebookGuids=None,):
     self.includeNotes = includeNotes
     self.includeNoteResources = includeNoteResources
     self.includeNoteAttributes = includeNoteAttributes
@@ -723,7 +907,10 @@ class SyncChunkFilter(object):
     self.includeNoteApplicationDataFullMap = includeNoteApplicationDataFullMap
     self.includeResourceApplicationDataFullMap = includeResourceApplicationDataFullMap
     self.includeNoteResourceApplicationDataFullMap = includeNoteResourceApplicationDataFullMap
+    self.includedSharedNotes = includedSharedNotes
+    self.omitSharedNotebooks = omitSharedNotebooks
     self.requireNoteContentClass = requireNoteContentClass
+    self.notebookGuids = notebookGuids
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -794,9 +981,29 @@ class SyncChunkFilter(object):
           self.includeNoteResourceApplicationDataFullMap = iprot.readBool();
         else:
           iprot.skip(ftype)
+      elif fid == 17:
+        if ftype == TType.BOOL:
+          self.includedSharedNotes = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 16:
+        if ftype == TType.BOOL:
+          self.omitSharedNotebooks = iprot.readBool();
+        else:
+          iprot.skip(ftype)
       elif fid == 11:
         if ftype == TType.STRING:
           self.requireNoteContentClass = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 15:
+        if ftype == TType.SET:
+          self.notebookGuids = set()
+          (_etype80, _size77) = iprot.readSetBegin()
+          for _i81 in xrange(_size77):
+            _elem82 = iprot.readString();
+            self.notebookGuids.add(_elem82)
+          iprot.readSetEnd()
         else:
           iprot.skip(ftype)
       else:
@@ -860,6 +1067,21 @@ class SyncChunkFilter(object):
     if self.includeNoteResourceApplicationDataFullMap is not None:
       oprot.writeFieldBegin('includeNoteResourceApplicationDataFullMap', TType.BOOL, 13)
       oprot.writeBool(self.includeNoteResourceApplicationDataFullMap)
+      oprot.writeFieldEnd()
+    if self.notebookGuids is not None:
+      oprot.writeFieldBegin('notebookGuids', TType.SET, 15)
+      oprot.writeSetBegin(TType.STRING, len(self.notebookGuids))
+      for iter83 in self.notebookGuids:
+        oprot.writeString(iter83)
+      oprot.writeSetEnd()
+      oprot.writeFieldEnd()
+    if self.omitSharedNotebooks is not None:
+      oprot.writeFieldBegin('omitSharedNotebooks', TType.BOOL, 16)
+      oprot.writeBool(self.omitSharedNotebooks)
+      oprot.writeFieldEnd()
+    if self.includedSharedNotes is not None:
+      oprot.writeFieldBegin('includedSharedNotes', TType.BOOL, 17)
+      oprot.writeBool(self.includedSharedNotes)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -941,6 +1163,13 @@ class NoteFilter(object):
      as a wish list, not a requirement.
      Accepts the full search grammar documented in the Evernote API Overview.
      </dd>
+  
+   <dt>includeAllReadableNotebooks</dt>
+     <dd>
+     If true, then the search will include all business notebooks that are readable
+     by the user. A business authentication token must be supplied for
+     this option to take effect when calling search APIs.
+     </dd>
    </dl>
   
   Attributes:
@@ -952,6 +1181,7 @@ class NoteFilter(object):
    - timeZone
    - inactive
    - emphasized
+   - includeAllReadableNotebooks
   """
 
   thrift_spec = (
@@ -964,9 +1194,10 @@ class NoteFilter(object):
     (6, TType.STRING, 'timeZone', None, None, ), # 6
     (7, TType.BOOL, 'inactive', None, None, ), # 7
     (8, TType.STRING, 'emphasized', None, None, ), # 8
+    (9, TType.BOOL, 'includeAllReadableNotebooks', None, None, ), # 9
   )
 
-  def __init__(self, order=None, ascending=None, words=None, notebookGuid=None, tagGuids=None, timeZone=None, inactive=None, emphasized=None,):
+  def __init__(self, order=None, ascending=None, words=None, notebookGuid=None, tagGuids=None, timeZone=None, inactive=None, emphasized=None, includeAllReadableNotebooks=None,):
     self.order = order
     self.ascending = ascending
     self.words = words
@@ -975,6 +1206,7 @@ class NoteFilter(object):
     self.timeZone = timeZone
     self.inactive = inactive
     self.emphasized = emphasized
+    self.includeAllReadableNotebooks = includeAllReadableNotebooks
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1008,10 +1240,10 @@ class NoteFilter(object):
       elif fid == 5:
         if ftype == TType.LIST:
           self.tagGuids = []
-          (_etype80, _size77) = iprot.readListBegin()
-          for _i81 in xrange(_size77):
-            _elem82 = iprot.readString();
-            self.tagGuids.append(_elem82)
+          (_etype87, _size84) = iprot.readListBegin()
+          for _i88 in xrange(_size84):
+            _elem89 = iprot.readString();
+            self.tagGuids.append(_elem89)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1028,6 +1260,11 @@ class NoteFilter(object):
       elif fid == 8:
         if ftype == TType.STRING:
           self.emphasized = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 9:
+        if ftype == TType.BOOL:
+          self.includeAllReadableNotebooks = iprot.readBool();
         else:
           iprot.skip(ftype)
       else:
@@ -1059,8 +1296,8 @@ class NoteFilter(object):
     if self.tagGuids is not None:
       oprot.writeFieldBegin('tagGuids', TType.LIST, 5)
       oprot.writeListBegin(TType.STRING, len(self.tagGuids))
-      for iter83 in self.tagGuids:
-        oprot.writeString(iter83)
+      for iter90 in self.tagGuids:
+        oprot.writeString(iter90)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.timeZone is not None:
@@ -1074,6 +1311,10 @@ class NoteFilter(object):
     if self.emphasized is not None:
       oprot.writeFieldBegin('emphasized', TType.STRING, 8)
       oprot.writeString(self.emphasized)
+      oprot.writeFieldEnd()
+    if self.includeAllReadableNotebooks is not None:
+      oprot.writeFieldBegin('includeAllReadableNotebooks', TType.BOOL, 9)
+      oprot.writeBool(self.includeAllReadableNotebooks)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1193,31 +1434,31 @@ class NoteList(object):
       elif fid == 3:
         if ftype == TType.LIST:
           self.notes = []
-          (_etype87, _size84) = iprot.readListBegin()
-          for _i88 in xrange(_size84):
-            _elem89 = evernote.edam.type.ttypes.Note()
-            _elem89.read(iprot)
-            self.notes.append(_elem89)
+          (_etype94, _size91) = iprot.readListBegin()
+          for _i95 in xrange(_size91):
+            _elem96 = evernote.edam.type.ttypes.Note()
+            _elem96.read(iprot)
+            self.notes.append(_elem96)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.stoppedWords = []
-          (_etype93, _size90) = iprot.readListBegin()
-          for _i94 in xrange(_size90):
-            _elem95 = iprot.readString();
-            self.stoppedWords.append(_elem95)
+          (_etype100, _size97) = iprot.readListBegin()
+          for _i101 in xrange(_size97):
+            _elem102 = iprot.readString();
+            self.stoppedWords.append(_elem102)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 5:
         if ftype == TType.LIST:
           self.searchedWords = []
-          (_etype99, _size96) = iprot.readListBegin()
-          for _i100 in xrange(_size96):
-            _elem101 = iprot.readString();
-            self.searchedWords.append(_elem101)
+          (_etype106, _size103) = iprot.readListBegin()
+          for _i107 in xrange(_size103):
+            _elem108 = iprot.readString();
+            self.searchedWords.append(_elem108)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1247,22 +1488,22 @@ class NoteList(object):
     if self.notes is not None:
       oprot.writeFieldBegin('notes', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.notes))
-      for iter102 in self.notes:
-        iter102.write(oprot)
+      for iter109 in self.notes:
+        iter109.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.stoppedWords is not None:
       oprot.writeFieldBegin('stoppedWords', TType.LIST, 4)
       oprot.writeListBegin(TType.STRING, len(self.stoppedWords))
-      for iter103 in self.stoppedWords:
-        oprot.writeString(iter103)
+      for iter110 in self.stoppedWords:
+        oprot.writeString(iter110)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.searchedWords is not None:
       oprot.writeFieldBegin('searchedWords', TType.LIST, 5)
       oprot.writeListBegin(TType.STRING, len(self.searchedWords))
-      for iter104 in self.searchedWords:
-        oprot.writeString(iter104)
+      for iter111 in self.searchedWords:
+        oprot.writeString(iter111)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.updateCount is not None:
@@ -1423,10 +1664,10 @@ class NoteMetadata(object):
       elif fid == 12:
         if ftype == TType.LIST:
           self.tagGuids = []
-          (_etype108, _size105) = iprot.readListBegin()
-          for _i109 in xrange(_size105):
-            _elem110 = iprot.readString();
-            self.tagGuids.append(_elem110)
+          (_etype115, _size112) = iprot.readListBegin()
+          for _i116 in xrange(_size112):
+            _elem117 = iprot.readString();
+            self.tagGuids.append(_elem117)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1491,8 +1732,8 @@ class NoteMetadata(object):
     if self.tagGuids is not None:
       oprot.writeFieldBegin('tagGuids', TType.LIST, 12)
       oprot.writeListBegin(TType.STRING, len(self.tagGuids))
-      for iter111 in self.tagGuids:
-        oprot.writeString(iter111)
+      for iter118 in self.tagGuids:
+        oprot.writeString(iter118)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.attributes is not None:
@@ -1631,31 +1872,31 @@ class NotesMetadataList(object):
       elif fid == 3:
         if ftype == TType.LIST:
           self.notes = []
-          (_etype115, _size112) = iprot.readListBegin()
-          for _i116 in xrange(_size112):
-            _elem117 = NoteMetadata()
-            _elem117.read(iprot)
-            self.notes.append(_elem117)
+          (_etype122, _size119) = iprot.readListBegin()
+          for _i123 in xrange(_size119):
+            _elem124 = NoteMetadata()
+            _elem124.read(iprot)
+            self.notes.append(_elem124)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.stoppedWords = []
-          (_etype121, _size118) = iprot.readListBegin()
-          for _i122 in xrange(_size118):
-            _elem123 = iprot.readString();
-            self.stoppedWords.append(_elem123)
+          (_etype128, _size125) = iprot.readListBegin()
+          for _i129 in xrange(_size125):
+            _elem130 = iprot.readString();
+            self.stoppedWords.append(_elem130)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 5:
         if ftype == TType.LIST:
           self.searchedWords = []
-          (_etype127, _size124) = iprot.readListBegin()
-          for _i128 in xrange(_size124):
-            _elem129 = iprot.readString();
-            self.searchedWords.append(_elem129)
+          (_etype134, _size131) = iprot.readListBegin()
+          for _i135 in xrange(_size131):
+            _elem136 = iprot.readString();
+            self.searchedWords.append(_elem136)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1685,22 +1926,22 @@ class NotesMetadataList(object):
     if self.notes is not None:
       oprot.writeFieldBegin('notes', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.notes))
-      for iter130 in self.notes:
-        iter130.write(oprot)
+      for iter137 in self.notes:
+        iter137.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.stoppedWords is not None:
       oprot.writeFieldBegin('stoppedWords', TType.LIST, 4)
       oprot.writeListBegin(TType.STRING, len(self.stoppedWords))
-      for iter131 in self.stoppedWords:
-        oprot.writeString(iter131)
+      for iter138 in self.stoppedWords:
+        oprot.writeString(iter138)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.searchedWords is not None:
       oprot.writeFieldBegin('searchedWords', TType.LIST, 5)
       oprot.writeListBegin(TType.STRING, len(self.searchedWords))
-      for iter132 in self.searchedWords:
-        oprot.writeString(iter132)
+      for iter139 in self.searchedWords:
+        oprot.writeString(iter139)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.updateCount is not None:
@@ -1990,22 +2231,22 @@ class NoteCollectionCounts(object):
       if fid == 1:
         if ftype == TType.MAP:
           self.notebookCounts = {}
-          (_ktype134, _vtype135, _size133 ) = iprot.readMapBegin() 
-          for _i137 in xrange(_size133):
-            _key138 = iprot.readString();
-            _val139 = iprot.readI32();
-            self.notebookCounts[_key138] = _val139
+          (_ktype141, _vtype142, _size140 ) = iprot.readMapBegin() 
+          for _i144 in xrange(_size140):
+            _key145 = iprot.readString();
+            _val146 = iprot.readI32();
+            self.notebookCounts[_key145] = _val146
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.MAP:
           self.tagCounts = {}
-          (_ktype141, _vtype142, _size140 ) = iprot.readMapBegin() 
-          for _i144 in xrange(_size140):
-            _key145 = iprot.readString();
-            _val146 = iprot.readI32();
-            self.tagCounts[_key145] = _val146
+          (_ktype148, _vtype149, _size147 ) = iprot.readMapBegin() 
+          for _i151 in xrange(_size147):
+            _key152 = iprot.readString();
+            _val153 = iprot.readI32();
+            self.tagCounts[_key152] = _val153
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -2027,22 +2268,158 @@ class NoteCollectionCounts(object):
     if self.notebookCounts is not None:
       oprot.writeFieldBegin('notebookCounts', TType.MAP, 1)
       oprot.writeMapBegin(TType.STRING, TType.I32, len(self.notebookCounts))
-      for kiter147,viter148 in self.notebookCounts.items():
-        oprot.writeString(kiter147)
-        oprot.writeI32(viter148)
+      for kiter154,viter155 in self.notebookCounts.items():
+        oprot.writeString(kiter154)
+        oprot.writeI32(viter155)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.tagCounts is not None:
       oprot.writeFieldBegin('tagCounts', TType.MAP, 2)
       oprot.writeMapBegin(TType.STRING, TType.I32, len(self.tagCounts))
-      for kiter149,viter150 in self.tagCounts.items():
-        oprot.writeString(kiter149)
-        oprot.writeI32(viter150)
+      for kiter156,viter157 in self.tagCounts.items():
+        oprot.writeString(kiter156)
+        oprot.writeI32(viter157)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.trashCount is not None:
       oprot.writeFieldBegin('trashCount', TType.I32, 3)
       oprot.writeI32(self.trashCount)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class NoteResultSpec(object):
+  """
+  This structure is provided to the getNoteWithResultSpec function to specify the subset of
+  fields that should be included in the Note that is returned. This allows clients to request
+  the minimum set of information that they require when retrieving a note, reducing the size
+  of the response and improving the response time.
+  
+  If one of the fields in this spec is not set, then it will be treated as 'false' by the service,
+  so that the default behavior is to include none of the fields below in the Note.
+  
+  <dl>
+    <dt>withContent</dt>
+    <dd>If true, the Note.content field will be populated with the note's ENML contents.</dd>
+  
+    <dt>withResourcesData</dt>
+    <dd>If true, any Resource elements will include the binary contents of their 'data' field's
+      body.</dd>
+  
+    <dt>withResourcesRecognition</dt>
+    <dd>If true, any Resource elements will include the binary contents of their 'recognition'
+      field's body if recognition data is available.</dd>
+  
+    <dt>withResourcesAlternateData</dt>
+    <dd>If true, any Resource elements will include the binary contents of their 'alternateData'
+      field's body, if an alternate form is available.</dd>
+  
+    <dt>withSharedNotes</dt>
+    <dd>If true, the Note.sharedNotes field will be populated with the note's shares.</dd>
+  </dl>
+  
+  Attributes:
+   - includeContent
+   - includeResourcesData
+   - includeResourcesRecognition
+   - includeResourcesAlternateData
+   - includeSharedNotes
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.BOOL, 'includeContent', None, None, ), # 1
+    (2, TType.BOOL, 'includeResourcesData', None, None, ), # 2
+    (3, TType.BOOL, 'includeResourcesRecognition', None, None, ), # 3
+    (4, TType.BOOL, 'includeResourcesAlternateData', None, None, ), # 4
+    (5, TType.BOOL, 'includeSharedNotes', None, None, ), # 5
+  )
+
+  def __init__(self, includeContent=None, includeResourcesData=None, includeResourcesRecognition=None, includeResourcesAlternateData=None, includeSharedNotes=None,):
+    self.includeContent = includeContent
+    self.includeResourcesData = includeResourcesData
+    self.includeResourcesRecognition = includeResourcesRecognition
+    self.includeResourcesAlternateData = includeResourcesAlternateData
+    self.includeSharedNotes = includeSharedNotes
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.BOOL:
+          self.includeContent = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.BOOL:
+          self.includeResourcesData = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.BOOL:
+          self.includeResourcesRecognition = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.BOOL:
+          self.includeResourcesAlternateData = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.BOOL:
+          self.includeSharedNotes = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('NoteResultSpec')
+    if self.includeContent is not None:
+      oprot.writeFieldBegin('includeContent', TType.BOOL, 1)
+      oprot.writeBool(self.includeContent)
+      oprot.writeFieldEnd()
+    if self.includeResourcesData is not None:
+      oprot.writeFieldBegin('includeResourcesData', TType.BOOL, 2)
+      oprot.writeBool(self.includeResourcesData)
+      oprot.writeFieldEnd()
+    if self.includeResourcesRecognition is not None:
+      oprot.writeFieldBegin('includeResourcesRecognition', TType.BOOL, 3)
+      oprot.writeBool(self.includeResourcesRecognition)
+      oprot.writeFieldEnd()
+    if self.includeResourcesAlternateData is not None:
+      oprot.writeFieldBegin('includeResourcesAlternateData', TType.BOOL, 4)
+      oprot.writeBool(self.includeResourcesAlternateData)
+      oprot.writeFieldEnd()
+    if self.includeSharedNotes is not None:
+      oprot.writeFieldBegin('includeSharedNotes', TType.BOOL, 5)
+      oprot.writeBool(self.includeSharedNotes)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2161,20 +2538,20 @@ class NoteEmailParameters(object):
       elif fid == 3:
         if ftype == TType.LIST:
           self.toAddresses = []
-          (_etype154, _size151) = iprot.readListBegin()
-          for _i155 in xrange(_size151):
-            _elem156 = iprot.readString();
-            self.toAddresses.append(_elem156)
+          (_etype161, _size158) = iprot.readListBegin()
+          for _i162 in xrange(_size158):
+            _elem163 = iprot.readString();
+            self.toAddresses.append(_elem163)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.ccAddresses = []
-          (_etype160, _size157) = iprot.readListBegin()
-          for _i161 in xrange(_size157):
-            _elem162 = iprot.readString();
-            self.ccAddresses.append(_elem162)
+          (_etype167, _size164) = iprot.readListBegin()
+          for _i168 in xrange(_size164):
+            _elem169 = iprot.readString();
+            self.ccAddresses.append(_elem169)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2209,15 +2586,15 @@ class NoteEmailParameters(object):
     if self.toAddresses is not None:
       oprot.writeFieldBegin('toAddresses', TType.LIST, 3)
       oprot.writeListBegin(TType.STRING, len(self.toAddresses))
-      for iter163 in self.toAddresses:
-        oprot.writeString(iter163)
+      for iter170 in self.toAddresses:
+        oprot.writeString(iter170)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.ccAddresses is not None:
       oprot.writeFieldBegin('ccAddresses', TType.LIST, 4)
       oprot.writeListBegin(TType.STRING, len(self.ccAddresses))
-      for iter164 in self.ccAddresses:
-        oprot.writeString(iter164)
+      for iter171 in self.ccAddresses:
+        oprot.writeString(iter171)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.subject is not None:
@@ -2270,12 +2647,17 @@ class NoteVersionId(object):
    <dt>saved</dt>
    <dd>
      A timestamp that holds the date and time when this version of the note
-     was backed up by Evernote's servers.  This
+     was backed up by Evernote's servers.
    </dd>
    <dt>title</dt>
    <dd>
      The title of the note when this particular version was saved.  (The
      current title of the note may differ from this value.)
+   </dd>
+   <dt>lastEditorId</dt>
+   <dd>
+     The ID of the user who made the change to this version of the note. This will be
+     unset if the note version was edited by the owner of the account.
    </dd>
   </dl>
   
@@ -2284,6 +2666,7 @@ class NoteVersionId(object):
    - updated
    - saved
    - title
+   - lastEditorId
   """
 
   thrift_spec = (
@@ -2292,13 +2675,15 @@ class NoteVersionId(object):
     (2, TType.I64, 'updated', None, None, ), # 2
     (3, TType.I64, 'saved', None, None, ), # 3
     (4, TType.STRING, 'title', None, None, ), # 4
+    (5, TType.I32, 'lastEditorId', None, None, ), # 5
   )
 
-  def __init__(self, updateSequenceNum=None, updated=None, saved=None, title=None,):
+  def __init__(self, updateSequenceNum=None, updated=None, saved=None, title=None, lastEditorId=None,):
     self.updateSequenceNum = updateSequenceNum
     self.updated = updated
     self.saved = saved
     self.title = title
+    self.lastEditorId = lastEditorId
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2329,6 +2714,11 @@ class NoteVersionId(object):
           self.title = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.I32:
+          self.lastEditorId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2355,6 +2745,10 @@ class NoteVersionId(object):
       oprot.writeFieldBegin('title', TType.STRING, 4)
       oprot.writeString(self.title)
       oprot.writeFieldEnd()
+    if self.lastEditorId is not None:
+      oprot.writeFieldBegin('lastEditorId', TType.I32, 5)
+      oprot.writeI32(self.lastEditorId)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -2367,88 +2761,6 @@ class NoteVersionId(object):
       raise TProtocol.TProtocolException(message='Required field saved is unset!')
     if self.title is None:
       raise TProtocol.TProtocolException(message='Required field title is unset!')
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class ClientUsageMetrics(object):
-  """
-  This structure is passed from clients to the Evernote service when they wish
-  to relay coarse-grained usage metrics to the service to help improve
-  products.
-  
-  <dl>
-   <dt>sessions</dt>
-   <dd>
-     This field contains a count of the number of usage "sessions" that have
-     occurred with this client which have not previously been reported to
-     the service.
-     A "session" is defined as one of the 96 fifteen-minute intervals of the
-     day when someone used Evernote's interface at least once.
-     So if a user interacts with an Evernote client at 12:18, 12:24, and 12:36,
-     and then the client synchronizes at 12:39, it would report that there were
-     two previously-unreported sessions (one session for the 12:15-12:30 time
-     period, and one for the 12:30-12:45 period).
-     If the user used Evernote again at 12:41 and synchronized at 12:43, it
-     would not report any new sessions, because the 12:30-12:45 session had
-     already been reported.
-   </dd>
-  </dl>
-  
-  Attributes:
-   - sessions
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'sessions', None, None, ), # 1
-  )
-
-  def __init__(self, sessions=None,):
-    self.sessions = sessions
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.I32:
-          self.sessions = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('ClientUsageMetrics')
-    if self.sessions is not None:
-      oprot.writeFieldBegin('sessions', TType.I32, 1)
-      oprot.writeI32(self.sessions)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
     return
 
 
@@ -2493,6 +2805,24 @@ class RelatedQuery(object):
   <dd>A URI string specifying a reference entity, around which "relatedness"
       should be based. This can be an URL pointing to a web page, for example.
   </dd>
+  
+  <dt>context</dt>
+  <dd>Specifies the context to consider when determining related results.
+      Clients must leave this value unset unless they wish to explicitly specify a known
+      non-default context.
+  </dd>
+  
+  <dt>cacheKey</dt>
+  <dd>If set and non-empty, this is an indicator for the server whether it is actually
+      necessary to perform a new findRelated call at all. Cache Keys are opaque strings
+      which are returned by the server as part of "RelatedResult" in response
+      to a "NoteStore.findRelated" query. Cache Keys are inherently query specific.
+  
+      If set to an empty string, this indicates that the server should generate a cache
+      key in the response as part of "RelatedResult".
+  
+      If not set, the server will not attempt to generate a cache key at all.
+  </dd>
   </dl>
   
   Attributes:
@@ -2500,6 +2830,8 @@ class RelatedQuery(object):
    - plainText
    - filter
    - referenceUri
+   - context
+   - cacheKey
   """
 
   thrift_spec = (
@@ -2508,13 +2840,17 @@ class RelatedQuery(object):
     (2, TType.STRING, 'plainText', None, None, ), # 2
     (3, TType.STRUCT, 'filter', (NoteFilter, NoteFilter.thrift_spec), None, ), # 3
     (4, TType.STRING, 'referenceUri', None, None, ), # 4
+    (5, TType.STRING, 'context', None, None, ), # 5
+    (6, TType.STRING, 'cacheKey', None, None, ), # 6
   )
 
-  def __init__(self, noteGuid=None, plainText=None, filter=None, referenceUri=None,):
+  def __init__(self, noteGuid=None, plainText=None, filter=None, referenceUri=None, context=None, cacheKey=None,):
     self.noteGuid = noteGuid
     self.plainText = plainText
     self.filter = filter
     self.referenceUri = referenceUri
+    self.context = context
+    self.cacheKey = cacheKey
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2546,6 +2882,16 @@ class RelatedQuery(object):
           self.referenceUri = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRING:
+          self.context = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.STRING:
+          self.cacheKey = iprot.readString();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2571,6 +2917,14 @@ class RelatedQuery(object):
     if self.referenceUri is not None:
       oprot.writeFieldBegin('referenceUri', TType.STRING, 4)
       oprot.writeString(self.referenceUri)
+      oprot.writeFieldEnd()
+    if self.context is not None:
+      oprot.writeFieldBegin('context', TType.STRING, 5)
+      oprot.writeString(self.context)
+      oprot.writeFieldEnd()
+    if self.cacheKey is not None:
+      oprot.writeFieldBegin('cacheKey', TType.STRING, 6)
+      oprot.writeString(self.cacheKey)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2610,7 +2964,6 @@ class RelatedResult(object):
   <dt>tags</dt>
   <dd>If tags have been requested to be included, this will be the list
       of tags.</dd>
-  </dl>
   
   <dt>containingNotebooks</dt>
   <dd>If <code>includeContainingNotebooks</code> is set to <code>true</code>
@@ -2618,7 +2971,65 @@ class RelatedResult(object):
       to which the returned related notes belong. The notebooks in this
       list will occur once per notebook GUID and are represented as
       NotebookDescriptor objects.</dd>
-  </dl>
+  
+  <dt>debugInfo</dt>
+  <dd>If <code>includeDebugInfo</code> in RelatedResultSpec is set to
+      <code>true</code>, this field may contain debug information
+      if the service decides to do so.</dd>
+  
+  <dt>experts</dt>
+  <dd>If experts have been requested to be included, this will return
+   a list of users within your business who have knowledge about the specified query.
+  </dd>
+  
+  <dt>relatedContent</dt>
+  <dd>If related content has been requested to be included, this will be the list of
+   related content snippets.
+  </dd>
+  
+  <dt>cacheKey</dt>
+  <dd>If set and non-empty, this cache key may be used in subsequent
+      "NoteStore.findRelated" calls (via "RelatedQuery") to re-use previous
+      responses that were cached on the client-side, instead of actually performing
+      another search.
+  
+      If set to an empty string, this indicates that the server could not determine
+      a specific key for this response, but the client should nevertheless remove
+      any previously cached result for this request.
+  
+      If unset/null, it is up to the client whether to re-use cached results or to
+      use the server's response.
+  
+      If set to the exact non-empty cache key that was specified in
+      "RelatedQuery.cacheKey", this indicates that the server decided that cached results
+      could be reused.
+  
+      Depending on the cache key specified in the query, the "RelatedResult" may only be
+      partially filled. For each set field, the client should replace the corresponding
+      part in the previously cached result with the new partial result.
+   
+      For example, for a specific query that has both "RelatedResultSpec.maxNotes" and
+      "RelatedResultSpec.maxRelatedContent" set to positive values, the server may decide
+      that the previously requested and cached <em>Related Content</em> are unchanged,
+      but new results for <em>Related Notes</em> are available. The
+      response will have a new cache key and have "RelatedResult.notes" set, but have
+      "RelatedResult.relatedContent" unset (not just empty, but really unset).
+  
+      In this situation, the client should replace any cached notes with the newly
+      returned "RelatedResult.notes", but it can re-use the previously cached entries for
+      "RelatedResult.relatedContent". List fields that are set, but empty indicate that
+      no results could be found; the cache should be updated correspondingly.
+  </dd>
+  
+  <dt>cacheExpires</dt>
+  <dd> If set, clients should reuse this response for any situations where the same input
+       parameters are applicable for up to this many seconds after receiving this result.
+  
+       After this time has passed, the client may request a new result from the service,
+       but it should supply the stored cacheKey to the service when checking for an
+       update.
+  </dd>
+  
   </dl>
   
   Attributes:
@@ -2626,6 +3037,11 @@ class RelatedResult(object):
    - notebooks
    - tags
    - containingNotebooks
+   - debugInfo
+   - experts
+   - relatedContent
+   - cacheKey
+   - cacheExpires
   """
 
   thrift_spec = (
@@ -2634,13 +3050,23 @@ class RelatedResult(object):
     (2, TType.LIST, 'notebooks', (TType.STRUCT,(evernote.edam.type.ttypes.Notebook, evernote.edam.type.ttypes.Notebook.thrift_spec)), None, ), # 2
     (3, TType.LIST, 'tags', (TType.STRUCT,(evernote.edam.type.ttypes.Tag, evernote.edam.type.ttypes.Tag.thrift_spec)), None, ), # 3
     (4, TType.LIST, 'containingNotebooks', (TType.STRUCT,(evernote.edam.type.ttypes.NotebookDescriptor, evernote.edam.type.ttypes.NotebookDescriptor.thrift_spec)), None, ), # 4
+    (5, TType.STRING, 'debugInfo', None, None, ), # 5
+    (6, TType.LIST, 'experts', (TType.STRUCT,(evernote.edam.type.ttypes.UserProfile, evernote.edam.type.ttypes.UserProfile.thrift_spec)), None, ), # 6
+    (7, TType.LIST, 'relatedContent', (TType.STRUCT,(evernote.edam.type.ttypes.RelatedContent, evernote.edam.type.ttypes.RelatedContent.thrift_spec)), None, ), # 7
+    (8, TType.STRING, 'cacheKey', None, None, ), # 8
+    (9, TType.I32, 'cacheExpires', None, None, ), # 9
   )
 
-  def __init__(self, notes=None, notebooks=None, tags=None, containingNotebooks=None,):
+  def __init__(self, notes=None, notebooks=None, tags=None, containingNotebooks=None, debugInfo=None, experts=None, relatedContent=None, cacheKey=None, cacheExpires=None,):
     self.notes = notes
     self.notebooks = notebooks
     self.tags = tags
     self.containingNotebooks = containingNotebooks
+    self.debugInfo = debugInfo
+    self.experts = experts
+    self.relatedContent = relatedContent
+    self.cacheKey = cacheKey
+    self.cacheExpires = cacheExpires
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2654,45 +3080,82 @@ class RelatedResult(object):
       if fid == 1:
         if ftype == TType.LIST:
           self.notes = []
-          (_etype168, _size165) = iprot.readListBegin()
-          for _i169 in xrange(_size165):
-            _elem170 = evernote.edam.type.ttypes.Note()
-            _elem170.read(iprot)
-            self.notes.append(_elem170)
+          (_etype175, _size172) = iprot.readListBegin()
+          for _i176 in xrange(_size172):
+            _elem177 = evernote.edam.type.ttypes.Note()
+            _elem177.read(iprot)
+            self.notes.append(_elem177)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.LIST:
           self.notebooks = []
-          (_etype174, _size171) = iprot.readListBegin()
-          for _i175 in xrange(_size171):
-            _elem176 = evernote.edam.type.ttypes.Notebook()
-            _elem176.read(iprot)
-            self.notebooks.append(_elem176)
+          (_etype181, _size178) = iprot.readListBegin()
+          for _i182 in xrange(_size178):
+            _elem183 = evernote.edam.type.ttypes.Notebook()
+            _elem183.read(iprot)
+            self.notebooks.append(_elem183)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.LIST:
           self.tags = []
-          (_etype180, _size177) = iprot.readListBegin()
-          for _i181 in xrange(_size177):
-            _elem182 = evernote.edam.type.ttypes.Tag()
-            _elem182.read(iprot)
-            self.tags.append(_elem182)
+          (_etype187, _size184) = iprot.readListBegin()
+          for _i188 in xrange(_size184):
+            _elem189 = evernote.edam.type.ttypes.Tag()
+            _elem189.read(iprot)
+            self.tags.append(_elem189)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.containingNotebooks = []
-          (_etype186, _size183) = iprot.readListBegin()
-          for _i187 in xrange(_size183):
-            _elem188 = evernote.edam.type.ttypes.NotebookDescriptor()
-            _elem188.read(iprot)
-            self.containingNotebooks.append(_elem188)
+          (_etype193, _size190) = iprot.readListBegin()
+          for _i194 in xrange(_size190):
+            _elem195 = evernote.edam.type.ttypes.NotebookDescriptor()
+            _elem195.read(iprot)
+            self.containingNotebooks.append(_elem195)
           iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRING:
+          self.debugInfo = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.LIST:
+          self.experts = []
+          (_etype199, _size196) = iprot.readListBegin()
+          for _i200 in xrange(_size196):
+            _elem201 = evernote.edam.type.ttypes.UserProfile()
+            _elem201.read(iprot)
+            self.experts.append(_elem201)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
+        if ftype == TType.LIST:
+          self.relatedContent = []
+          (_etype205, _size202) = iprot.readListBegin()
+          for _i206 in xrange(_size202):
+            _elem207 = evernote.edam.type.ttypes.RelatedContent()
+            _elem207.read(iprot)
+            self.relatedContent.append(_elem207)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 8:
+        if ftype == TType.STRING:
+          self.cacheKey = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 9:
+        if ftype == TType.I32:
+          self.cacheExpires = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -2708,30 +3171,56 @@ class RelatedResult(object):
     if self.notes is not None:
       oprot.writeFieldBegin('notes', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.notes))
-      for iter189 in self.notes:
-        iter189.write(oprot)
+      for iter208 in self.notes:
+        iter208.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.notebooks is not None:
       oprot.writeFieldBegin('notebooks', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.notebooks))
-      for iter190 in self.notebooks:
-        iter190.write(oprot)
+      for iter209 in self.notebooks:
+        iter209.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.tags is not None:
       oprot.writeFieldBegin('tags', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.tags))
-      for iter191 in self.tags:
-        iter191.write(oprot)
+      for iter210 in self.tags:
+        iter210.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.containingNotebooks is not None:
       oprot.writeFieldBegin('containingNotebooks', TType.LIST, 4)
       oprot.writeListBegin(TType.STRUCT, len(self.containingNotebooks))
-      for iter192 in self.containingNotebooks:
-        iter192.write(oprot)
+      for iter211 in self.containingNotebooks:
+        iter211.write(oprot)
       oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.debugInfo is not None:
+      oprot.writeFieldBegin('debugInfo', TType.STRING, 5)
+      oprot.writeString(self.debugInfo)
+      oprot.writeFieldEnd()
+    if self.experts is not None:
+      oprot.writeFieldBegin('experts', TType.LIST, 6)
+      oprot.writeListBegin(TType.STRUCT, len(self.experts))
+      for iter212 in self.experts:
+        iter212.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.relatedContent is not None:
+      oprot.writeFieldBegin('relatedContent', TType.LIST, 7)
+      oprot.writeListBegin(TType.STRUCT, len(self.relatedContent))
+      for iter213 in self.relatedContent:
+        iter213.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.cacheKey is not None:
+      oprot.writeFieldBegin('cacheKey', TType.STRING, 8)
+      oprot.writeString(self.cacheKey)
+      oprot.writeFieldEnd()
+    if self.cacheExpires is not None:
+      oprot.writeFieldBegin('cacheExpires', TType.I32, 9)
+      oprot.writeI32(self.cacheExpires)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2790,6 +3279,27 @@ class RelatedResultSpec(object):
       in the RelatedResult, which will contain the list of notebooks to
       to which the returned related notes belong.</dd>
   </dl>
+  
+  <dt>includeDebugInfo</dt>
+  <dd>If set to <code>true</code>, indicate that debug information should
+      be returned in the 'debugInfo' field of RelatedResult. Note that the call may
+      be slower if this flag is set.</dd>
+  
+  <dt>maxExperts</dt>
+  <dd>This can only be used when making a findRelated call against a business.
+   Find users within your business who have knowledge about the specified query.
+   No more than this many users will be returned. Any value greater than
+   EDAM_RELATED_MAX_EXPERTS will be silently capped.
+  </dd>
+  
+  <dt>maxRelatedContent</dt>
+  <dd>Return snippets of related content that is related to the query, but no more than
+   this many. Any value greater than EDAM_RELATED_MAX_RELATED_CONTENT will be silently
+   capped. If you do not set this field, then no related content will be returned.</dd>
+  </dl>
+  
+  <dt>relatedContentTypes</dt>
+  <dd>Specifies the types of Related Content that should be returned.</dd>
   </dl>
   
   Attributes:
@@ -2798,6 +3308,10 @@ class RelatedResultSpec(object):
    - maxTags
    - writableNotebooksOnly
    - includeContainingNotebooks
+   - includeDebugInfo
+   - maxExperts
+   - maxRelatedContent
+   - relatedContentTypes
   """
 
   thrift_spec = (
@@ -2807,14 +3321,22 @@ class RelatedResultSpec(object):
     (3, TType.I32, 'maxTags', None, None, ), # 3
     (4, TType.BOOL, 'writableNotebooksOnly', None, None, ), # 4
     (5, TType.BOOL, 'includeContainingNotebooks', None, None, ), # 5
+    (6, TType.BOOL, 'includeDebugInfo', None, None, ), # 6
+    (7, TType.I32, 'maxExperts', None, None, ), # 7
+    (8, TType.I32, 'maxRelatedContent', None, None, ), # 8
+    (9, TType.SET, 'relatedContentTypes', (TType.I32,None), None, ), # 9
   )
 
-  def __init__(self, maxNotes=None, maxNotebooks=None, maxTags=None, writableNotebooksOnly=None, includeContainingNotebooks=None,):
+  def __init__(self, maxNotes=None, maxNotebooks=None, maxTags=None, writableNotebooksOnly=None, includeContainingNotebooks=None, includeDebugInfo=None, maxExperts=None, maxRelatedContent=None, relatedContentTypes=None,):
     self.maxNotes = maxNotes
     self.maxNotebooks = maxNotebooks
     self.maxTags = maxTags
     self.writableNotebooksOnly = writableNotebooksOnly
     self.includeContainingNotebooks = includeContainingNotebooks
+    self.includeDebugInfo = includeDebugInfo
+    self.maxExperts = maxExperts
+    self.maxRelatedContent = maxRelatedContent
+    self.relatedContentTypes = relatedContentTypes
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2850,6 +3372,31 @@ class RelatedResultSpec(object):
           self.includeContainingNotebooks = iprot.readBool();
         else:
           iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.BOOL:
+          self.includeDebugInfo = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
+        if ftype == TType.I32:
+          self.maxExperts = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 8:
+        if ftype == TType.I32:
+          self.maxRelatedContent = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 9:
+        if ftype == TType.SET:
+          self.relatedContentTypes = set()
+          (_etype217, _size214) = iprot.readSetBegin()
+          for _i218 in xrange(_size214):
+            _elem219 = iprot.readI32();
+            self.relatedContentTypes.add(_elem219)
+          iprot.readSetEnd()
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2879,6 +3426,2235 @@ class RelatedResultSpec(object):
     if self.includeContainingNotebooks is not None:
       oprot.writeFieldBegin('includeContainingNotebooks', TType.BOOL, 5)
       oprot.writeBool(self.includeContainingNotebooks)
+      oprot.writeFieldEnd()
+    if self.includeDebugInfo is not None:
+      oprot.writeFieldBegin('includeDebugInfo', TType.BOOL, 6)
+      oprot.writeBool(self.includeDebugInfo)
+      oprot.writeFieldEnd()
+    if self.maxExperts is not None:
+      oprot.writeFieldBegin('maxExperts', TType.I32, 7)
+      oprot.writeI32(self.maxExperts)
+      oprot.writeFieldEnd()
+    if self.maxRelatedContent is not None:
+      oprot.writeFieldBegin('maxRelatedContent', TType.I32, 8)
+      oprot.writeI32(self.maxRelatedContent)
+      oprot.writeFieldEnd()
+    if self.relatedContentTypes is not None:
+      oprot.writeFieldBegin('relatedContentTypes', TType.SET, 9)
+      oprot.writeSetBegin(TType.I32, len(self.relatedContentTypes))
+      for iter220 in self.relatedContentTypes:
+        oprot.writeI32(iter220)
+      oprot.writeSetEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class UpdateNoteIfUsnMatchesResult(object):
+  """
+  The result of a call to updateNoteIfUsnMatches, which optionally updates a note
+  based on the current value of the note's update sequence number on the service.
+  
+  <dl>
+  <dt>note</dt>
+  <dd>Either the current state of the note if <tt>updated</tt> is false or the
+  result of updating the note as would be done via the <tt>updateNote</tt> method.
+  If the note was not updated, you will receive a Note that does not include note
+  content, resources data, resources recognition data, or resources alternate data.
+  You can check for updates to these large objects by checking the Data.bodyHash
+  values and downloading accordingly.</dd>
+  
+  <dt>updated</dt>
+  <dd>Whether or not the note was updated by the operation.</dd>
+  </dl>
+  
+  Attributes:
+   - note
+   - updated
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'note', (evernote.edam.type.ttypes.Note, evernote.edam.type.ttypes.Note.thrift_spec), None, ), # 1
+    (2, TType.BOOL, 'updated', None, None, ), # 2
+  )
+
+  def __init__(self, note=None, updated=None,):
+    self.note = note
+    self.updated = updated
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.note = evernote.edam.type.ttypes.Note()
+          self.note.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.BOOL:
+          self.updated = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('UpdateNoteIfUsnMatchesResult')
+    if self.note is not None:
+      oprot.writeFieldBegin('note', TType.STRUCT, 1)
+      self.note.write(oprot)
+      oprot.writeFieldEnd()
+    if self.updated is not None:
+      oprot.writeFieldBegin('updated', TType.BOOL, 2)
+      oprot.writeBool(self.updated)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ShareRelationshipRestrictions(object):
+  """
+  Attributes:
+   - noSetReadOnly
+   - noSetReadPlusActivity
+   - noSetModify
+   - noSetFullAccess
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.BOOL, 'noSetReadOnly', None, None, ), # 1
+    (2, TType.BOOL, 'noSetReadPlusActivity', None, None, ), # 2
+    (3, TType.BOOL, 'noSetModify', None, None, ), # 3
+    (4, TType.BOOL, 'noSetFullAccess', None, None, ), # 4
+  )
+
+  def __init__(self, noSetReadOnly=None, noSetReadPlusActivity=None, noSetModify=None, noSetFullAccess=None,):
+    self.noSetReadOnly = noSetReadOnly
+    self.noSetReadPlusActivity = noSetReadPlusActivity
+    self.noSetModify = noSetModify
+    self.noSetFullAccess = noSetFullAccess
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.BOOL:
+          self.noSetReadOnly = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.BOOL:
+          self.noSetReadPlusActivity = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.BOOL:
+          self.noSetModify = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.BOOL:
+          self.noSetFullAccess = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ShareRelationshipRestrictions')
+    if self.noSetReadOnly is not None:
+      oprot.writeFieldBegin('noSetReadOnly', TType.BOOL, 1)
+      oprot.writeBool(self.noSetReadOnly)
+      oprot.writeFieldEnd()
+    if self.noSetReadPlusActivity is not None:
+      oprot.writeFieldBegin('noSetReadPlusActivity', TType.BOOL, 2)
+      oprot.writeBool(self.noSetReadPlusActivity)
+      oprot.writeFieldEnd()
+    if self.noSetModify is not None:
+      oprot.writeFieldBegin('noSetModify', TType.BOOL, 3)
+      oprot.writeBool(self.noSetModify)
+      oprot.writeFieldEnd()
+    if self.noSetFullAccess is not None:
+      oprot.writeFieldBegin('noSetFullAccess', TType.BOOL, 4)
+      oprot.writeBool(self.noSetFullAccess)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class InvitationShareRelationship(object):
+  """
+  Describes an invitation to a person to use their Evernote
+  credentials to become a member of a notebook.
+  
+  <dl>
+  <dt>displayName</dt>
+  <dd>The string that clients should show to users to represent this
+  invitation.</dd>
+  
+  <dt>recipientUserIdentity</dt>
+  <dd>Identifies the recipient of the invitation. The user identity
+  type can be either EMAIL or IDENTITYID, depending on whether the
+  invitation was created using the classic notebook sharing APIs or
+  the new identity-based notebook sharing APIs.
+  </dd>
+  
+  <dt>privilege</dt>
+  <dd>The privilege level at which the member will be joined, if it
+  turns out that the member is not already joined at a higher level.
+  Note that the <tt>identity</tt> field may not uniquely identify an
+  Evernote User ID, and so we won't know until the invitation is
+  redeemed whether or not the recipient already has privilege.</dd>
+  
+  <dt>allowPreview</dt>
+  <dd>Before redeeming the invitation, the user may be able to
+  preview the notebook without an Evernote account if this field is
+  <tt>true</tt>.</dd>
+  
+  <dt>sharerUserId</dt>
+  <dd>The user id of the user who most recently shared this notebook
+  to this identity. This field is used by the service to convey information
+  to the user, so clients should treat it as read-only.</dd>
+  </dl>
+  
+  Attributes:
+   - displayName
+   - recipientUserIdentity
+   - privilege
+   - allowPreview
+   - sharerUserId
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'displayName', None, None, ), # 1
+    (2, TType.STRUCT, 'recipientUserIdentity', (evernote.edam.type.ttypes.UserIdentity, evernote.edam.type.ttypes.UserIdentity.thrift_spec), None, ), # 2
+    (3, TType.I32, 'privilege', None, None, ), # 3
+    (4, TType.BOOL, 'allowPreview', None, None, ), # 4
+    (5, TType.I32, 'sharerUserId', None, None, ), # 5
+  )
+
+  def __init__(self, displayName=None, recipientUserIdentity=None, privilege=None, allowPreview=None, sharerUserId=None,):
+    self.displayName = displayName
+    self.recipientUserIdentity = recipientUserIdentity
+    self.privilege = privilege
+    self.allowPreview = allowPreview
+    self.sharerUserId = sharerUserId
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.displayName = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.recipientUserIdentity = evernote.edam.type.ttypes.UserIdentity()
+          self.recipientUserIdentity.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.privilege = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.BOOL:
+          self.allowPreview = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.I32:
+          self.sharerUserId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('InvitationShareRelationship')
+    if self.displayName is not None:
+      oprot.writeFieldBegin('displayName', TType.STRING, 1)
+      oprot.writeString(self.displayName)
+      oprot.writeFieldEnd()
+    if self.recipientUserIdentity is not None:
+      oprot.writeFieldBegin('recipientUserIdentity', TType.STRUCT, 2)
+      self.recipientUserIdentity.write(oprot)
+      oprot.writeFieldEnd()
+    if self.privilege is not None:
+      oprot.writeFieldBegin('privilege', TType.I32, 3)
+      oprot.writeI32(self.privilege)
+      oprot.writeFieldEnd()
+    if self.allowPreview is not None:
+      oprot.writeFieldBegin('allowPreview', TType.BOOL, 4)
+      oprot.writeBool(self.allowPreview)
+      oprot.writeFieldEnd()
+    if self.sharerUserId is not None:
+      oprot.writeFieldBegin('sharerUserId', TType.I32, 5)
+      oprot.writeI32(self.sharerUserId)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class MemberShareRelationship(object):
+  """
+  Describes the association between a Notebook and an Evernote User who is
+  a member of that notebook.
+  
+  <dl>
+  <dt>displayName</dt>
+  <dd>The string that clients should show to users to represent this
+  member.</dd>
+  
+  <dt>recipientUserId</dt>
+  <dd>The Evernote User ID of the recipient of this notebook share.
+  </dd>
+  
+  <dt>bestPrivilege</dt>
+  <dd>The privilege at which the member can access the notebook,
+  which is the best privilege granted either individually or to a
+  group to which a member belongs, such as a business.  This field is
+  used by the service to convey information to the user, so clients
+  should treat it as read-only.</dd>
+  
+  <dt>individualPrivilege</dt>
+  <dd>The individually granted privilege for the member, which does
+  not take GROUP privileges into account.  This value may be unset if
+  only a group-assigned privilege has been granted to the member.
+  This value can be managed by others with sufficient rights using
+  the manageNotebookShares method.  The valid values that clients
+  should present to users for selection are given via the the
+  'restrictions' field.</dd>
+  
+  <dt>restrictions</dt>
+  <dd>The restrictions on which privileges may be individually
+  assigned to the recipient of this share relationship.</dd>
+  
+  <dt>sharerUserId</dt>
+  <dd>The user id of the user who most recently shared the notebook
+  to this user. This field is currently unset for a MemberShareRelationship
+  created by joining a notebook that has been published to the business
+  (MemberShareRelationships where the individual privilege is unset).
+  This field is used by the service to convey information to the user, so
+  clients should treat it as read-only.
+  </dd>
+  </dl>
+  
+  Attributes:
+   - displayName
+   - recipientUserId
+   - bestPrivilege
+   - individualPrivilege
+   - restrictions
+   - sharerUserId
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'displayName', None, None, ), # 1
+    (2, TType.I32, 'recipientUserId', None, None, ), # 2
+    (3, TType.I32, 'bestPrivilege', None, None, ), # 3
+    (4, TType.I32, 'individualPrivilege', None, None, ), # 4
+    (5, TType.STRUCT, 'restrictions', (ShareRelationshipRestrictions, ShareRelationshipRestrictions.thrift_spec), None, ), # 5
+    (6, TType.I32, 'sharerUserId', None, None, ), # 6
+  )
+
+  def __init__(self, displayName=None, recipientUserId=None, bestPrivilege=None, individualPrivilege=None, restrictions=None, sharerUserId=None,):
+    self.displayName = displayName
+    self.recipientUserId = recipientUserId
+    self.bestPrivilege = bestPrivilege
+    self.individualPrivilege = individualPrivilege
+    self.restrictions = restrictions
+    self.sharerUserId = sharerUserId
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.displayName = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.recipientUserId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.bestPrivilege = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.I32:
+          self.individualPrivilege = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRUCT:
+          self.restrictions = ShareRelationshipRestrictions()
+          self.restrictions.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.I32:
+          self.sharerUserId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('MemberShareRelationship')
+    if self.displayName is not None:
+      oprot.writeFieldBegin('displayName', TType.STRING, 1)
+      oprot.writeString(self.displayName)
+      oprot.writeFieldEnd()
+    if self.recipientUserId is not None:
+      oprot.writeFieldBegin('recipientUserId', TType.I32, 2)
+      oprot.writeI32(self.recipientUserId)
+      oprot.writeFieldEnd()
+    if self.bestPrivilege is not None:
+      oprot.writeFieldBegin('bestPrivilege', TType.I32, 3)
+      oprot.writeI32(self.bestPrivilege)
+      oprot.writeFieldEnd()
+    if self.individualPrivilege is not None:
+      oprot.writeFieldBegin('individualPrivilege', TType.I32, 4)
+      oprot.writeI32(self.individualPrivilege)
+      oprot.writeFieldEnd()
+    if self.restrictions is not None:
+      oprot.writeFieldBegin('restrictions', TType.STRUCT, 5)
+      self.restrictions.write(oprot)
+      oprot.writeFieldEnd()
+    if self.sharerUserId is not None:
+      oprot.writeFieldBegin('sharerUserId', TType.I32, 6)
+      oprot.writeI32(self.sharerUserId)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ShareRelationships(object):
+  """
+  Captures a collection of share relationships for a notebook, for
+  example, as returned by the getNotebookShares method.  The share
+  relationships fall into two broad categories: members, and
+  invitations that can be used to become members.
+  
+  <dl>
+  <dt>invitations</dt>
+  <dd>A list of open invitations that can be redeemed into
+  memberships to the notebook.</dd>
+  
+  <dt>memberships</dt>
+  <dd>A list of memberships of the notebook.  A member is identified
+  by their Evernote UserID and has rights to access the
+  notebook.</dd>
+  
+  <dt>invitationRestrictions</dt>
+  <dd>The restrictions on what privileges may be granted to invitees
+  to this notebook. These restrictions may be specific to the calling
+  user or to the notebook itself. They represent the
+  union of all possible invite cases, so it is possible that once the
+  recipient of the invitation has been identified by the service, such
+  as by a business auto-join, the actual assigned privilege may change.
+  </dd>
+  </dl>
+  
+  Attributes:
+   - invitations
+   - memberships
+   - invitationRestrictions
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'invitations', (TType.STRUCT,(InvitationShareRelationship, InvitationShareRelationship.thrift_spec)), None, ), # 1
+    (2, TType.LIST, 'memberships', (TType.STRUCT,(MemberShareRelationship, MemberShareRelationship.thrift_spec)), None, ), # 2
+    (3, TType.STRUCT, 'invitationRestrictions', (ShareRelationshipRestrictions, ShareRelationshipRestrictions.thrift_spec), None, ), # 3
+  )
+
+  def __init__(self, invitations=None, memberships=None, invitationRestrictions=None,):
+    self.invitations = invitations
+    self.memberships = memberships
+    self.invitationRestrictions = invitationRestrictions
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.invitations = []
+          (_etype224, _size221) = iprot.readListBegin()
+          for _i225 in xrange(_size221):
+            _elem226 = InvitationShareRelationship()
+            _elem226.read(iprot)
+            self.invitations.append(_elem226)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.LIST:
+          self.memberships = []
+          (_etype230, _size227) = iprot.readListBegin()
+          for _i231 in xrange(_size227):
+            _elem232 = MemberShareRelationship()
+            _elem232.read(iprot)
+            self.memberships.append(_elem232)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.invitationRestrictions = ShareRelationshipRestrictions()
+          self.invitationRestrictions.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ShareRelationships')
+    if self.invitations is not None:
+      oprot.writeFieldBegin('invitations', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.invitations))
+      for iter233 in self.invitations:
+        iter233.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.memberships is not None:
+      oprot.writeFieldBegin('memberships', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.memberships))
+      for iter234 in self.memberships:
+        iter234.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.invitationRestrictions is not None:
+      oprot.writeFieldBegin('invitationRestrictions', TType.STRUCT, 3)
+      self.invitationRestrictions.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ManageNotebookSharesParameters(object):
+  """
+  A structure that captures parameters used by clients to manage the
+  shares for a given notebook via the manageNotebookShares method.
+  
+  <dl>
+  <dt>notebookGuid</dt>
+  <dd>The GUID of the notebook whose shares are being managed.</dd>
+  
+  <dt>inviteMessage</dt>
+  <dd>If the service sends a message to invitees, this parameter will
+  be used to form the actual message that is sent.</dd>
+  
+  <dt>membershipsToUpdate</dt>
+  <dd>The list of existing memberships to update.  This field is not
+  intended to be the full set of memberships for the notebook and
+  should only include those already-existing memberships that you
+  actually want to change.  If you want to remove shares, see the
+  unshares fields.  If you want to create a membership,
+  i.e. auto-join a business user, you can do this via the
+  invitationsToCreateOrUpdate field using an Evernote UserID of a
+  fellow business member (the created invitation is automatically
+  joined by the service, so the client is creating an
+  invitation, not a membership).</dd>
+  
+  <dt>invitationsToCreateOrUpdate</dt>
+  <dd>The list of invitations to update, as matched by the identity
+  field of the InvitationShareRelationship instances, or to create if
+  an existing invitation does not exist.  This field is not intended
+  to be the full set of invitations on the notebook and should only
+  include those invitations that you wish to create or update.  Note
+  that your invitation could convert into a membership via a
+  service-supported auto-join operation.  This happens, for example,
+  when you use an invitation with an Evernote UserID type for a
+  recipient who is a member of the business to which the notebook
+  belongs.  Note that to discover the user IDs for business members,
+  the sharer must also be part of the business.</dd>
+  
+  <dt>unshares</dt>
+  <dd>The list of share relationships to expunge from the service.
+  If the user identity is for an Evernote UserID, then memberships will
+  be removed. If it's an e-mail, then e-mail based shared notebook
+  invitations will be removed. If it's for an Identity ID, then
+  any invitations that match the identity (by identity ID or user ID or
+  e-mail for legacy invitations) will be removed.</dd>
+  </dl>
+  
+  Attributes:
+   - notebookGuid
+   - inviteMessage
+   - membershipsToUpdate
+   - invitationsToCreateOrUpdate
+   - unshares
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'notebookGuid', None, None, ), # 1
+    (2, TType.STRING, 'inviteMessage', None, None, ), # 2
+    (3, TType.LIST, 'membershipsToUpdate', (TType.STRUCT,(MemberShareRelationship, MemberShareRelationship.thrift_spec)), None, ), # 3
+    (4, TType.LIST, 'invitationsToCreateOrUpdate', (TType.STRUCT,(InvitationShareRelationship, InvitationShareRelationship.thrift_spec)), None, ), # 4
+    (5, TType.LIST, 'unshares', (TType.STRUCT,(evernote.edam.type.ttypes.UserIdentity, evernote.edam.type.ttypes.UserIdentity.thrift_spec)), None, ), # 5
+  )
+
+  def __init__(self, notebookGuid=None, inviteMessage=None, membershipsToUpdate=None, invitationsToCreateOrUpdate=None, unshares=None,):
+    self.notebookGuid = notebookGuid
+    self.inviteMessage = inviteMessage
+    self.membershipsToUpdate = membershipsToUpdate
+    self.invitationsToCreateOrUpdate = invitationsToCreateOrUpdate
+    self.unshares = unshares
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.notebookGuid = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.inviteMessage = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.LIST:
+          self.membershipsToUpdate = []
+          (_etype238, _size235) = iprot.readListBegin()
+          for _i239 in xrange(_size235):
+            _elem240 = MemberShareRelationship()
+            _elem240.read(iprot)
+            self.membershipsToUpdate.append(_elem240)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.LIST:
+          self.invitationsToCreateOrUpdate = []
+          (_etype244, _size241) = iprot.readListBegin()
+          for _i245 in xrange(_size241):
+            _elem246 = InvitationShareRelationship()
+            _elem246.read(iprot)
+            self.invitationsToCreateOrUpdate.append(_elem246)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.LIST:
+          self.unshares = []
+          (_etype250, _size247) = iprot.readListBegin()
+          for _i251 in xrange(_size247):
+            _elem252 = evernote.edam.type.ttypes.UserIdentity()
+            _elem252.read(iprot)
+            self.unshares.append(_elem252)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ManageNotebookSharesParameters')
+    if self.notebookGuid is not None:
+      oprot.writeFieldBegin('notebookGuid', TType.STRING, 1)
+      oprot.writeString(self.notebookGuid)
+      oprot.writeFieldEnd()
+    if self.inviteMessage is not None:
+      oprot.writeFieldBegin('inviteMessage', TType.STRING, 2)
+      oprot.writeString(self.inviteMessage)
+      oprot.writeFieldEnd()
+    if self.membershipsToUpdate is not None:
+      oprot.writeFieldBegin('membershipsToUpdate', TType.LIST, 3)
+      oprot.writeListBegin(TType.STRUCT, len(self.membershipsToUpdate))
+      for iter253 in self.membershipsToUpdate:
+        iter253.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.invitationsToCreateOrUpdate is not None:
+      oprot.writeFieldBegin('invitationsToCreateOrUpdate', TType.LIST, 4)
+      oprot.writeListBegin(TType.STRUCT, len(self.invitationsToCreateOrUpdate))
+      for iter254 in self.invitationsToCreateOrUpdate:
+        iter254.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.unshares is not None:
+      oprot.writeFieldBegin('unshares', TType.LIST, 5)
+      oprot.writeListBegin(TType.STRUCT, len(self.unshares))
+      for iter255 in self.unshares:
+        iter255.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ManageNotebookSharesError(object):
+  """
+  A structure to capture certain errors that occurred during a call
+  to manageNotebookShares.  That method can be run best-effort,
+  meaning that some change requests can be applied while others fail.
+  Note that some errors such as system errors will still fail the
+  entire transaction regardless of running best effort.  When some
+  change requests do not succeed, the error conditions are captured
+  in instances of this class, captured by the identity of the share
+  relationship and one of the exception fields.
+  
+  <dl>
+  <dt>userIdentity</dt>
+  <dd>The identity of the share relationship whose update encountered
+  an error.</dd>
+  
+  <dt>userException</dt>
+  <dd>If the error is represented as an EDAMUserException that would
+  have otherwise been thrown without best-effort execution.  Only one
+  exception field will be set.</dd>
+  
+  <dt>notFoundException</dt>
+  <dd>If the error is represented as an EDAMNotFoundException that would
+  have otherwise been thrown without best-effort execution.  Only one
+  exception field will be set.</dd>
+  </dl>
+  
+  Attributes:
+   - userIdentity
+   - userException
+   - notFoundException
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'userIdentity', (evernote.edam.type.ttypes.UserIdentity, evernote.edam.type.ttypes.UserIdentity.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'notFoundException', (evernote.edam.error.ttypes.EDAMNotFoundException, evernote.edam.error.ttypes.EDAMNotFoundException.thrift_spec), None, ), # 3
+  )
+
+  def __init__(self, userIdentity=None, userException=None, notFoundException=None,):
+    self.userIdentity = userIdentity
+    self.userException = userException
+    self.notFoundException = notFoundException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.userIdentity = evernote.edam.type.ttypes.UserIdentity()
+          self.userIdentity.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+          self.notFoundException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ManageNotebookSharesError')
+    if self.userIdentity is not None:
+      oprot.writeFieldBegin('userIdentity', TType.STRUCT, 1)
+      self.userIdentity.write(oprot)
+      oprot.writeFieldEnd()
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 2)
+      self.userException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.notFoundException is not None:
+      oprot.writeFieldBegin('notFoundException', TType.STRUCT, 3)
+      self.notFoundException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ManageNotebookSharesResult(object):
+  """
+  The return value of a call to the manageNotebookShares method.
+  
+  <dl>
+  <dt>errors</dt>
+  <dd>If the method completed without throwing exceptions, some errors
+  might still have occurred, and in that case, this field will contain
+  the list of those errors the occurred.
+  </dd>
+  </dl>
+  
+  Attributes:
+   - errors
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'errors', (TType.STRUCT,(ManageNotebookSharesError, ManageNotebookSharesError.thrift_spec)), None, ), # 1
+  )
+
+  def __init__(self, errors=None,):
+    self.errors = errors
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.errors = []
+          (_etype259, _size256) = iprot.readListBegin()
+          for _i260 in xrange(_size256):
+            _elem261 = ManageNotebookSharesError()
+            _elem261.read(iprot)
+            self.errors.append(_elem261)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ManageNotebookSharesResult')
+    if self.errors is not None:
+      oprot.writeFieldBegin('errors', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.errors))
+      for iter262 in self.errors:
+        iter262.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class SharedNoteTemplate(object):
+  """
+  A structure used to share a note with one or more recipients at a given privilege.
+  
+  <dl>
+    <dt>noteGuid</dt>
+    <dd>The GUID of the note.</dd>
+  
+    <dt>recipientThreadId</dt>
+    <dd>The recipients of the note share specified as a messaging thread ID. If you
+        have an existing messaging thread to share the note with, specify its ID
+        here instead of recipientContacts in order to properly support defunct
+        identities. The sharer must be a participant of the thread. Either this
+        field or recipientContacts must be set.</dd>
+  
+    <dt>recipientContacts</dt>
+    <dd>The recipients of the note share specified as a list of contacts. This should
+        only be set if the sharing takes place before the thread is created. Use
+        recipientThreadId instead when sharing with an existing thread. Either this
+        field or recipientThreadId must be set.</dd>
+  
+    <dt>privilege</dt>
+    <dd>The privilege level to be granted.</dd>
+  </dl>
+  
+  Attributes:
+   - noteGuid
+   - recipientThreadId
+   - recipientContacts
+   - privilege
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'noteGuid', None, None, ), # 1
+    (2, TType.LIST, 'recipientContacts', (TType.STRUCT,(evernote.edam.type.ttypes.Contact, evernote.edam.type.ttypes.Contact.thrift_spec)), None, ), # 2
+    (3, TType.I32, 'privilege', None, None, ), # 3
+    (4, TType.I64, 'recipientThreadId', None, None, ), # 4
+  )
+
+  def __init__(self, noteGuid=None, recipientThreadId=None, recipientContacts=None, privilege=None,):
+    self.noteGuid = noteGuid
+    self.recipientThreadId = recipientThreadId
+    self.recipientContacts = recipientContacts
+    self.privilege = privilege
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.noteGuid = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.I64:
+          self.recipientThreadId = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.LIST:
+          self.recipientContacts = []
+          (_etype266, _size263) = iprot.readListBegin()
+          for _i267 in xrange(_size263):
+            _elem268 = evernote.edam.type.ttypes.Contact()
+            _elem268.read(iprot)
+            self.recipientContacts.append(_elem268)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.privilege = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('SharedNoteTemplate')
+    if self.noteGuid is not None:
+      oprot.writeFieldBegin('noteGuid', TType.STRING, 1)
+      oprot.writeString(self.noteGuid)
+      oprot.writeFieldEnd()
+    if self.recipientContacts is not None:
+      oprot.writeFieldBegin('recipientContacts', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.recipientContacts))
+      for iter269 in self.recipientContacts:
+        iter269.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.privilege is not None:
+      oprot.writeFieldBegin('privilege', TType.I32, 3)
+      oprot.writeI32(self.privilege)
+      oprot.writeFieldEnd()
+    if self.recipientThreadId is not None:
+      oprot.writeFieldBegin('recipientThreadId', TType.I64, 4)
+      oprot.writeI64(self.recipientThreadId)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class NotebookShareTemplate(object):
+  """
+  A structure used to share a notebook with one or more recipients at a given privilege.
+  
+  <dl>
+    <dt>notebookGuid</dt>
+    <dd>The GUID of the notebook.</dd>
+  
+    <dt>recipientThreadId</dt>
+    <dd>The recipients of the notebook share specified as a messaging thread ID. If you
+        have an existing messaging thread to share the note with, specify its ID
+        here instead of recipientContacts in order to properly support defunct
+        identities. The sharer must be a participant of the thread. Either this field
+        or recipientContacts must be set.</dd>
+  
+    <dt>recipientContacts</dt>
+    <dd>The recipients of the notebook share specified as a list of contacts. This should
+        only be set if the sharing takes place before the thread is created. Use
+        recipientThreadId instead when sharing with an existing thread. Either this
+        field or recipientThreadId must be set.</dd>
+  
+    <dt>privilege</dt>
+    <dd>The privilege level to be granted.</dd>
+  </dl>
+  
+  Attributes:
+   - notebookGuid
+   - recipientThreadId
+   - recipientContacts
+   - privilege
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'notebookGuid', None, None, ), # 1
+    (2, TType.LIST, 'recipientContacts', (TType.STRUCT,(evernote.edam.type.ttypes.Contact, evernote.edam.type.ttypes.Contact.thrift_spec)), None, ), # 2
+    (3, TType.I32, 'privilege', None, None, ), # 3
+    (4, TType.I64, 'recipientThreadId', None, None, ), # 4
+  )
+
+  def __init__(self, notebookGuid=None, recipientThreadId=None, recipientContacts=None, privilege=None,):
+    self.notebookGuid = notebookGuid
+    self.recipientThreadId = recipientThreadId
+    self.recipientContacts = recipientContacts
+    self.privilege = privilege
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.notebookGuid = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.I64:
+          self.recipientThreadId = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.LIST:
+          self.recipientContacts = []
+          (_etype273, _size270) = iprot.readListBegin()
+          for _i274 in xrange(_size270):
+            _elem275 = evernote.edam.type.ttypes.Contact()
+            _elem275.read(iprot)
+            self.recipientContacts.append(_elem275)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.privilege = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('NotebookShareTemplate')
+    if self.notebookGuid is not None:
+      oprot.writeFieldBegin('notebookGuid', TType.STRING, 1)
+      oprot.writeString(self.notebookGuid)
+      oprot.writeFieldEnd()
+    if self.recipientContacts is not None:
+      oprot.writeFieldBegin('recipientContacts', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.recipientContacts))
+      for iter276 in self.recipientContacts:
+        iter276.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.privilege is not None:
+      oprot.writeFieldBegin('privilege', TType.I32, 3)
+      oprot.writeI32(self.privilege)
+      oprot.writeFieldEnd()
+    if self.recipientThreadId is not None:
+      oprot.writeFieldBegin('recipientThreadId', TType.I64, 4)
+      oprot.writeI64(self.recipientThreadId)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class CreateOrUpdateNotebookSharesResult(object):
+  """
+  A structure containing the results of a call to createOrUpdateNotebookShares.
+  
+  <dl>
+    <dt>updateSequenceNum</dt>
+    <dd>The USN of the notebook after the call.</dd>
+  
+    <dt>matchingShares</dt>
+    <dd>A list of SharedNotebook records that match the desired recipients. These
+        records may have been either created or updated by the call to
+        createOrUpdateNotebookShares, or they may have been at the desired privilege
+        privilege level prior to the call.</dd>
+  </dl>
+  
+  Attributes:
+   - updateSequenceNum
+   - matchingShares
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'updateSequenceNum', None, None, ), # 1
+    (2, TType.LIST, 'matchingShares', (TType.STRUCT,(evernote.edam.type.ttypes.SharedNotebook, evernote.edam.type.ttypes.SharedNotebook.thrift_spec)), None, ), # 2
+  )
+
+  def __init__(self, updateSequenceNum=None, matchingShares=None,):
+    self.updateSequenceNum = updateSequenceNum
+    self.matchingShares = matchingShares
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.updateSequenceNum = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.LIST:
+          self.matchingShares = []
+          (_etype280, _size277) = iprot.readListBegin()
+          for _i281 in xrange(_size277):
+            _elem282 = evernote.edam.type.ttypes.SharedNotebook()
+            _elem282.read(iprot)
+            self.matchingShares.append(_elem282)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('CreateOrUpdateNotebookSharesResult')
+    if self.updateSequenceNum is not None:
+      oprot.writeFieldBegin('updateSequenceNum', TType.I32, 1)
+      oprot.writeI32(self.updateSequenceNum)
+      oprot.writeFieldEnd()
+    if self.matchingShares is not None:
+      oprot.writeFieldBegin('matchingShares', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.matchingShares))
+      for iter283 in self.matchingShares:
+        iter283.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class NoteShareRelationshipRestrictions(object):
+  """
+  This structure is used by the service to communicate to clients, via
+  getNoteShareRelationships, which privilege levels are assignable to the
+  target of a note share relationship.
+  
+  <dl>
+  <dt>noSetReadNote</dt>
+  <dd>This value is true if the user is not allowed to set the privilege
+  level to SharedNotePrivilegeLevel.READ_NOTE.</dd>
+  
+  <dt>noSetModifyNote</dt>
+  <dd>This value is true if the user is not allowed to set the privilege
+  level to SharedNotePrivilegeLevel.MODIFY_NOTE.</dd>
+  
+  <dt>noSetFullAccess</dt>
+  <dd>This value is true if the user is not allowed to set the
+  privilege level to SharedNotePrivilegeLevel.FULL_ACCESS.</dd>
+  </dl>
+  
+  Attributes:
+   - noSetReadNote
+   - noSetModifyNote
+   - noSetFullAccess
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.BOOL, 'noSetReadNote', None, None, ), # 1
+    (2, TType.BOOL, 'noSetModifyNote', None, None, ), # 2
+    (3, TType.BOOL, 'noSetFullAccess', None, None, ), # 3
+  )
+
+  def __init__(self, noSetReadNote=None, noSetModifyNote=None, noSetFullAccess=None,):
+    self.noSetReadNote = noSetReadNote
+    self.noSetModifyNote = noSetModifyNote
+    self.noSetFullAccess = noSetFullAccess
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.BOOL:
+          self.noSetReadNote = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.BOOL:
+          self.noSetModifyNote = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.BOOL:
+          self.noSetFullAccess = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('NoteShareRelationshipRestrictions')
+    if self.noSetReadNote is not None:
+      oprot.writeFieldBegin('noSetReadNote', TType.BOOL, 1)
+      oprot.writeBool(self.noSetReadNote)
+      oprot.writeFieldEnd()
+    if self.noSetModifyNote is not None:
+      oprot.writeFieldBegin('noSetModifyNote', TType.BOOL, 2)
+      oprot.writeBool(self.noSetModifyNote)
+      oprot.writeFieldEnd()
+    if self.noSetFullAccess is not None:
+      oprot.writeFieldBegin('noSetFullAccess', TType.BOOL, 3)
+      oprot.writeBool(self.noSetFullAccess)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class NoteMemberShareRelationship(object):
+  """
+  Describes the association between a Note and an Evernote User who is
+  a member of that note.
+  
+  <dl>
+  <dt>displayName</dt>
+  <dd>The string that clients should show to users to represent this
+  member.</dd>
+  
+  <dt>recipientUserId</dt>
+  <dd>The Evernote UserID of the user who is a member to the note.</dd>
+  
+  <dt>privilege</dt>
+  <dd>The privilege at which the member can access the note,
+  which is the best privilege granted to the user across all of their
+  individual shares for this note. This field is used by the service
+  to convey information to the user, so clients should treat it as
+  read-only.</dd>
+  
+  <dt>restrictions</dt>
+  <dd>The restrictions on which privileges may be individually
+  assigned to the recipient of this share relationship. This field
+  is used by the service to convey information to the user, so
+  clients should treat it as read-only.</dd>
+  
+  <dt>sharerUserId</dt>
+  <dd>The user id of the user who most recently shared the note with
+  this user. This field is used by the service to convey information
+  to the user, so clients should treat it as read-only.</dd>
+  </dl>
+  
+  Attributes:
+   - displayName
+   - recipientUserId
+   - privilege
+   - restrictions
+   - sharerUserId
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'displayName', None, None, ), # 1
+    (2, TType.I32, 'recipientUserId', None, None, ), # 2
+    (3, TType.I32, 'privilege', None, None, ), # 3
+    (4, TType.STRUCT, 'restrictions', (NoteShareRelationshipRestrictions, NoteShareRelationshipRestrictions.thrift_spec), None, ), # 4
+    (5, TType.I32, 'sharerUserId', None, None, ), # 5
+  )
+
+  def __init__(self, displayName=None, recipientUserId=None, privilege=None, restrictions=None, sharerUserId=None,):
+    self.displayName = displayName
+    self.recipientUserId = recipientUserId
+    self.privilege = privilege
+    self.restrictions = restrictions
+    self.sharerUserId = sharerUserId
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.displayName = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.recipientUserId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.privilege = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRUCT:
+          self.restrictions = NoteShareRelationshipRestrictions()
+          self.restrictions.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.I32:
+          self.sharerUserId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('NoteMemberShareRelationship')
+    if self.displayName is not None:
+      oprot.writeFieldBegin('displayName', TType.STRING, 1)
+      oprot.writeString(self.displayName)
+      oprot.writeFieldEnd()
+    if self.recipientUserId is not None:
+      oprot.writeFieldBegin('recipientUserId', TType.I32, 2)
+      oprot.writeI32(self.recipientUserId)
+      oprot.writeFieldEnd()
+    if self.privilege is not None:
+      oprot.writeFieldBegin('privilege', TType.I32, 3)
+      oprot.writeI32(self.privilege)
+      oprot.writeFieldEnd()
+    if self.restrictions is not None:
+      oprot.writeFieldBegin('restrictions', TType.STRUCT, 4)
+      self.restrictions.write(oprot)
+      oprot.writeFieldEnd()
+    if self.sharerUserId is not None:
+      oprot.writeFieldBegin('sharerUserId', TType.I32, 5)
+      oprot.writeI32(self.sharerUserId)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class NoteInvitationShareRelationship(object):
+  """
+  Describes an invitation to a person to use their Evernote credentials
+  to gain access to a note belonging to another user.
+  
+  <dl>
+  <dt>displayName</dt>
+  <dd>The string that clients should show to users to represent this
+  invitation.</dd>
+  
+  <dt>recipientIdentityId</dt>
+  <dd>Identifies the identity of the invitation recipient. Once the
+  identity has been claimed by an Evernote user and they have accessed
+  the note at least once, the invitation will be used up and will no
+  longer be returned by the service to clients. Instead, that recipient
+  will be included in the list of NoteMemberShareRelationships.</dd>
+  
+  <dt>privilege</dt>
+  <dd>The privilege level that the recipient will be granted when they
+  accept this invitation. If the user already has a higher privilege to
+  access this note then this will not affect the recipient's privileges.</dd>
+  
+  <dt>sharerUserId</dt>
+  <dd>The user id of the user who most recently shared this note to this
+  recipient. This field is used by the service to convey information
+  to the user, so clients should treat it as read-only.</dd>
+  
+  Attributes:
+   - displayName
+   - recipientIdentityId
+   - privilege
+   - sharerUserId
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'displayName', None, None, ), # 1
+    (2, TType.I64, 'recipientIdentityId', None, None, ), # 2
+    (3, TType.I32, 'privilege', None, None, ), # 3
+    None, # 4
+    (5, TType.I32, 'sharerUserId', None, None, ), # 5
+  )
+
+  def __init__(self, displayName=None, recipientIdentityId=None, privilege=None, sharerUserId=None,):
+    self.displayName = displayName
+    self.recipientIdentityId = recipientIdentityId
+    self.privilege = privilege
+    self.sharerUserId = sharerUserId
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.displayName = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I64:
+          self.recipientIdentityId = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.privilege = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.I32:
+          self.sharerUserId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('NoteInvitationShareRelationship')
+    if self.displayName is not None:
+      oprot.writeFieldBegin('displayName', TType.STRING, 1)
+      oprot.writeString(self.displayName)
+      oprot.writeFieldEnd()
+    if self.recipientIdentityId is not None:
+      oprot.writeFieldBegin('recipientIdentityId', TType.I64, 2)
+      oprot.writeI64(self.recipientIdentityId)
+      oprot.writeFieldEnd()
+    if self.privilege is not None:
+      oprot.writeFieldBegin('privilege', TType.I32, 3)
+      oprot.writeI32(self.privilege)
+      oprot.writeFieldEnd()
+    if self.sharerUserId is not None:
+      oprot.writeFieldBegin('sharerUserId', TType.I32, 5)
+      oprot.writeI32(self.sharerUserId)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class NoteShareRelationships(object):
+  """
+  Captures a collection of share relationships for a single note,
+  for example, as returned by the getNoteShares method. The share
+  relationships fall into two broad categories: members, and
+  invitations that can be used to become members.
+  
+  <dl>
+  <dt>invitations</dt>
+  <dd>A list of open invitations that can be redeemed into
+  memberships to the note.</dd>
+  
+  <dt>memberships</dt>
+  <dd>A list of memberships of the noteb. A member is identified
+  by their Evernote UserID and has rights to access the
+  note.</dd>
+  
+  <dt>restrictions</dt>
+  <dd>The restrictions on which privileges may be assigned to the recipient
+  of an open invitation. These restrictions only apply to invitations;
+  restrictions on memberships are specified on the NoteMemberShareRelationship.
+  This field is used by the service to convey information to the user, so
+  clients should treat it as read-only.</dd>
+  
+  </dl>
+  
+  Attributes:
+   - invitations
+   - memberships
+   - invitationRestrictions
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'invitations', (TType.STRUCT,(NoteInvitationShareRelationship, NoteInvitationShareRelationship.thrift_spec)), None, ), # 1
+    (2, TType.LIST, 'memberships', (TType.STRUCT,(NoteMemberShareRelationship, NoteMemberShareRelationship.thrift_spec)), None, ), # 2
+    (3, TType.STRUCT, 'invitationRestrictions', (NoteShareRelationshipRestrictions, NoteShareRelationshipRestrictions.thrift_spec), None, ), # 3
+  )
+
+  def __init__(self, invitations=None, memberships=None, invitationRestrictions=None,):
+    self.invitations = invitations
+    self.memberships = memberships
+    self.invitationRestrictions = invitationRestrictions
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.invitations = []
+          (_etype287, _size284) = iprot.readListBegin()
+          for _i288 in xrange(_size284):
+            _elem289 = NoteInvitationShareRelationship()
+            _elem289.read(iprot)
+            self.invitations.append(_elem289)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.LIST:
+          self.memberships = []
+          (_etype293, _size290) = iprot.readListBegin()
+          for _i294 in xrange(_size290):
+            _elem295 = NoteMemberShareRelationship()
+            _elem295.read(iprot)
+            self.memberships.append(_elem295)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.invitationRestrictions = NoteShareRelationshipRestrictions()
+          self.invitationRestrictions.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('NoteShareRelationships')
+    if self.invitations is not None:
+      oprot.writeFieldBegin('invitations', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.invitations))
+      for iter296 in self.invitations:
+        iter296.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.memberships is not None:
+      oprot.writeFieldBegin('memberships', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.memberships))
+      for iter297 in self.memberships:
+        iter297.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.invitationRestrictions is not None:
+      oprot.writeFieldBegin('invitationRestrictions', TType.STRUCT, 3)
+      self.invitationRestrictions.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ManageNoteSharesParameters(object):
+  """
+  Captures parameters used by clients to manage the shares for a given
+  note via the manageNoteShares function. This is used only to manage
+  the existing memberships and invitations for a note. To invite a new
+  recipient, use NoteStore.createOrUpdateSharedNotes.
+  
+  The only field of an existing membership or invitation that can be
+  updated by this function is the share privilege.
+  
+  <dl>
+    <dt>noteGuid</dt>
+    <dd>The GUID of the note whose shares are being managed.</dd>
+  
+    <dt>membershipsToUpdate</dt>
+    <dd>A list of existing memberships to update. This field is not
+      meant to be the full set of memberships for the note. Clients
+      should only include those existing memberships that they wish
+      to modify. To remove an existing membership, see the unshares
+      field.</dd>
+  
+    <dt>invitationsToUpdate</dt>
+    <dd>The list of outstanding invitations to update, as matched by the
+      identity field of the NoteInvitationShareRelatioship instances.
+      This field is not meant to be the full set of invitations for the
+      note. Clients should only include those existing invitations that
+      they wish to modify.</dd>
+  
+    <dt>membershipsToUnshare</dt>
+    <dd>A list of existing memberships to expunge from the service.</dd>
+  
+    <dt>invitationsToUnshare</dt>
+    <dd>A list of outstanding invitations to expunge from the service.</dd>
+  </dl>
+  
+  Attributes:
+   - noteGuid
+   - membershipsToUpdate
+   - invitationsToUpdate
+   - membershipsToUnshare
+   - invitationsToUnshare
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'noteGuid', None, None, ), # 1
+    (2, TType.LIST, 'membershipsToUpdate', (TType.STRUCT,(NoteMemberShareRelationship, NoteMemberShareRelationship.thrift_spec)), None, ), # 2
+    (3, TType.LIST, 'invitationsToUpdate', (TType.STRUCT,(NoteInvitationShareRelationship, NoteInvitationShareRelationship.thrift_spec)), None, ), # 3
+    (4, TType.LIST, 'membershipsToUnshare', (TType.I32,None), None, ), # 4
+    (5, TType.LIST, 'invitationsToUnshare', (TType.I64,None), None, ), # 5
+  )
+
+  def __init__(self, noteGuid=None, membershipsToUpdate=None, invitationsToUpdate=None, membershipsToUnshare=None, invitationsToUnshare=None,):
+    self.noteGuid = noteGuid
+    self.membershipsToUpdate = membershipsToUpdate
+    self.invitationsToUpdate = invitationsToUpdate
+    self.membershipsToUnshare = membershipsToUnshare
+    self.invitationsToUnshare = invitationsToUnshare
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.noteGuid = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.LIST:
+          self.membershipsToUpdate = []
+          (_etype301, _size298) = iprot.readListBegin()
+          for _i302 in xrange(_size298):
+            _elem303 = NoteMemberShareRelationship()
+            _elem303.read(iprot)
+            self.membershipsToUpdate.append(_elem303)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.LIST:
+          self.invitationsToUpdate = []
+          (_etype307, _size304) = iprot.readListBegin()
+          for _i308 in xrange(_size304):
+            _elem309 = NoteInvitationShareRelationship()
+            _elem309.read(iprot)
+            self.invitationsToUpdate.append(_elem309)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.LIST:
+          self.membershipsToUnshare = []
+          (_etype313, _size310) = iprot.readListBegin()
+          for _i314 in xrange(_size310):
+            _elem315 = iprot.readI32();
+            self.membershipsToUnshare.append(_elem315)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.LIST:
+          self.invitationsToUnshare = []
+          (_etype319, _size316) = iprot.readListBegin()
+          for _i320 in xrange(_size316):
+            _elem321 = iprot.readI64();
+            self.invitationsToUnshare.append(_elem321)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ManageNoteSharesParameters')
+    if self.noteGuid is not None:
+      oprot.writeFieldBegin('noteGuid', TType.STRING, 1)
+      oprot.writeString(self.noteGuid)
+      oprot.writeFieldEnd()
+    if self.membershipsToUpdate is not None:
+      oprot.writeFieldBegin('membershipsToUpdate', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.membershipsToUpdate))
+      for iter322 in self.membershipsToUpdate:
+        iter322.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.invitationsToUpdate is not None:
+      oprot.writeFieldBegin('invitationsToUpdate', TType.LIST, 3)
+      oprot.writeListBegin(TType.STRUCT, len(self.invitationsToUpdate))
+      for iter323 in self.invitationsToUpdate:
+        iter323.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.membershipsToUnshare is not None:
+      oprot.writeFieldBegin('membershipsToUnshare', TType.LIST, 4)
+      oprot.writeListBegin(TType.I32, len(self.membershipsToUnshare))
+      for iter324 in self.membershipsToUnshare:
+        oprot.writeI32(iter324)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.invitationsToUnshare is not None:
+      oprot.writeFieldBegin('invitationsToUnshare', TType.LIST, 5)
+      oprot.writeListBegin(TType.I64, len(self.invitationsToUnshare))
+      for iter325 in self.invitationsToUnshare:
+        oprot.writeI64(iter325)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ManageNoteSharesError(object):
+  """
+  Captures errors that occur during a call to manageNoteShares. That
+  function can be run best-effort, meaning that some change requests can
+  be applied while others fail. Note that some errors such as system
+  exceptions may still cause the entire call to fail.
+  
+  Only one of the two ID fields will be set on a given error.
+  
+  Only one of the two exception fields will be set on a given error.
+  
+  <dl>
+    <dt>identityID</dt>
+    <dd>The identity ID of an outstanding invitation that was not updated
+      due to the error.</dd>
+  
+    <dt>userID</dt>
+    <dd>The user ID of an existing membership that was not updated due
+      to the error.</dd>
+  
+    <dt>userException</dt>
+    <dd>If the error is represented as an EDAMUserException that would
+      have otherwise been thrown without best-effort execution.</dd>
+  
+    <dt>notFoundException</dt>
+    <dd>If the error is represented as an EDAMNotFoundException that
+      would have otherwise been thrown without best-effort execution.
+      The identifier field of the exception will be either "Identity.id"
+      or "User.id", indicating that no existing share could be found for
+      the specified recipient.</dd>
+  </dl>
+  
+  Attributes:
+   - identityID
+   - userID
+   - userException
+   - notFoundException
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I64, 'identityID', None, None, ), # 1
+    (2, TType.I32, 'userID', None, None, ), # 2
+    (3, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 3
+    (4, TType.STRUCT, 'notFoundException', (evernote.edam.error.ttypes.EDAMNotFoundException, evernote.edam.error.ttypes.EDAMNotFoundException.thrift_spec), None, ), # 4
+  )
+
+  def __init__(self, identityID=None, userID=None, userException=None, notFoundException=None,):
+    self.identityID = identityID
+    self.userID = userID
+    self.userException = userException
+    self.notFoundException = notFoundException
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I64:
+          self.identityID = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.userID = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.userException = evernote.edam.error.ttypes.EDAMUserException()
+          self.userException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRUCT:
+          self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+          self.notFoundException.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ManageNoteSharesError')
+    if self.identityID is not None:
+      oprot.writeFieldBegin('identityID', TType.I64, 1)
+      oprot.writeI64(self.identityID)
+      oprot.writeFieldEnd()
+    if self.userID is not None:
+      oprot.writeFieldBegin('userID', TType.I32, 2)
+      oprot.writeI32(self.userID)
+      oprot.writeFieldEnd()
+    if self.userException is not None:
+      oprot.writeFieldBegin('userException', TType.STRUCT, 3)
+      self.userException.write(oprot)
+      oprot.writeFieldEnd()
+    if self.notFoundException is not None:
+      oprot.writeFieldBegin('notFoundException', TType.STRUCT, 4)
+      self.notFoundException.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ManageNoteSharesResult(object):
+  """
+  The return value of a call to the manageNoteShares function.
+  
+  <dl>
+    <dt>errors</dt>
+    <dd>If the call succeeded without throwing an exception, some errors
+      might still have occurred. In that case, this field will contain the
+      list of errors.</dd>
+  </dl>
+  
+  Attributes:
+   - errors
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'errors', (TType.STRUCT,(ManageNoteSharesError, ManageNoteSharesError.thrift_spec)), None, ), # 1
+  )
+
+  def __init__(self, errors=None,):
+    self.errors = errors
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.errors = []
+          (_etype329, _size326) = iprot.readListBegin()
+          for _i330 in xrange(_size326):
+            _elem331 = ManageNoteSharesError()
+            _elem331.read(iprot)
+            self.errors.append(_elem331)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ManageNoteSharesResult')
+    if self.errors is not None:
+      oprot.writeFieldBegin('errors', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.errors))
+      for iter332 in self.errors:
+        iter332.write(oprot)
+      oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

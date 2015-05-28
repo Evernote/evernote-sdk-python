@@ -10,10 +10,10 @@
 import sys
 import pprint
 from urlparse import urlparse
-from thrift.transport import TTransport
-from thrift.transport import TSocket
-from thrift.transport import THttpClient
-from thrift.protocol import TBinaryProtocol
+from enthrift.transport import TTransport
+from enthrift.transport import TSocket
+from enthrift.transport import THttpClient
+from enthrift.protocol import TBinaryProtocol
 
 import UserStore
 from ttypes import *
@@ -25,16 +25,21 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print 'Functions:'
   print '  bool checkVersion(string clientName, i16 edamVersionMajor, i16 edamVersionMinor)'
   print '  BootstrapInfo getBootstrapInfo(string locale)'
-  print '  AuthenticationResult authenticate(string username, string password, string consumerKey, string consumerSecret, bool supportsTwoFactor)'
   print '  AuthenticationResult authenticateLongSession(string username, string password, string consumerKey, string consumerSecret, string deviceIdentifier, string deviceDescription, bool supportsTwoFactor)'
   print '  AuthenticationResult completeTwoFactorAuthentication(string authenticationToken, string oneTimeCode, string deviceIdentifier, string deviceDescription)'
   print '  void revokeLongSession(string authenticationToken)'
   print '  AuthenticationResult authenticateToBusiness(string authenticationToken)'
-  print '  AuthenticationResult refreshAuthentication(string authenticationToken)'
   print '  User getUser(string authenticationToken)'
   print '  PublicUserInfo getPublicUserInfo(string username)'
   print '  PremiumInfo getPremiumInfo(string authenticationToken)'
-  print '  string getNoteStoreUrl(string authenticationToken)'
+  print '  SubscriptionInfo getSubscriptionInfo(string authenticationToken)'
+  print '  UserUrls getUserUrls(string authenticationToken)'
+  print '  void inviteToBusiness(string authenticationToken, string emailAddress)'
+  print '  void removeFromBusiness(string authenticationToken, string emailAddress)'
+  print '  void updateBusinessUserIdentifier(string authenticationToken, string oldEmailAddress, string newEmailAddress)'
+  print '   listBusinessUsers(string authenticationToken)'
+  print '   listBusinessInvitations(string authenticationToken, bool includeRequestedInvitations)'
+  print '  AccountLimits getAccountLimits(ServiceLevel serviceLevel)'
   print ''
   sys.exit(0)
 
@@ -98,12 +103,6 @@ elif cmd == 'getBootstrapInfo':
     sys.exit(1)
   pp.pprint(client.getBootstrapInfo(args[0],))
 
-elif cmd == 'authenticate':
-  if len(args) != 5:
-    print 'authenticate requires 5 args'
-    sys.exit(1)
-  pp.pprint(client.authenticate(args[0],args[1],args[2],args[3],eval(args[4]),))
-
 elif cmd == 'authenticateLongSession':
   if len(args) != 7:
     print 'authenticateLongSession requires 7 args'
@@ -128,12 +127,6 @@ elif cmd == 'authenticateToBusiness':
     sys.exit(1)
   pp.pprint(client.authenticateToBusiness(args[0],))
 
-elif cmd == 'refreshAuthentication':
-  if len(args) != 1:
-    print 'refreshAuthentication requires 1 args'
-    sys.exit(1)
-  pp.pprint(client.refreshAuthentication(args[0],))
-
 elif cmd == 'getUser':
   if len(args) != 1:
     print 'getUser requires 1 args'
@@ -152,11 +145,53 @@ elif cmd == 'getPremiumInfo':
     sys.exit(1)
   pp.pprint(client.getPremiumInfo(args[0],))
 
-elif cmd == 'getNoteStoreUrl':
+elif cmd == 'getSubscriptionInfo':
   if len(args) != 1:
-    print 'getNoteStoreUrl requires 1 args'
+    print 'getSubscriptionInfo requires 1 args'
     sys.exit(1)
-  pp.pprint(client.getNoteStoreUrl(args[0],))
+  pp.pprint(client.getSubscriptionInfo(args[0],))
+
+elif cmd == 'getUserUrls':
+  if len(args) != 1:
+    print 'getUserUrls requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getUserUrls(args[0],))
+
+elif cmd == 'inviteToBusiness':
+  if len(args) != 2:
+    print 'inviteToBusiness requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.inviteToBusiness(args[0],args[1],))
+
+elif cmd == 'removeFromBusiness':
+  if len(args) != 2:
+    print 'removeFromBusiness requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.removeFromBusiness(args[0],args[1],))
+
+elif cmd == 'updateBusinessUserIdentifier':
+  if len(args) != 3:
+    print 'updateBusinessUserIdentifier requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.updateBusinessUserIdentifier(args[0],args[1],args[2],))
+
+elif cmd == 'listBusinessUsers':
+  if len(args) != 1:
+    print 'listBusinessUsers requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.listBusinessUsers(args[0],))
+
+elif cmd == 'listBusinessInvitations':
+  if len(args) != 2:
+    print 'listBusinessInvitations requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.listBusinessInvitations(args[0],eval(args[1]),))
+
+elif cmd == 'getAccountLimits':
+  if len(args) != 1:
+    print 'getAccountLimits requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getAccountLimits(eval(args[0]),))
 
 else:
   print 'Unrecognized method %s' % cmd
