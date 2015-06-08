@@ -31,6 +31,7 @@ if auth_token == "your developer token":
 # service, change sandbox=False and replace your
 # developer token above with a token from
 # https://www.evernote.com/api/DeveloperToken.action
+
 client = EvernoteClient(token=auth_token, sandbox=True)
 
 user_store = client.get_user_store()
@@ -45,6 +46,13 @@ print ""
 if not version_ok:
     exit(1)
 
+
+
+user = user_store.getUser()
+ 
+print "Your username is %s" % user.username
+print "Your ID is %s" % user.id
+
 note_store = client.get_note_store()
 
 # List all of the notebooks in the user's account
@@ -53,9 +61,7 @@ print "Found ", len(notebooks), " notebooks:"
 for notebook in notebooks:
     print "  * ", notebook.name
 
-print
-print "Creating a new note in the default notebook"
-print
+print "\nCreating a new note in the default notebook"
 
 # To create a new note, simply create a new Note object and fill in
 # attributes such as the note's title.
@@ -103,4 +109,24 @@ note.content += '</en-note>'
 # attributes such as the new note's unique GUID.
 created_note = note_store.createNote(note)
 
-print "Successfully created a new note with GUID: ", created_note.guid
+print "Successfully created a new note with GUID: %s\n" %created_note.guid
+
+
+# Evernote Business 
+# To learn more about Evernote Business see https://evernote.com/business
+# For Evernote Business documentation see https://dev.evernote.com/doc/articles/business.php
+
+# Check to see if the user is a part of a Evernote Business account
+if user.accounting.businessId:
+    # we're part of a business
+    print "You have Evernote Business!"
+    print "Business Name: %s\n" % user.accounting.businessName
+
+    business_store = client.get_business_note_store()
+
+    # List all of the notebooks in the business' account
+    business_notebooks = business_store.listNotebooks()
+    print "Found ", len(business_notebooks), "business notebooks:"
+    for business_notebook in business_notebooks:
+        print "  * ", business_notebook.name
+    print ""
