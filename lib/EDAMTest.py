@@ -19,7 +19,7 @@ from evernote.api.client import EvernoteClient
 # purpose of exploring the API, you can get a developer token that allows
 # you to access your own Evernote account. To get a developer token, visit
 # https://sandbox.evernote.com/api/DeveloperToken.action
-auth_token = "nope"
+auth_token = "S=s1:U=8fa39:E=1543590664a:C=14cdddf3880:P=1cd:A=en-devtoken:V=2:H=4ca68db61c8ba43420df1b7ba6879fa6"
 
 if auth_token == "your developer token":
     print "Please fill in your developer token"

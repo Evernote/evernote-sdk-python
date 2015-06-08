@@ -1,0 +1,10 @@
+Pages
+homepage
+landing page
+saved page
+
+
+TODO:
+Search
+readme with description of how to run
+code cleanup
