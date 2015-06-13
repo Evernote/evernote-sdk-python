@@ -22,10 +22,10 @@ class, using the python standard library zlib module to implement
 data compression.
 '''
 
-from __future__ import division
+
 import zlib
-from cStringIO import StringIO
-from TTransport import TTransportBase, CReadableTransport
+from io import StringIO
+from .TTransport import TTransportBase, CReadableTransport
 
 class TZlibTransportFactory(object):
   '''

@@ -17,7 +17,7 @@
 # under the License.
 #
 
-from cStringIO import StringIO
+from io import StringIO
 from struct import pack,unpack
 from thrift.Thrift import TException
 
@@ -62,7 +62,7 @@ class TTransportBase:
       if len(chunk) == 0:
         raise EOFError()
 
-    return buff
+    return bytes(buff, 'utf-8')
 
   def write(self, buf):
     pass

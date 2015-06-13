@@ -17,7 +17,7 @@
 # under the License.
 #
 
-from TProtocol import *
+from .TProtocol import *
 from struct import pack, unpack
 
 __all__ = ['TCompactProtocol', 'TCompactProtocolFactory']
@@ -100,7 +100,7 @@ CTYPES = {TType.STOP: CompactType.STOP,
           }
 
 TTYPES = {}
-for k, v in CTYPES.items():
+for k, v in list(CTYPES.items()):
   TTYPES[v] = k
 TTYPES[CompactType.FALSE] = TType.BOOL
 del k
@@ -228,7 +228,7 @@ class TCompactProtocol(TProtocolBase):
        else:
            self.__writeByte(CompactType.FALSE)
     else:
-      raise AssertionError, "Invalid state in compact protocol"
+      raise AssertionError("Invalid state in compact protocol")
 
   writeByte = writer(__writeByte)
   writeI16 = writer(__writeI16)
@@ -364,7 +364,7 @@ class TCompactProtocol(TProtocolBase):
     elif self.state == CONTAINER_READ:
       return self.__readByte() == CompactType.TRUE
     else:
-      raise AssertionError, "Invalid state in compact protocol: %d" % self.state
+      raise AssertionError("Invalid state in compact protocol: %d" % self.state)
 
   readByte = reader(__readByte)
   __readI16 = __readZigZag

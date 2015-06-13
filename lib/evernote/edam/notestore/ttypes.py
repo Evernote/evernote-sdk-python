@@ -153,7 +153,7 @@ class SyncState(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -349,7 +349,7 @@ class SyncChunk(object):
         if ftype == TType.LIST:
           self.notes = []
           (_etype3, _size0) = iprot.readListBegin()
-          for _i4 in xrange(_size0):
+          for _i4 in range(_size0):
             _elem5 = evernote.edam.type.ttypes.Note()
             _elem5.read(iprot)
             self.notes.append(_elem5)
@@ -360,7 +360,7 @@ class SyncChunk(object):
         if ftype == TType.LIST:
           self.notebooks = []
           (_etype9, _size6) = iprot.readListBegin()
-          for _i10 in xrange(_size6):
+          for _i10 in range(_size6):
             _elem11 = evernote.edam.type.ttypes.Notebook()
             _elem11.read(iprot)
             self.notebooks.append(_elem11)
@@ -371,7 +371,7 @@ class SyncChunk(object):
         if ftype == TType.LIST:
           self.tags = []
           (_etype15, _size12) = iprot.readListBegin()
-          for _i16 in xrange(_size12):
+          for _i16 in range(_size12):
             _elem17 = evernote.edam.type.ttypes.Tag()
             _elem17.read(iprot)
             self.tags.append(_elem17)
@@ -382,7 +382,7 @@ class SyncChunk(object):
         if ftype == TType.LIST:
           self.searches = []
           (_etype21, _size18) = iprot.readListBegin()
-          for _i22 in xrange(_size18):
+          for _i22 in range(_size18):
             _elem23 = evernote.edam.type.ttypes.SavedSearch()
             _elem23.read(iprot)
             self.searches.append(_elem23)
@@ -393,7 +393,7 @@ class SyncChunk(object):
         if ftype == TType.LIST:
           self.resources = []
           (_etype27, _size24) = iprot.readListBegin()
-          for _i28 in xrange(_size24):
+          for _i28 in range(_size24):
             _elem29 = evernote.edam.type.ttypes.Resource()
             _elem29.read(iprot)
             self.resources.append(_elem29)
@@ -404,7 +404,7 @@ class SyncChunk(object):
         if ftype == TType.LIST:
           self.expungedNotes = []
           (_etype33, _size30) = iprot.readListBegin()
-          for _i34 in xrange(_size30):
+          for _i34 in range(_size30):
             _elem35 = iprot.readString();
             self.expungedNotes.append(_elem35)
           iprot.readListEnd()
@@ -414,7 +414,7 @@ class SyncChunk(object):
         if ftype == TType.LIST:
           self.expungedNotebooks = []
           (_etype39, _size36) = iprot.readListBegin()
-          for _i40 in xrange(_size36):
+          for _i40 in range(_size36):
             _elem41 = iprot.readString();
             self.expungedNotebooks.append(_elem41)
           iprot.readListEnd()
@@ -424,7 +424,7 @@ class SyncChunk(object):
         if ftype == TType.LIST:
           self.expungedTags = []
           (_etype45, _size42) = iprot.readListBegin()
-          for _i46 in xrange(_size42):
+          for _i46 in range(_size42):
             _elem47 = iprot.readString();
             self.expungedTags.append(_elem47)
           iprot.readListEnd()
@@ -434,7 +434,7 @@ class SyncChunk(object):
         if ftype == TType.LIST:
           self.expungedSearches = []
           (_etype51, _size48) = iprot.readListBegin()
-          for _i52 in xrange(_size48):
+          for _i52 in range(_size48):
             _elem53 = iprot.readString();
             self.expungedSearches.append(_elem53)
           iprot.readListEnd()
@@ -444,7 +444,7 @@ class SyncChunk(object):
         if ftype == TType.LIST:
           self.linkedNotebooks = []
           (_etype57, _size54) = iprot.readListBegin()
-          for _i58 in xrange(_size54):
+          for _i58 in range(_size54):
             _elem59 = evernote.edam.type.ttypes.LinkedNotebook()
             _elem59.read(iprot)
             self.linkedNotebooks.append(_elem59)
@@ -455,7 +455,7 @@ class SyncChunk(object):
         if ftype == TType.LIST:
           self.expungedLinkedNotebooks = []
           (_etype63, _size60) = iprot.readListBegin()
-          for _i64 in xrange(_size60):
+          for _i64 in range(_size60):
             _elem65 = iprot.readString();
             self.expungedLinkedNotebooks.append(_elem65)
           iprot.readListEnd()
@@ -573,7 +573,7 @@ class SyncChunk(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -870,7 +870,7 @@ class SyncChunkFilter(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1009,7 +1009,7 @@ class NoteFilter(object):
         if ftype == TType.LIST:
           self.tagGuids = []
           (_etype80, _size77) = iprot.readListBegin()
-          for _i81 in xrange(_size77):
+          for _i81 in range(_size77):
             _elem82 = iprot.readString();
             self.tagGuids.append(_elem82)
           iprot.readListEnd()
@@ -1084,7 +1084,7 @@ class NoteFilter(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1194,7 +1194,7 @@ class NoteList(object):
         if ftype == TType.LIST:
           self.notes = []
           (_etype87, _size84) = iprot.readListBegin()
-          for _i88 in xrange(_size84):
+          for _i88 in range(_size84):
             _elem89 = evernote.edam.type.ttypes.Note()
             _elem89.read(iprot)
             self.notes.append(_elem89)
@@ -1205,7 +1205,7 @@ class NoteList(object):
         if ftype == TType.LIST:
           self.stoppedWords = []
           (_etype93, _size90) = iprot.readListBegin()
-          for _i94 in xrange(_size90):
+          for _i94 in range(_size90):
             _elem95 = iprot.readString();
             self.stoppedWords.append(_elem95)
           iprot.readListEnd()
@@ -1215,7 +1215,7 @@ class NoteList(object):
         if ftype == TType.LIST:
           self.searchedWords = []
           (_etype99, _size96) = iprot.readListBegin()
-          for _i100 in xrange(_size96):
+          for _i100 in range(_size96):
             _elem101 = iprot.readString();
             self.searchedWords.append(_elem101)
           iprot.readListEnd()
@@ -1284,7 +1284,7 @@ class NoteList(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1424,7 +1424,7 @@ class NoteMetadata(object):
         if ftype == TType.LIST:
           self.tagGuids = []
           (_etype108, _size105) = iprot.readListBegin()
-          for _i109 in xrange(_size105):
+          for _i109 in range(_size105):
             _elem110 = iprot.readString();
             self.tagGuids.append(_elem110)
           iprot.readListEnd()
@@ -1518,7 +1518,7 @@ class NoteMetadata(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1632,7 +1632,7 @@ class NotesMetadataList(object):
         if ftype == TType.LIST:
           self.notes = []
           (_etype115, _size112) = iprot.readListBegin()
-          for _i116 in xrange(_size112):
+          for _i116 in range(_size112):
             _elem117 = NoteMetadata()
             _elem117.read(iprot)
             self.notes.append(_elem117)
@@ -1643,7 +1643,7 @@ class NotesMetadataList(object):
         if ftype == TType.LIST:
           self.stoppedWords = []
           (_etype121, _size118) = iprot.readListBegin()
-          for _i122 in xrange(_size118):
+          for _i122 in range(_size118):
             _elem123 = iprot.readString();
             self.stoppedWords.append(_elem123)
           iprot.readListEnd()
@@ -1653,7 +1653,7 @@ class NotesMetadataList(object):
         if ftype == TType.LIST:
           self.searchedWords = []
           (_etype127, _size124) = iprot.readListBegin()
-          for _i128 in xrange(_size124):
+          for _i128 in range(_size124):
             _elem129 = iprot.readString();
             self.searchedWords.append(_elem129)
           iprot.readListEnd()
@@ -1722,7 +1722,7 @@ class NotesMetadataList(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1924,7 +1924,7 @@ class NotesMetadataResultSpec(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -1991,7 +1991,7 @@ class NoteCollectionCounts(object):
         if ftype == TType.MAP:
           self.notebookCounts = {}
           (_ktype134, _vtype135, _size133 ) = iprot.readMapBegin() 
-          for _i137 in xrange(_size133):
+          for _i137 in range(_size133):
             _key138 = iprot.readString();
             _val139 = iprot.readI32();
             self.notebookCounts[_key138] = _val139
@@ -2002,7 +2002,7 @@ class NoteCollectionCounts(object):
         if ftype == TType.MAP:
           self.tagCounts = {}
           (_ktype141, _vtype142, _size140 ) = iprot.readMapBegin() 
-          for _i144 in xrange(_size140):
+          for _i144 in range(_size140):
             _key145 = iprot.readString();
             _val146 = iprot.readI32();
             self.tagCounts[_key145] = _val146
@@ -2027,7 +2027,7 @@ class NoteCollectionCounts(object):
     if self.notebookCounts is not None:
       oprot.writeFieldBegin('notebookCounts', TType.MAP, 1)
       oprot.writeMapBegin(TType.STRING, TType.I32, len(self.notebookCounts))
-      for kiter147,viter148 in self.notebookCounts.items():
+      for kiter147,viter148 in list(self.notebookCounts.items()):
         oprot.writeString(kiter147)
         oprot.writeI32(viter148)
       oprot.writeMapEnd()
@@ -2035,7 +2035,7 @@ class NoteCollectionCounts(object):
     if self.tagCounts is not None:
       oprot.writeFieldBegin('tagCounts', TType.MAP, 2)
       oprot.writeMapBegin(TType.STRING, TType.I32, len(self.tagCounts))
-      for kiter149,viter150 in self.tagCounts.items():
+      for kiter149,viter150 in list(self.tagCounts.items()):
         oprot.writeString(kiter149)
         oprot.writeI32(viter150)
       oprot.writeMapEnd()
@@ -2053,7 +2053,7 @@ class NoteCollectionCounts(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2162,7 +2162,7 @@ class NoteEmailParameters(object):
         if ftype == TType.LIST:
           self.toAddresses = []
           (_etype154, _size151) = iprot.readListBegin()
-          for _i155 in xrange(_size151):
+          for _i155 in range(_size151):
             _elem156 = iprot.readString();
             self.toAddresses.append(_elem156)
           iprot.readListEnd()
@@ -2172,7 +2172,7 @@ class NoteEmailParameters(object):
         if ftype == TType.LIST:
           self.ccAddresses = []
           (_etype160, _size157) = iprot.readListBegin()
-          for _i161 in xrange(_size157):
+          for _i161 in range(_size157):
             _elem162 = iprot.readString();
             self.ccAddresses.append(_elem162)
           iprot.readListEnd()
@@ -2237,7 +2237,7 @@ class NoteEmailParameters(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2372,7 +2372,7 @@ class NoteVersionId(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2454,7 +2454,7 @@ class ClientUsageMetrics(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2581,7 +2581,7 @@ class RelatedQuery(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2655,7 +2655,7 @@ class RelatedResult(object):
         if ftype == TType.LIST:
           self.notes = []
           (_etype168, _size165) = iprot.readListBegin()
-          for _i169 in xrange(_size165):
+          for _i169 in range(_size165):
             _elem170 = evernote.edam.type.ttypes.Note()
             _elem170.read(iprot)
             self.notes.append(_elem170)
@@ -2666,7 +2666,7 @@ class RelatedResult(object):
         if ftype == TType.LIST:
           self.notebooks = []
           (_etype174, _size171) = iprot.readListBegin()
-          for _i175 in xrange(_size171):
+          for _i175 in range(_size171):
             _elem176 = evernote.edam.type.ttypes.Notebook()
             _elem176.read(iprot)
             self.notebooks.append(_elem176)
@@ -2677,7 +2677,7 @@ class RelatedResult(object):
         if ftype == TType.LIST:
           self.tags = []
           (_etype180, _size177) = iprot.readListBegin()
-          for _i181 in xrange(_size177):
+          for _i181 in range(_size177):
             _elem182 = evernote.edam.type.ttypes.Tag()
             _elem182.read(iprot)
             self.tags.append(_elem182)
@@ -2688,7 +2688,7 @@ class RelatedResult(object):
         if ftype == TType.LIST:
           self.containingNotebooks = []
           (_etype186, _size183) = iprot.readListBegin()
-          for _i187 in xrange(_size183):
+          for _i187 in range(_size183):
             _elem188 = evernote.edam.type.ttypes.NotebookDescriptor()
             _elem188.read(iprot)
             self.containingNotebooks.append(_elem188)
@@ -2742,7 +2742,7 @@ class RelatedResult(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
@@ -2889,7 +2889,7 @@ class RelatedResultSpec(object):
 
   def __repr__(self):
     L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
+      for key, value in self.__dict__.items()]
     return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):

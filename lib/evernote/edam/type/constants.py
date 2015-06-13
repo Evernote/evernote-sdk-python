@@ -7,7 +7,7 @@
 #
 
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
-from ttypes import *
+from .ttypes import *
 
 CLASSIFICATION_RECIPE_USER_NON_RECIPE = "000"
 CLASSIFICATION_RECIPE_USER_RECIPE = "001"

@@ -17,11 +17,11 @@
 # under the License.
 #
 
-from TTransport import TTransportBase
-from cStringIO import StringIO
+from .TTransport import TTransportBase
+from io import StringIO
 
-import urlparse
-import httplib
+import urllib.parse
+import http.client
 import warnings
 import socket
 
@@ -60,13 +60,13 @@ class THttpClient(TTransportBase):
             self.path = path
             self.scheme = 'http'
         else:
-            parsed = urlparse.urlparse(uri_or_host)
+            parsed = urllib.parse.urlparse(uri_or_host)
             self.scheme = parsed.scheme
             assert self.scheme in ('http', 'https')
             if self.scheme == 'http':
-                self.port = parsed.port or httplib.HTTP_PORT
+                self.port = parsed.port or http.client.HTTP_PORT
             elif self.scheme == 'https':
-                self.port = parsed.port or httplib.HTTPS_PORT
+                self.port = parsed.port or http.client.HTTPS_PORT
             self.host = parsed.hostname
             self.path = parsed.path
             if parsed.query:
@@ -75,7 +75,7 @@ class THttpClient(TTransportBase):
         if proxy_host is not None and proxy_port is not None:
             self.endpoint_host = proxy_host
             self.endpoint_port = proxy_port
-            self.path = urlparse.urlunparse((
+            self.path = urllib.parse.urlunparse((
                 self.scheme,
                 "%s:%i" % (self.host, self.port),
                 self.path,
@@ -93,8 +93,12 @@ class THttpClient(TTransportBase):
         self.__headers = {}
 
     def open(self):
-        protocol = httplib.HTTP if self.scheme == 'http' else httplib.HTTPS
-        self.__http = protocol(self.endpoint_host, self.endpoint_port)
+#        protocol = http.client.HTTP if self.scheme == 'http' else http.client.HTTPS
+#        self.__http = protocol(self.endpoint_host, self.endpoint_port)
+        if(self.scheme == 'http'):
+            self.__http = http.client.HTTPConnection(self.endpoint_host, self.endpoint_port)
+        else:
+            self.__http = http.client.HTTPSConnection(self.endpoint_host, self.endpoint_port)
 
     def close(self):
         self.__http.close()
@@ -113,10 +117,15 @@ class THttpClient(TTransportBase):
             self.__timeout = ms / 1000.0
 
     def read(self, sz):
-        return self.__http.file.read(sz)
+#        return self.__http.file.read(sz)
+        return self.res.read(sz).decode('utf8', 'ignore')
 
     def write(self, buf):
-        self.__wbuf.write(buf)
+#        print(type(buf))
+        try:
+            self.__wbuf.write(buf)
+        except Exception as err:
+            self.__wbuf.write(buf.decode('utf8',  'ignore'))
 
     def __withTimeout(f):
         def _f(*args, **kwargs):
@@ -136,7 +145,7 @@ class THttpClient(TTransportBase):
         self.open()
 
         # Pull data out of buffer
-        data = self.__wbuf.getvalue()
+        data = bytes(self.__wbuf.getvalue(), 'utf-8')
         self.__wbuf = StringIO()
 
         # HTTP request
@@ -146,7 +155,7 @@ class THttpClient(TTransportBase):
         self.__http.putheader('Host', self.host)
         self.__http.putheader('Content-Type', 'application/x-thrift')
         self.__http.putheader('Content-Length', str(len(data)))
-        for key, value in self.__headers.iteritems():
+        for key, value in self.__headers.items():
             self.__http.putheader(key, value)
         self.__http.endheaders()
 
@@ -154,7 +163,13 @@ class THttpClient(TTransportBase):
         self.__http.send(data)
 
         # Get reply to flush the request
-        self.code, self.message, self.headers = self.__http.getreply()
+#        self.code, self.message, self.headers = self.__http.getreply()
+        self.res = self.__http.getresponse()
+        self.code = self.res.status
+        self.message = self.res.reason
+        self.headers = self.res.getheaders()
+        print(self.code, self.message, self.headers)
+        print(self.res.read().decode('utf8', 'ignore'))
 
     # Decorate if we know how to timeout
     if hasattr(socket, 'getdefaulttimeout'):
