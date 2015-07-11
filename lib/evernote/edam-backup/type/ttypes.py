@@ -6,14 +6,14 @@
 #  options string: py:new_style
 #
 
-from thrift.Thrift import TType, TMessageType, TException, TApplicationException
+from enthrift.Thrift import TType, TMessageType, TException, TApplicationException
 import evernote.edam.limits.ttypes
 
 
-from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol, TProtocol
+from enthrift.transport import TTransport
+from enthrift.protocol import TBinaryProtocol, TProtocol
 try:
-  from thrift.protocol import fastbinary
+  from enthrift.protocol import fastbinary
 except:
   fastbinary = None
 
@@ -8226,9 +8226,6 @@ class UserProfile(object):
   <dt>photoUrl</dt>
   <dd>A URL identifying a copy of the user's current profile photo</dd>
   
-  <dt>role</dt>
-  <dd>The BusinessUserRole for the user</dd>
-  
   </dl>
   
   Attributes:
@@ -8240,7 +8237,6 @@ class UserProfile(object):
    - joined
    - photoLastUpdated
    - photoUrl
-   - role
   """
 
   thrift_spec = (
@@ -8253,10 +8249,9 @@ class UserProfile(object):
     (6, TType.I64, 'joined', None, None, ), # 6
     (7, TType.I64, 'photoLastUpdated', None, None, ), # 7
     (8, TType.STRING, 'photoUrl', None, None, ), # 8
-    (9, TType.I32, 'role', None, None, ), # 9
   )
 
-  def __init__(self, id=None, name=None, email=None, username=None, attributes=None, joined=None, photoLastUpdated=None, photoUrl=None, role=None,):
+  def __init__(self, id=None, name=None, email=None, username=None, attributes=None, joined=None, photoLastUpdated=None, photoUrl=None,):
     self.id = id
     self.name = name
     self.email = email
@@ -8265,7 +8260,6 @@ class UserProfile(object):
     self.joined = joined
     self.photoLastUpdated = photoLastUpdated
     self.photoUrl = photoUrl
-    self.role = role
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -8317,11 +8311,6 @@ class UserProfile(object):
           self.photoUrl = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 9:
-        if ftype == TType.I32:
-          self.role = iprot.readI32();
-        else:
-          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -8363,10 +8352,6 @@ class UserProfile(object):
     if self.photoUrl is not None:
       oprot.writeFieldBegin('photoUrl', TType.STRING, 8)
       oprot.writeString(self.photoUrl)
-      oprot.writeFieldEnd()
-    if self.role is not None:
-      oprot.writeFieldBegin('role', TType.I32, 9)
-      oprot.writeI32(self.role)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

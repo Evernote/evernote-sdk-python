@@ -6,13 +6,13 @@
 #  options string: py:new_style
 #
 
-from thrift.Thrift import TType, TMessageType, TException, TApplicationException
+from enthrift.Thrift import TType, TMessageType, TException, TApplicationException
 from ttypes import *
-from thrift.Thrift import TProcessor
-from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol, TProtocol
+from enthrift.Thrift import TProcessor
+from enthrift.transport import TTransport
+from enthrift.protocol import TBinaryProtocol, TProtocol
 try:
-  from thrift.protocol import fastbinary
+  from enthrift.protocol import fastbinary
 except:
   fastbinary = None
 
@@ -1815,16 +1815,6 @@ class Iface(object):
     Parameters:
      - userId
      - publicUri
-    """
-    pass
-
-  def createSharedNotebook(self, authenticationToken, sharedNotebook):
-    """
-    @Deprecated See createOrUpdateNotebookShares.
-    
-    Parameters:
-     - authenticationToken
-     - sharedNotebook
     """
     pass
 
@@ -5874,46 +5864,6 @@ class Client(Iface):
       raise result.notFoundException
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getPublicNotebook failed: unknown result");
 
-  def createSharedNotebook(self, authenticationToken, sharedNotebook):
-    """
-    @Deprecated See createOrUpdateNotebookShares.
-    
-    Parameters:
-     - authenticationToken
-     - sharedNotebook
-    """
-    self.send_createSharedNotebook(authenticationToken, sharedNotebook)
-    return self.recv_createSharedNotebook()
-
-  def send_createSharedNotebook(self, authenticationToken, sharedNotebook):
-    self._oprot.writeMessageBegin('createSharedNotebook', TMessageType.CALL, self._seqid)
-    args = createSharedNotebook_args()
-    args.authenticationToken = authenticationToken
-    args.sharedNotebook = sharedNotebook
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_createSharedNotebook(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = createSharedNotebook_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    if result.userException is not None:
-      raise result.userException
-    if result.notFoundException is not None:
-      raise result.notFoundException
-    if result.systemException is not None:
-      raise result.systemException
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "createSharedNotebook failed: unknown result");
-
   def createOrUpdateNotebookShares(self, authenticationToken, shareTemplate):
     """
     Share a notebook by a messaging thread ID or a list of contacts. This function is
@@ -7031,7 +6981,6 @@ class Processor(Iface, TProcessor):
     self._processMap["getResourceAlternateData"] = Processor.process_getResourceAlternateData
     self._processMap["getResourceAttributes"] = Processor.process_getResourceAttributes
     self._processMap["getPublicNotebook"] = Processor.process_getPublicNotebook
-    self._processMap["createSharedNotebook"] = Processor.process_createSharedNotebook
     self._processMap["createOrUpdateNotebookShares"] = Processor.process_createOrUpdateNotebookShares
     self._processMap["setNotebookRecipientSettings"] = Processor.process_setNotebookRecipientSettings
     self._processMap["createLinkedNotebook"] = Processor.process_createLinkedNotebook
@@ -8030,24 +7979,6 @@ class Processor(Iface, TProcessor):
     except evernote.edam.error.ttypes.EDAMNotFoundException, notFoundException:
       result.notFoundException = notFoundException
     oprot.writeMessageBegin("getPublicNotebook", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_createSharedNotebook(self, seqid, iprot, oprot):
-    args = createSharedNotebook_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = createSharedNotebook_result()
-    try:
-      result.success = self._handler.createSharedNotebook(args.authenticationToken, args.sharedNotebook)
-    except evernote.edam.error.ttypes.EDAMUserException, userException:
-      result.userException = userException
-    except evernote.edam.error.ttypes.EDAMNotFoundException, notFoundException:
-      result.notFoundException = notFoundException
-    except evernote.edam.error.ttypes.EDAMSystemException, systemException:
-      result.systemException = systemException
-    oprot.writeMessageBegin("createSharedNotebook", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -18023,178 +17954,6 @@ class getPublicNotebook_result(object):
     if self.notFoundException is not None:
       oprot.writeFieldBegin('notFoundException', TType.STRUCT, 2)
       self.notFoundException.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class createSharedNotebook_args(object):
-  """
-  Attributes:
-   - authenticationToken
-   - sharedNotebook
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'authenticationToken', None, None, ), # 1
-    (2, TType.STRUCT, 'sharedNotebook', (evernote.edam.type.ttypes.SharedNotebook, evernote.edam.type.ttypes.SharedNotebook.thrift_spec), None, ), # 2
-  )
-
-  def __init__(self, authenticationToken=None, sharedNotebook=None,):
-    self.authenticationToken = authenticationToken
-    self.sharedNotebook = sharedNotebook
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.authenticationToken = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRUCT:
-          self.sharedNotebook = evernote.edam.type.ttypes.SharedNotebook()
-          self.sharedNotebook.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('createSharedNotebook_args')
-    if self.authenticationToken is not None:
-      oprot.writeFieldBegin('authenticationToken', TType.STRING, 1)
-      oprot.writeString(self.authenticationToken)
-      oprot.writeFieldEnd()
-    if self.sharedNotebook is not None:
-      oprot.writeFieldBegin('sharedNotebook', TType.STRUCT, 2)
-      self.sharedNotebook.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class createSharedNotebook_result(object):
-  """
-  Attributes:
-   - success
-   - userException
-   - notFoundException
-   - systemException
-  """
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (evernote.edam.type.ttypes.SharedNotebook, evernote.edam.type.ttypes.SharedNotebook.thrift_spec), None, ), # 0
-    (1, TType.STRUCT, 'userException', (evernote.edam.error.ttypes.EDAMUserException, evernote.edam.error.ttypes.EDAMUserException.thrift_spec), None, ), # 1
-    (2, TType.STRUCT, 'notFoundException', (evernote.edam.error.ttypes.EDAMNotFoundException, evernote.edam.error.ttypes.EDAMNotFoundException.thrift_spec), None, ), # 2
-    (3, TType.STRUCT, 'systemException', (evernote.edam.error.ttypes.EDAMSystemException, evernote.edam.error.ttypes.EDAMSystemException.thrift_spec), None, ), # 3
-  )
-
-  def __init__(self, success=None, userException=None, notFoundException=None, systemException=None,):
-    self.success = success
-    self.userException = userException
-    self.notFoundException = notFoundException
-    self.systemException = systemException
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRUCT:
-          self.success = evernote.edam.type.ttypes.SharedNotebook()
-          self.success.read(iprot)
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.userException = evernote.edam.error.ttypes.EDAMUserException()
-          self.userException.read(iprot)
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRUCT:
-          self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
-          self.notFoundException.read(iprot)
-        else:
-          iprot.skip(ftype)
-      elif fid == 3:
-        if ftype == TType.STRUCT:
-          self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
-          self.systemException.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('createSharedNotebook_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRUCT, 0)
-      self.success.write(oprot)
-      oprot.writeFieldEnd()
-    if self.userException is not None:
-      oprot.writeFieldBegin('userException', TType.STRUCT, 1)
-      self.userException.write(oprot)
-      oprot.writeFieldEnd()
-    if self.notFoundException is not None:
-      oprot.writeFieldBegin('notFoundException', TType.STRUCT, 2)
-      self.notFoundException.write(oprot)
-      oprot.writeFieldEnd()
-    if self.systemException is not None:
-      oprot.writeFieldBegin('systemException', TType.STRUCT, 3)
-      self.systemException.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

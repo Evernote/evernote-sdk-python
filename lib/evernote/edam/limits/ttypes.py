@@ -6,12 +6,12 @@
 #  options string: py:new_style
 #
 
-from enthrift.Thrift import TType, TMessageType, TException, TApplicationException
+from thrift.Thrift import TType, TMessageType, TException, TApplicationException
 
-from enthrift.transport import TTransport
-from enthrift.protocol import TBinaryProtocol, TProtocol
+from thrift.transport import TTransport
+from thrift.protocol import TBinaryProtocol, TProtocol
 try:
-  from enthrift.protocol import fastbinary
+  from thrift.protocol import fastbinary
 except:
   fastbinary = None
 
