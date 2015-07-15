@@ -35,9 +35,9 @@ else:
 #Throw an error and exit if there is no Consumer key or secret entered
 # to get a key go to https://dev.evernote.com#apikey
 if CONSUMER_KEY=="PUT API KEY HERE" or CONSUMER_KEY=="" or CONSUMER_SECRET=="PUT API SECRET HERE" or CONSUMER_SECRET=="":
-	print """ERROR: Edit the server.py file and add your consumer key and consumer secret in the corresponding varibles at the begining of the file.\n\n
-	If you do not have a Evernote consumer key and secret go to https://dev.evernote.com#apikey to get one (for free!)."""
-	sys.exit()
+	print """ERROR: Edit the server.py file and add your consumer key and consumer secret in the corresponding varibles at the begining of the file.
+	\nIf you do not have a Evernote consumer key and secret go to https://dev.evernote.com#apikey to get one (for free!).\n"""
+	sys.exit(1)
 
 #Start Flask 
 app=Flask(__name__)

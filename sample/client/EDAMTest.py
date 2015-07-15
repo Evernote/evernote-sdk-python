@@ -1,6 +1,8 @@
 #
 # A simple Evernote API demo script that lists all notebooks in the user's
-# account and creates a simple test note in the default notebook.
+# account all the notes in the user's default notebook, creates a simple
+# test note in the default notebook, and lists joined and unjoin accessible
+# buiness notebooks in the Business accont (if applicable)
 #
 # Before running this sample, you must fill in your Evernote developer token.
 #
@@ -12,6 +14,7 @@ import hashlib
 import binascii
 import evernote.edam.userstore.constants as UserStoreConstants
 import evernote.edam.type.ttypes as Types
+import evernote.edam.notestore.ttypes as NoteStoreTypes
 
 from evernote.api.client import EvernoteClient
 
@@ -60,6 +63,26 @@ notebooks = note_store.listNotebooks()
 print "Found ", len(notebooks), " notebooks:"
 for notebook in notebooks:
     print "  * ", notebook.name
+
+#list all the notes in the default notebook:
+default_notebook = note_store.getDefaultNotebook()
+
+#setup search criteria
+note_filter = NoteStoreTypes.NoteFilter()
+note_filter.notebookGuid = default_notebook.guid
+result_spec = NoteStoreTypes.NotesMetadataResultSpec()
+result_spec.includeTitle = True
+offset = 0
+max_notes = 20
+
+#perform search
+search_results = note_store.findNotesMetadata(note_filter, offset, max_notes, result_spec)
+
+#display search results if there are results:
+if len(search_results.notes) != 0:
+    print "\nFound", len(search_results.notes), "notes in the default notebook,", default_notebook.name
+    for note in search_results.notes:
+        print "\t+ ", note.title
 
 print "\nCreating a new note in the default notebook"
 
@@ -111,6 +134,18 @@ created_note = note_store.createNote(note)
 
 print "Successfully created a new note with GUID: %s\n" %created_note.guid
 
+#Share notebook
+user_identity = Types.UserIdentity()
+user_identity.type = Types.UserIdentityType.EMAIL
+user_identity.stringIdentifier = "mcarroll+spam117@evernote.com"
+
+invite = NoteStoreTypes.InvitationShareRelationship()
+invite.recipientUserIdentity = user_identity
+invite.displayName = "Look at my notebook!"
+invite.privilege = NoteStoreTypes.ShareRelationshipPrivilegeLevel.FULL_ACCESS
+invite.allowPreview = True
+sharerUserId = user.id
+
 
 # Evernote Business 
 # To learn more about Evernote Business see https://evernote.com/business
@@ -125,8 +160,17 @@ if user.accounting.businessId:
     business_store = client.get_business_note_store()
 
     # List all of the notebooks in the business' account
-    business_notebooks = business_store.listNotebooks()
-    print "Found ", len(business_notebooks), "business notebooks:"
-    for business_notebook in business_notebooks:
+    joined_business_notebooks = business_store.listNotebooks()
+    print "Found", len(joined_business_notebooks), "joined business notebooks:"
+    for business_notebook in joined_business_notebooks:
         print "  * ", business_notebook.name
     print ""
+
+    accessible_business_notebooks = business_store.listAccessibleBusinessNotebooks()
+    
+    num_of_unjoin_business_notebooks = len(accessible_business_notebooks)-len(joined_business_notebooks)
+
+    print "Found " + str(num_of_unjoin_business_notebooks) + " additional business notebooks accessible to you:"
+    for accessible_business_notebook in accessible_business_notebooks:
+        if accessible_business_notebook.guid not in [joined_business_notebook.guid for joined_business_notebook in joined_business_notebooks]:
+            print "  * ", accessible_business_notebook.name

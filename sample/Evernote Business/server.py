@@ -2,6 +2,7 @@
 from evernote.api.client import EvernoteClient # for connecting to the Evenrote API
 import evernote.edam.type.ttypes as Types # for note and tags datatypes types
 import evernote.edam.notestore.ttypes as NoteStoreTypes # for note filter and result spec datatypes
+import evernote.edam.error.ttypes as Errors # for handeling errors sent from the Evernote Cloud
 
 #Flask Imports
 from flask import Flask, render_template, request, session, redirect, url_for
@@ -11,6 +12,7 @@ import requests # to get note thumnails through the HTTP API
 import sys # to exit if no API key is inputted
 import templates_enml # file that has the note template data
 import base64 # for URL encoding images
+import math # for changing the search query
 
 #API Key information
 #to get a API key go here: https://dev.evernote.com#apikey
@@ -19,7 +21,7 @@ CONSUMER_SECRET="PUT API SECRET HERE" #INPUT CONSUMER SECRET HERE
 sandbox = True #if True will use sandbox.evernote.com, if False will use www.evenrote.com
 
 # PORT FOR DEVELOPERMENT SERVER
-port=8000
+port=1337
 
 #if sandbox True will use sandbox.evernote.com, if False will use www.evenrote.com
 if sandbox:
@@ -36,64 +38,7 @@ if CONSUMER_KEY=="PUT API KEY HERE" or CONSUMER_KEY=="" or CONSUMER_SECRET=="PUT
 
 #Start Flask 
 app=Flask(__name__)
-app.config['SECRET_KEY'] = "secret key" #configure the secret key for session data
-
-def get_template_tags(auth_token):
-	"""finds a tag with the name 'template' or 'Template'
-
-	returns a list of tag GUIDs or None"""
-
-	#setup the Evernote Client
-	client = EvernoteClient(token=session["access_token"], sandbox=sandbox)
-	user_store = client.get_user_store()
-	note_store = client.get_note_store()
-
-	#get a list of tags in the user's account
-	tags = note_store.listTags()
-
-	#Check to see if there are tags named 'template' or 'Template' and put them in a list
-	template_tags = None
-	for tag in tags:
-		tag_name = tag.name
-		if tag_name == 'template':
-			if template_tags:
-				template_tags.append(tag.guid)
-			else:
-				template_tags = [tag.guid]
-		if tag_name == 'Template':
-			if template_tags:
-				template_tags.append(tag.guid)
-			else:
-				template_tags = [tag.guid]
-	
-	return template_tags #return a list of tags GUIDs (or None)
-
-def create_standard_templates(auth_token):
-	"""takes an auth token and creates templates notes in the users default notebook
-
-	returns a list of the notes created"""
-
-	#setup Evernote client
-	client = EvernoteClient(token=auth_token, sandbox=sandbox)
-	note_store = client.get_note_store()
-
-	notes=[]
-	default_notebook = note_store.getDefaultNotebook()
-	template_tags = get_template_tags(auth_token)
-
-	# add all template note ENML from templates_enml.py file
-	for template in templates_enml.templates:
-		note = Types.Note()			
-		note.title = template['title']
-		note.content = template['enml']
-		note.tagGuids = template_tags
-		note.notebooksGuid = default_notebook.guid
-		try:
-			notes.append(note_store.createNote(note))
-		except NameError:
-			notes = [note_store.createNote(note)]
-
-	return notes
+app.config['SECRET_KEY'] = "secret key" #configure the secret key for session data (must be the same secret key when starting Flask in the last line)
 
 @app.route("/auth")
 def auth():
@@ -139,66 +84,72 @@ def main():
 	#check to see the user has logged in
 	if "access_token" in session.keys():
 		
-		#setup Evernote client
-		client = EvernoteClient(token=session["access_token"], sandbox=sandbox)
-		user_store = client.get_user_store()
-		note_store = client.get_note_store()
+		try:
+			#setup Evernote client
+			client = EvernoteClient(token=session["access_token"], sandbox=sandbox)
+			user_store = client.get_user_store()
+			note_store = client.get_note_store()
+			business_store = client.get_business_note_store()
+		except Errors.EDAMSystemException:
+			#if the user authentication token fails to work prompt them to reautenticate
+			return redirect(url_for("main")) 
 
-		#get a list of tags labeled "template" or "Template"
-		template_tags = get_template_tags(session["access_token"])
+		#setup search
+		notebook_filter=NoteStoreTypes.NoteFilter()
+		result_spec = NoteStoreTypes.NotesMetadataResultSpec(includeTitle=True)
 
-		#if a "template" or "Template" tag does already exist do a search for notes tagged with "templates"
-		if template_tags:
-			personal_search_results = []
-			for tag in template_tags:
-				notebook_filter=NoteStoreTypes.NoteFilter()
-				notebook_filter.tagGuids= [tag]
-				result_spec = NoteStoreTypes.NotesMetadataResultSpec(includeTitle=True)
-				personal_search_result = note_store.findNotesMetadata(notebook_filter,0 , 40000, result_spec)
+		# Start seraching for notes in the last day
+		# if less than 5 results increase to 10, 100, etc. until more than 5 are found or 
+		# the number results between iterations are the same
+		search_results_len = None
+		while search_results_len<5:
+			#setup counter
+			try:
+				counter += 1
+			except NameError:
+				counter = 0
+			#define number of pervious days to search:
+			days_pervious_to_search = str(int(math.pow(10, counter)))
+			#Define search grammer (docs: https://dev.evernote.com/doc/articles/search_grammar.php)
+			notebook_filter.words = "created:day-"+days_pervious_to_search+" updated:day-"+days_pervious_to_search
 
-				personal_search_results+=personal_search_result.notes
+			#perform search
+			search_results = business_store.findNotesMetadata(notebook_filter,0 , 40000, result_spec)  
+			
+			#break if you get the same number of results for a order of magnitude increase in the number of days
+			# (assume that is the total number of search results present)
+			if len(search_results.notes)==search_results_len:
+				break
 
+			search_results_len = len(search_results.notes)
 
-			metadata_notes_list = personal_search_results
-			print metadata_notes_list
-			print len(metadata_notes_list)
-			#if the search returns less than 4 notes create 4 note templates for them:
-			if len(metadata_notes_list) < 4:
-				standard_template_notes = create_standard_templates(session["access_token"])
-				metadata_notes_list += standard_template_notes
+		notes_metadata = search_results.notes
 
-		#if there are no tags labeled "template" or "Template" create it and create standard template notes
-		if not template_tags:
-			template_tags = Types.Tag()
-			template_tags.name = "template"
-			template_tags = note_store.createTag(template_tags)
+		auth_result = user_store.authenticateToBusiness()
+		business_shard_id = auth_result.user.shardId
+		business_user_id = auth_result.user.id
+		business_token = auth_result.authenticationToken
 
-			#create 4 note templates for the user:
-			metadata_notes_list = create_standard_templates(session["access_token"])
-
-		#return the list of templates and their views and display them (with their links) to the user
-		for note in metadata_notes_list:
-			#get the user
-			user = user_store.getUser()
-			#Get the HTML contents of each note: 
-			template_link = "evernote:///view/%s/%s/%s/%s/" % (user.id, user.shardId, note.guid, note.guid)
+		#return the list of recently created and edited business notes and their views and display them (with their links) to the user
+		for note in notes_metadata:
+			#Get the HTML contents of each note: evernote:///view/32687061/s12/ff36290-4c35-4938-ab73-c09ce4a83e1c/ff36290-4c35-4938-ab73-c09ce4a83e1c/
+			template_link = "evernote:///view/%s/%s/%s/%s/" % (business_user_id, business_shard_id, note.guid, note.guid)
 			#edit this template: Link to note "evernote:///view/[userId]/[shardId]/[noteGuid]/[noteGuid]/"
 
 			#create URL that allows the user to create a new note based on the template
 			in_app_link = "note/template/%s" % note.guid
 
 			#get the thumnail for each note
-			r=requests.post(EN_URL+"/shard/"+user.shardId+"/thm/note/"+note.guid+".jpg", data={"auth":session["access_token"]})
+			r=requests.post(EN_URL+"/shard/"+business_shard_id+"/thm/note/"+note.guid+".jpg", data={"auth":business_token})
 			image_data = "data:"+r.headers['Content-Type'] + ";" +"base64," + str(base64.b64encode(r.content).decode("utf-8"))
 
 			#wrap all this data in a dictionary and put it in a list
 			try:
-				content_list.append({"image":image_data, "in_app_link":in_app_link, "template_link":template_link, "title":note.title})
+				content_list.append({"image":image_data, "in_app_link":in_app_link, "title":note.title})
 			except NameError:
-				content_list = [{"image":image_data, "in_app_link":in_app_link, "template_link":template_link, "title":note.title}]
-
+				content_list = [{"image":image_data, "in_app_link":in_app_link, "title":note.title}]
 		#render the template with the data we just retrivied
-		return render_template('index.html', templates=content_list)
+		return render_template('index.html', templates=content_list, num_of_notes = days_pervious_to_search)
 
 
 	#if their Evernote access_token session varible is not set, redirect them to Evernote to authoirze the applicaiton
@@ -232,24 +183,15 @@ def new_template_note(guid):
 		#setup Evernote Client
 		client = EvernoteClient(token=session["access_token"], sandbox=sandbox)
 		user_store = client.get_user_store()
-		note_store = client.get_note_store()
+		business_store = client.get_business_note_store()
 		
-		#get the default notebook
-		default_notebook = note_store.getDefaultNotebook()
-		
-		#copy the note to the default notebook
-		note = note_store.copyNote(session['access_token'], guid, default_notebook.guid)
-
-		#Remove "template" and "Template" tags
-		for tag in get_template_tags(session['access_token']):
-			try:
-				note.tagGuids.remove(tag)
-			except ValueError:
-				pass
-		note = note_store.updateNote(note)
+		auth_result = user_store.authenticateToBusiness()
+		business_shard_id = auth_result.user.shardId
+		business_user_id = auth_result.user.id
+		business_token = auth_result.authenticationToken
 
 		#construct the evernote Link to the newly copied note
-		in_app_link = "evernote:///view/%s/%s/%s/%s/" % (user_store.getUser().id, user_store.getUser().shardId, note.guid, note.guid)
+		in_app_link = "evernote:///view/%s/%s/%s/%s/" % (business_user_id, business_shard_id, guid, guid)
 
 		#redirect the user to the note (will open up in Evernote client)
 		return redirect(in_app_link)

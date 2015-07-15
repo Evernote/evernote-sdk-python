@@ -56,6 +56,474 @@ class ShareRelationshipPrivilegeLevel:
   }
 
 
+class SyncState:
+  """
+  Attributes:
+   - currentTime
+   - fullSyncBefore
+   - updateCount
+   - uploaded
+   - userLastUpdated
+   - userMaxMessageEventId
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I64, 'currentTime', None, None, ), # 1
+    (2, TType.I64, 'fullSyncBefore', None, None, ), # 2
+    (3, TType.I32, 'updateCount', None, None, ), # 3
+    (4, TType.I64, 'uploaded', None, None, ), # 4
+    (5, TType.I64, 'userLastUpdated', None, None, ), # 5
+    (6, TType.I64, 'userMaxMessageEventId', None, None, ), # 6
+  )
+
+  def __init__(self, currentTime=None, fullSyncBefore=None, updateCount=None, uploaded=None, userLastUpdated=None, userMaxMessageEventId=None,):
+    self.currentTime = currentTime
+    self.fullSyncBefore = fullSyncBefore
+    self.updateCount = updateCount
+    self.uploaded = uploaded
+    self.userLastUpdated = userLastUpdated
+    self.userMaxMessageEventId = userMaxMessageEventId
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I64:
+          self.currentTime = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I64:
+          self.fullSyncBefore = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.updateCount = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.I64:
+          self.uploaded = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.I64:
+          self.userLastUpdated = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.I64:
+          self.userMaxMessageEventId = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('SyncState')
+    if self.currentTime is not None:
+      oprot.writeFieldBegin('currentTime', TType.I64, 1)
+      oprot.writeI64(self.currentTime)
+      oprot.writeFieldEnd()
+    if self.fullSyncBefore is not None:
+      oprot.writeFieldBegin('fullSyncBefore', TType.I64, 2)
+      oprot.writeI64(self.fullSyncBefore)
+      oprot.writeFieldEnd()
+    if self.updateCount is not None:
+      oprot.writeFieldBegin('updateCount', TType.I32, 3)
+      oprot.writeI32(self.updateCount)
+      oprot.writeFieldEnd()
+    if self.uploaded is not None:
+      oprot.writeFieldBegin('uploaded', TType.I64, 4)
+      oprot.writeI64(self.uploaded)
+      oprot.writeFieldEnd()
+    if self.userLastUpdated is not None:
+      oprot.writeFieldBegin('userLastUpdated', TType.I64, 5)
+      oprot.writeI64(self.userLastUpdated)
+      oprot.writeFieldEnd()
+    if self.userMaxMessageEventId is not None:
+      oprot.writeFieldBegin('userMaxMessageEventId', TType.I64, 6)
+      oprot.writeI64(self.userMaxMessageEventId)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.currentTime is None:
+      raise TProtocol.TProtocolException(message='Required field currentTime is unset!')
+    if self.fullSyncBefore is None:
+      raise TProtocol.TProtocolException(message='Required field fullSyncBefore is unset!')
+    if self.updateCount is None:
+      raise TProtocol.TProtocolException(message='Required field updateCount is unset!')
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.currentTime)
+    value = (value * 31) ^ hash(self.fullSyncBefore)
+    value = (value * 31) ^ hash(self.updateCount)
+    value = (value * 31) ^ hash(self.uploaded)
+    value = (value * 31) ^ hash(self.userLastUpdated)
+    value = (value * 31) ^ hash(self.userMaxMessageEventId)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class SyncChunk:
+  """
+  Attributes:
+   - currentTime
+   - chunkHighUSN
+   - updateCount
+   - notes
+   - notebooks
+   - tags
+   - searches
+   - resources
+   - expungedNotes
+   - expungedNotebooks
+   - expungedTags
+   - expungedSearches
+   - linkedNotebooks
+   - expungedLinkedNotebooks
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I64, 'currentTime', None, None, ), # 1
+    (2, TType.I32, 'chunkHighUSN', None, None, ), # 2
+    (3, TType.I32, 'updateCount', None, None, ), # 3
+    (4, TType.LIST, 'notes', (TType.STRUCT,(evernote.edam.type.ttypes.Note, evernote.edam.type.ttypes.Note.thrift_spec)), None, ), # 4
+    (5, TType.LIST, 'notebooks', (TType.STRUCT,(evernote.edam.type.ttypes.Notebook, evernote.edam.type.ttypes.Notebook.thrift_spec)), None, ), # 5
+    (6, TType.LIST, 'tags', (TType.STRUCT,(evernote.edam.type.ttypes.Tag, evernote.edam.type.ttypes.Tag.thrift_spec)), None, ), # 6
+    (7, TType.LIST, 'searches', (TType.STRUCT,(evernote.edam.type.ttypes.SavedSearch, evernote.edam.type.ttypes.SavedSearch.thrift_spec)), None, ), # 7
+    (8, TType.LIST, 'resources', (TType.STRUCT,(evernote.edam.type.ttypes.Resource, evernote.edam.type.ttypes.Resource.thrift_spec)), None, ), # 8
+    (9, TType.LIST, 'expungedNotes', (TType.STRING,None), None, ), # 9
+    (10, TType.LIST, 'expungedNotebooks', (TType.STRING,None), None, ), # 10
+    (11, TType.LIST, 'expungedTags', (TType.STRING,None), None, ), # 11
+    (12, TType.LIST, 'expungedSearches', (TType.STRING,None), None, ), # 12
+    (13, TType.LIST, 'linkedNotebooks', (TType.STRUCT,(evernote.edam.type.ttypes.LinkedNotebook, evernote.edam.type.ttypes.LinkedNotebook.thrift_spec)), None, ), # 13
+    (14, TType.LIST, 'expungedLinkedNotebooks', (TType.STRING,None), None, ), # 14
+  )
+
+  def __init__(self, currentTime=None, chunkHighUSN=None, updateCount=None, notes=None, notebooks=None, tags=None, searches=None, resources=None, expungedNotes=None, expungedNotebooks=None, expungedTags=None, expungedSearches=None, linkedNotebooks=None, expungedLinkedNotebooks=None,):
+    self.currentTime = currentTime
+    self.chunkHighUSN = chunkHighUSN
+    self.updateCount = updateCount
+    self.notes = notes
+    self.notebooks = notebooks
+    self.tags = tags
+    self.searches = searches
+    self.resources = resources
+    self.expungedNotes = expungedNotes
+    self.expungedNotebooks = expungedNotebooks
+    self.expungedTags = expungedTags
+    self.expungedSearches = expungedSearches
+    self.linkedNotebooks = linkedNotebooks
+    self.expungedLinkedNotebooks = expungedLinkedNotebooks
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I64:
+          self.currentTime = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.chunkHighUSN = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.updateCount = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.LIST:
+          self.notes = []
+          (_etype3, _size0) = iprot.readListBegin()
+          for _i4 in xrange(_size0):
+            _elem5 = evernote.edam.type.ttypes.Note()
+            _elem5.read(iprot)
+            self.notes.append(_elem5)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.LIST:
+          self.notebooks = []
+          (_etype9, _size6) = iprot.readListBegin()
+          for _i10 in xrange(_size6):
+            _elem11 = evernote.edam.type.ttypes.Notebook()
+            _elem11.read(iprot)
+            self.notebooks.append(_elem11)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.LIST:
+          self.tags = []
+          (_etype15, _size12) = iprot.readListBegin()
+          for _i16 in xrange(_size12):
+            _elem17 = evernote.edam.type.ttypes.Tag()
+            _elem17.read(iprot)
+            self.tags.append(_elem17)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
+        if ftype == TType.LIST:
+          self.searches = []
+          (_etype21, _size18) = iprot.readListBegin()
+          for _i22 in xrange(_size18):
+            _elem23 = evernote.edam.type.ttypes.SavedSearch()
+            _elem23.read(iprot)
+            self.searches.append(_elem23)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 8:
+        if ftype == TType.LIST:
+          self.resources = []
+          (_etype27, _size24) = iprot.readListBegin()
+          for _i28 in xrange(_size24):
+            _elem29 = evernote.edam.type.ttypes.Resource()
+            _elem29.read(iprot)
+            self.resources.append(_elem29)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 9:
+        if ftype == TType.LIST:
+          self.expungedNotes = []
+          (_etype33, _size30) = iprot.readListBegin()
+          for _i34 in xrange(_size30):
+            _elem35 = iprot.readString();
+            self.expungedNotes.append(_elem35)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 10:
+        if ftype == TType.LIST:
+          self.expungedNotebooks = []
+          (_etype39, _size36) = iprot.readListBegin()
+          for _i40 in xrange(_size36):
+            _elem41 = iprot.readString();
+            self.expungedNotebooks.append(_elem41)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 11:
+        if ftype == TType.LIST:
+          self.expungedTags = []
+          (_etype45, _size42) = iprot.readListBegin()
+          for _i46 in xrange(_size42):
+            _elem47 = iprot.readString();
+            self.expungedTags.append(_elem47)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 12:
+        if ftype == TType.LIST:
+          self.expungedSearches = []
+          (_etype51, _size48) = iprot.readListBegin()
+          for _i52 in xrange(_size48):
+            _elem53 = iprot.readString();
+            self.expungedSearches.append(_elem53)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 13:
+        if ftype == TType.LIST:
+          self.linkedNotebooks = []
+          (_etype57, _size54) = iprot.readListBegin()
+          for _i58 in xrange(_size54):
+            _elem59 = evernote.edam.type.ttypes.LinkedNotebook()
+            _elem59.read(iprot)
+            self.linkedNotebooks.append(_elem59)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 14:
+        if ftype == TType.LIST:
+          self.expungedLinkedNotebooks = []
+          (_etype63, _size60) = iprot.readListBegin()
+          for _i64 in xrange(_size60):
+            _elem65 = iprot.readString();
+            self.expungedLinkedNotebooks.append(_elem65)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('SyncChunk')
+    if self.currentTime is not None:
+      oprot.writeFieldBegin('currentTime', TType.I64, 1)
+      oprot.writeI64(self.currentTime)
+      oprot.writeFieldEnd()
+    if self.chunkHighUSN is not None:
+      oprot.writeFieldBegin('chunkHighUSN', TType.I32, 2)
+      oprot.writeI32(self.chunkHighUSN)
+      oprot.writeFieldEnd()
+    if self.updateCount is not None:
+      oprot.writeFieldBegin('updateCount', TType.I32, 3)
+      oprot.writeI32(self.updateCount)
+      oprot.writeFieldEnd()
+    if self.notes is not None:
+      oprot.writeFieldBegin('notes', TType.LIST, 4)
+      oprot.writeListBegin(TType.STRUCT, len(self.notes))
+      for iter66 in self.notes:
+        iter66.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.notebooks is not None:
+      oprot.writeFieldBegin('notebooks', TType.LIST, 5)
+      oprot.writeListBegin(TType.STRUCT, len(self.notebooks))
+      for iter67 in self.notebooks:
+        iter67.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.tags is not None:
+      oprot.writeFieldBegin('tags', TType.LIST, 6)
+      oprot.writeListBegin(TType.STRUCT, len(self.tags))
+      for iter68 in self.tags:
+        iter68.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.searches is not None:
+      oprot.writeFieldBegin('searches', TType.LIST, 7)
+      oprot.writeListBegin(TType.STRUCT, len(self.searches))
+      for iter69 in self.searches:
+        iter69.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.resources is not None:
+      oprot.writeFieldBegin('resources', TType.LIST, 8)
+      oprot.writeListBegin(TType.STRUCT, len(self.resources))
+      for iter70 in self.resources:
+        iter70.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.expungedNotes is not None:
+      oprot.writeFieldBegin('expungedNotes', TType.LIST, 9)
+      oprot.writeListBegin(TType.STRING, len(self.expungedNotes))
+      for iter71 in self.expungedNotes:
+        oprot.writeString(iter71)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.expungedNotebooks is not None:
+      oprot.writeFieldBegin('expungedNotebooks', TType.LIST, 10)
+      oprot.writeListBegin(TType.STRING, len(self.expungedNotebooks))
+      for iter72 in self.expungedNotebooks:
+        oprot.writeString(iter72)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.expungedTags is not None:
+      oprot.writeFieldBegin('expungedTags', TType.LIST, 11)
+      oprot.writeListBegin(TType.STRING, len(self.expungedTags))
+      for iter73 in self.expungedTags:
+        oprot.writeString(iter73)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.expungedSearches is not None:
+      oprot.writeFieldBegin('expungedSearches', TType.LIST, 12)
+      oprot.writeListBegin(TType.STRING, len(self.expungedSearches))
+      for iter74 in self.expungedSearches:
+        oprot.writeString(iter74)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.linkedNotebooks is not None:
+      oprot.writeFieldBegin('linkedNotebooks', TType.LIST, 13)
+      oprot.writeListBegin(TType.STRUCT, len(self.linkedNotebooks))
+      for iter75 in self.linkedNotebooks:
+        iter75.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.expungedLinkedNotebooks is not None:
+      oprot.writeFieldBegin('expungedLinkedNotebooks', TType.LIST, 14)
+      oprot.writeListBegin(TType.STRING, len(self.expungedLinkedNotebooks))
+      for iter76 in self.expungedLinkedNotebooks:
+        oprot.writeString(iter76)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.currentTime is None:
+      raise TProtocol.TProtocolException(message='Required field currentTime is unset!')
+    if self.updateCount is None:
+      raise TProtocol.TProtocolException(message='Required field updateCount is unset!')
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.currentTime)
+    value = (value * 31) ^ hash(self.chunkHighUSN)
+    value = (value * 31) ^ hash(self.updateCount)
+    value = (value * 31) ^ hash(self.notes)
+    value = (value * 31) ^ hash(self.notebooks)
+    value = (value * 31) ^ hash(self.tags)
+    value = (value * 31) ^ hash(self.searches)
+    value = (value * 31) ^ hash(self.resources)
+    value = (value * 31) ^ hash(self.expungedNotes)
+    value = (value * 31) ^ hash(self.expungedNotebooks)
+    value = (value * 31) ^ hash(self.expungedTags)
+    value = (value * 31) ^ hash(self.expungedSearches)
+    value = (value * 31) ^ hash(self.linkedNotebooks)
+    value = (value * 31) ^ hash(self.expungedLinkedNotebooks)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class SyncChunkFilter:
   """
   Attributes:
@@ -210,10 +678,10 @@ class SyncChunkFilter:
       elif fid == 15:
         if ftype == TType.SET:
           self.notebookGuids = set()
-          (_etype3, _size0) = iprot.readSetBegin()
-          for _i4 in xrange(_size0):
-            _elem5 = iprot.readString();
-            self.notebookGuids.add(_elem5)
+          (_etype80, _size77) = iprot.readSetBegin()
+          for _i81 in xrange(_size77):
+            _elem82 = iprot.readString();
+            self.notebookGuids.add(_elem82)
           iprot.readSetEnd()
         else:
           iprot.skip(ftype)
@@ -286,8 +754,8 @@ class SyncChunkFilter:
     if self.notebookGuids is not None:
       oprot.writeFieldBegin('notebookGuids', TType.SET, 15)
       oprot.writeSetBegin(TType.STRING, len(self.notebookGuids))
-      for iter6 in self.notebookGuids:
-        oprot.writeString(iter6)
+      for iter83 in self.notebookGuids:
+        oprot.writeString(iter83)
       oprot.writeSetEnd()
       oprot.writeFieldEnd()
     if self.omitSharedNotebooks is not None:
@@ -407,10 +875,10 @@ class NoteFilter:
       elif fid == 5:
         if ftype == TType.LIST:
           self.tagGuids = []
-          (_etype10, _size7) = iprot.readListBegin()
-          for _i11 in xrange(_size7):
-            _elem12 = iprot.readString();
-            self.tagGuids.append(_elem12)
+          (_etype87, _size84) = iprot.readListBegin()
+          for _i88 in xrange(_size84):
+            _elem89 = iprot.readString();
+            self.tagGuids.append(_elem89)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -463,8 +931,8 @@ class NoteFilter:
     if self.tagGuids is not None:
       oprot.writeFieldBegin('tagGuids', TType.LIST, 5)
       oprot.writeListBegin(TType.STRING, len(self.tagGuids))
-      for iter13 in self.tagGuids:
-        oprot.writeString(iter13)
+      for iter90 in self.tagGuids:
+        oprot.writeString(iter90)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.timeZone is not None:
@@ -565,31 +1033,31 @@ class NoteList:
       elif fid == 3:
         if ftype == TType.LIST:
           self.notes = []
-          (_etype17, _size14) = iprot.readListBegin()
-          for _i18 in xrange(_size14):
-            _elem19 = evernote.edam.type.ttypes.Note()
-            _elem19.read(iprot)
-            self.notes.append(_elem19)
+          (_etype94, _size91) = iprot.readListBegin()
+          for _i95 in xrange(_size91):
+            _elem96 = evernote.edam.type.ttypes.Note()
+            _elem96.read(iprot)
+            self.notes.append(_elem96)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.stoppedWords = []
-          (_etype23, _size20) = iprot.readListBegin()
-          for _i24 in xrange(_size20):
-            _elem25 = iprot.readString();
-            self.stoppedWords.append(_elem25)
+          (_etype100, _size97) = iprot.readListBegin()
+          for _i101 in xrange(_size97):
+            _elem102 = iprot.readString();
+            self.stoppedWords.append(_elem102)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 5:
         if ftype == TType.LIST:
           self.searchedWords = []
-          (_etype29, _size26) = iprot.readListBegin()
-          for _i30 in xrange(_size26):
-            _elem31 = iprot.readString();
-            self.searchedWords.append(_elem31)
+          (_etype106, _size103) = iprot.readListBegin()
+          for _i107 in xrange(_size103):
+            _elem108 = iprot.readString();
+            self.searchedWords.append(_elem108)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -619,22 +1087,22 @@ class NoteList:
     if self.notes is not None:
       oprot.writeFieldBegin('notes', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.notes))
-      for iter32 in self.notes:
-        iter32.write(oprot)
+      for iter109 in self.notes:
+        iter109.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.stoppedWords is not None:
       oprot.writeFieldBegin('stoppedWords', TType.LIST, 4)
       oprot.writeListBegin(TType.STRING, len(self.stoppedWords))
-      for iter33 in self.stoppedWords:
-        oprot.writeString(iter33)
+      for iter110 in self.stoppedWords:
+        oprot.writeString(iter110)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.searchedWords is not None:
       oprot.writeFieldBegin('searchedWords', TType.LIST, 5)
       oprot.writeListBegin(TType.STRING, len(self.searchedWords))
-      for iter34 in self.searchedWords:
-        oprot.writeString(iter34)
+      for iter111 in self.searchedWords:
+        oprot.writeString(iter111)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.updateCount is not None:
@@ -783,10 +1251,10 @@ class NoteMetadata:
       elif fid == 12:
         if ftype == TType.LIST:
           self.tagGuids = []
-          (_etype38, _size35) = iprot.readListBegin()
-          for _i39 in xrange(_size35):
-            _elem40 = iprot.readString();
-            self.tagGuids.append(_elem40)
+          (_etype115, _size112) = iprot.readListBegin()
+          for _i116 in xrange(_size112):
+            _elem117 = iprot.readString();
+            self.tagGuids.append(_elem117)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -851,8 +1319,8 @@ class NoteMetadata:
     if self.tagGuids is not None:
       oprot.writeFieldBegin('tagGuids', TType.LIST, 12)
       oprot.writeListBegin(TType.STRING, len(self.tagGuids))
-      for iter41 in self.tagGuids:
-        oprot.writeString(iter41)
+      for iter118 in self.tagGuids:
+        oprot.writeString(iter118)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.attributes is not None:
@@ -954,31 +1422,31 @@ class NotesMetadataList:
       elif fid == 3:
         if ftype == TType.LIST:
           self.notes = []
-          (_etype45, _size42) = iprot.readListBegin()
-          for _i46 in xrange(_size42):
-            _elem47 = NoteMetadata()
-            _elem47.read(iprot)
-            self.notes.append(_elem47)
+          (_etype122, _size119) = iprot.readListBegin()
+          for _i123 in xrange(_size119):
+            _elem124 = NoteMetadata()
+            _elem124.read(iprot)
+            self.notes.append(_elem124)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.stoppedWords = []
-          (_etype51, _size48) = iprot.readListBegin()
-          for _i52 in xrange(_size48):
-            _elem53 = iprot.readString();
-            self.stoppedWords.append(_elem53)
+          (_etype128, _size125) = iprot.readListBegin()
+          for _i129 in xrange(_size125):
+            _elem130 = iprot.readString();
+            self.stoppedWords.append(_elem130)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 5:
         if ftype == TType.LIST:
           self.searchedWords = []
-          (_etype57, _size54) = iprot.readListBegin()
-          for _i58 in xrange(_size54):
-            _elem59 = iprot.readString();
-            self.searchedWords.append(_elem59)
+          (_etype134, _size131) = iprot.readListBegin()
+          for _i135 in xrange(_size131):
+            _elem136 = iprot.readString();
+            self.searchedWords.append(_elem136)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1008,22 +1476,22 @@ class NotesMetadataList:
     if self.notes is not None:
       oprot.writeFieldBegin('notes', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.notes))
-      for iter60 in self.notes:
-        iter60.write(oprot)
+      for iter137 in self.notes:
+        iter137.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.stoppedWords is not None:
       oprot.writeFieldBegin('stoppedWords', TType.LIST, 4)
       oprot.writeListBegin(TType.STRING, len(self.stoppedWords))
-      for iter61 in self.stoppedWords:
-        oprot.writeString(iter61)
+      for iter138 in self.stoppedWords:
+        oprot.writeString(iter138)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.searchedWords is not None:
       oprot.writeFieldBegin('searchedWords', TType.LIST, 5)
       oprot.writeListBegin(TType.STRING, len(self.searchedWords))
-      for iter62 in self.searchedWords:
-        oprot.writeString(iter62)
+      for iter139 in self.searchedWords:
+        oprot.writeString(iter139)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.updateCount is not None:
@@ -1301,22 +1769,22 @@ class NoteCollectionCounts:
       if fid == 1:
         if ftype == TType.MAP:
           self.notebookCounts = {}
-          (_ktype64, _vtype65, _size63 ) = iprot.readMapBegin()
-          for _i67 in xrange(_size63):
-            _key68 = iprot.readString();
-            _val69 = iprot.readI32();
-            self.notebookCounts[_key68] = _val69
+          (_ktype141, _vtype142, _size140 ) = iprot.readMapBegin()
+          for _i144 in xrange(_size140):
+            _key145 = iprot.readString();
+            _val146 = iprot.readI32();
+            self.notebookCounts[_key145] = _val146
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.MAP:
           self.tagCounts = {}
-          (_ktype71, _vtype72, _size70 ) = iprot.readMapBegin()
-          for _i74 in xrange(_size70):
-            _key75 = iprot.readString();
-            _val76 = iprot.readI32();
-            self.tagCounts[_key75] = _val76
+          (_ktype148, _vtype149, _size147 ) = iprot.readMapBegin()
+          for _i151 in xrange(_size147):
+            _key152 = iprot.readString();
+            _val153 = iprot.readI32();
+            self.tagCounts[_key152] = _val153
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -1338,17 +1806,17 @@ class NoteCollectionCounts:
     if self.notebookCounts is not None:
       oprot.writeFieldBegin('notebookCounts', TType.MAP, 1)
       oprot.writeMapBegin(TType.STRING, TType.I32, len(self.notebookCounts))
-      for kiter77,viter78 in self.notebookCounts.items():
-        oprot.writeString(kiter77)
-        oprot.writeI32(viter78)
+      for kiter154,viter155 in self.notebookCounts.items():
+        oprot.writeString(kiter154)
+        oprot.writeI32(viter155)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.tagCounts is not None:
       oprot.writeFieldBegin('tagCounts', TType.MAP, 2)
       oprot.writeMapBegin(TType.STRING, TType.I32, len(self.tagCounts))
-      for kiter79,viter80 in self.tagCounts.items():
-        oprot.writeString(kiter79)
-        oprot.writeI32(viter80)
+      for kiter156,viter157 in self.tagCounts.items():
+        oprot.writeString(kiter156)
+        oprot.writeI32(viter157)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.trashCount is not None:
@@ -1549,20 +2017,20 @@ class NoteEmailParameters:
       elif fid == 3:
         if ftype == TType.LIST:
           self.toAddresses = []
-          (_etype84, _size81) = iprot.readListBegin()
-          for _i85 in xrange(_size81):
-            _elem86 = iprot.readString();
-            self.toAddresses.append(_elem86)
+          (_etype161, _size158) = iprot.readListBegin()
+          for _i162 in xrange(_size158):
+            _elem163 = iprot.readString();
+            self.toAddresses.append(_elem163)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.ccAddresses = []
-          (_etype90, _size87) = iprot.readListBegin()
-          for _i91 in xrange(_size87):
-            _elem92 = iprot.readString();
-            self.ccAddresses.append(_elem92)
+          (_etype167, _size164) = iprot.readListBegin()
+          for _i168 in xrange(_size164):
+            _elem169 = iprot.readString();
+            self.ccAddresses.append(_elem169)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1597,15 +2065,15 @@ class NoteEmailParameters:
     if self.toAddresses is not None:
       oprot.writeFieldBegin('toAddresses', TType.LIST, 3)
       oprot.writeListBegin(TType.STRING, len(self.toAddresses))
-      for iter93 in self.toAddresses:
-        oprot.writeString(iter93)
+      for iter170 in self.toAddresses:
+        oprot.writeString(iter170)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.ccAddresses is not None:
       oprot.writeFieldBegin('ccAddresses', TType.LIST, 4)
       oprot.writeListBegin(TType.STRING, len(self.ccAddresses))
-      for iter94 in self.ccAddresses:
-        oprot.writeString(iter94)
+      for iter171 in self.ccAddresses:
+        oprot.writeString(iter171)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.subject is not None:
@@ -1950,44 +2418,44 @@ class RelatedResult:
       if fid == 1:
         if ftype == TType.LIST:
           self.notes = []
-          (_etype98, _size95) = iprot.readListBegin()
-          for _i99 in xrange(_size95):
-            _elem100 = evernote.edam.type.ttypes.Note()
-            _elem100.read(iprot)
-            self.notes.append(_elem100)
+          (_etype175, _size172) = iprot.readListBegin()
+          for _i176 in xrange(_size172):
+            _elem177 = evernote.edam.type.ttypes.Note()
+            _elem177.read(iprot)
+            self.notes.append(_elem177)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.LIST:
           self.notebooks = []
-          (_etype104, _size101) = iprot.readListBegin()
-          for _i105 in xrange(_size101):
-            _elem106 = evernote.edam.type.ttypes.Notebook()
-            _elem106.read(iprot)
-            self.notebooks.append(_elem106)
+          (_etype181, _size178) = iprot.readListBegin()
+          for _i182 in xrange(_size178):
+            _elem183 = evernote.edam.type.ttypes.Notebook()
+            _elem183.read(iprot)
+            self.notebooks.append(_elem183)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.LIST:
           self.tags = []
-          (_etype110, _size107) = iprot.readListBegin()
-          for _i111 in xrange(_size107):
-            _elem112 = evernote.edam.type.ttypes.Tag()
-            _elem112.read(iprot)
-            self.tags.append(_elem112)
+          (_etype187, _size184) = iprot.readListBegin()
+          for _i188 in xrange(_size184):
+            _elem189 = evernote.edam.type.ttypes.Tag()
+            _elem189.read(iprot)
+            self.tags.append(_elem189)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.containingNotebooks = []
-          (_etype116, _size113) = iprot.readListBegin()
-          for _i117 in xrange(_size113):
-            _elem118 = evernote.edam.type.ttypes.NotebookDescriptor()
-            _elem118.read(iprot)
-            self.containingNotebooks.append(_elem118)
+          (_etype193, _size190) = iprot.readListBegin()
+          for _i194 in xrange(_size190):
+            _elem195 = evernote.edam.type.ttypes.NotebookDescriptor()
+            _elem195.read(iprot)
+            self.containingNotebooks.append(_elem195)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1999,22 +2467,22 @@ class RelatedResult:
       elif fid == 6:
         if ftype == TType.LIST:
           self.experts = []
-          (_etype122, _size119) = iprot.readListBegin()
-          for _i123 in xrange(_size119):
-            _elem124 = evernote.edam.type.ttypes.UserProfile()
-            _elem124.read(iprot)
-            self.experts.append(_elem124)
+          (_etype199, _size196) = iprot.readListBegin()
+          for _i200 in xrange(_size196):
+            _elem201 = evernote.edam.type.ttypes.UserProfile()
+            _elem201.read(iprot)
+            self.experts.append(_elem201)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 7:
         if ftype == TType.LIST:
           self.relatedContent = []
-          (_etype128, _size125) = iprot.readListBegin()
-          for _i129 in xrange(_size125):
-            _elem130 = evernote.edam.type.ttypes.RelatedContent()
-            _elem130.read(iprot)
-            self.relatedContent.append(_elem130)
+          (_etype205, _size202) = iprot.readListBegin()
+          for _i206 in xrange(_size202):
+            _elem207 = evernote.edam.type.ttypes.RelatedContent()
+            _elem207.read(iprot)
+            self.relatedContent.append(_elem207)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2041,29 +2509,29 @@ class RelatedResult:
     if self.notes is not None:
       oprot.writeFieldBegin('notes', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.notes))
-      for iter131 in self.notes:
-        iter131.write(oprot)
+      for iter208 in self.notes:
+        iter208.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.notebooks is not None:
       oprot.writeFieldBegin('notebooks', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.notebooks))
-      for iter132 in self.notebooks:
-        iter132.write(oprot)
+      for iter209 in self.notebooks:
+        iter209.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.tags is not None:
       oprot.writeFieldBegin('tags', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.tags))
-      for iter133 in self.tags:
-        iter133.write(oprot)
+      for iter210 in self.tags:
+        iter210.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.containingNotebooks is not None:
       oprot.writeFieldBegin('containingNotebooks', TType.LIST, 4)
       oprot.writeListBegin(TType.STRUCT, len(self.containingNotebooks))
-      for iter134 in self.containingNotebooks:
-        iter134.write(oprot)
+      for iter211 in self.containingNotebooks:
+        iter211.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.debugInfo is not None:
@@ -2073,15 +2541,15 @@ class RelatedResult:
     if self.experts is not None:
       oprot.writeFieldBegin('experts', TType.LIST, 6)
       oprot.writeListBegin(TType.STRUCT, len(self.experts))
-      for iter135 in self.experts:
-        iter135.write(oprot)
+      for iter212 in self.experts:
+        iter212.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.relatedContent is not None:
       oprot.writeFieldBegin('relatedContent', TType.LIST, 7)
       oprot.writeListBegin(TType.STRUCT, len(self.relatedContent))
-      for iter136 in self.relatedContent:
-        iter136.write(oprot)
+      for iter213 in self.relatedContent:
+        iter213.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.cacheKey is not None:
@@ -2213,10 +2681,10 @@ class RelatedResultSpec:
       elif fid == 9:
         if ftype == TType.SET:
           self.relatedContentTypes = set()
-          (_etype140, _size137) = iprot.readSetBegin()
-          for _i141 in xrange(_size137):
-            _elem142 = iprot.readI32();
-            self.relatedContentTypes.add(_elem142)
+          (_etype217, _size214) = iprot.readSetBegin()
+          for _i218 in xrange(_size214):
+            _elem219 = iprot.readI32();
+            self.relatedContentTypes.add(_elem219)
           iprot.readSetEnd()
         else:
           iprot.skip(ftype)
@@ -2265,8 +2733,8 @@ class RelatedResultSpec:
     if self.relatedContentTypes is not None:
       oprot.writeFieldBegin('relatedContentTypes', TType.SET, 9)
       oprot.writeSetBegin(TType.I32, len(self.relatedContentTypes))
-      for iter143 in self.relatedContentTypes:
-        oprot.writeI32(iter143)
+      for iter220 in self.relatedContentTypes:
+        oprot.writeI32(iter220)
       oprot.writeSetEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2764,22 +3232,22 @@ class ShareRelationships:
       if fid == 1:
         if ftype == TType.LIST:
           self.invitations = []
-          (_etype147, _size144) = iprot.readListBegin()
-          for _i148 in xrange(_size144):
-            _elem149 = InvitationShareRelationship()
-            _elem149.read(iprot)
-            self.invitations.append(_elem149)
+          (_etype224, _size221) = iprot.readListBegin()
+          for _i225 in xrange(_size221):
+            _elem226 = InvitationShareRelationship()
+            _elem226.read(iprot)
+            self.invitations.append(_elem226)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.LIST:
           self.memberships = []
-          (_etype153, _size150) = iprot.readListBegin()
-          for _i154 in xrange(_size150):
-            _elem155 = MemberShareRelationship()
-            _elem155.read(iprot)
-            self.memberships.append(_elem155)
+          (_etype230, _size227) = iprot.readListBegin()
+          for _i231 in xrange(_size227):
+            _elem232 = MemberShareRelationship()
+            _elem232.read(iprot)
+            self.memberships.append(_elem232)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2802,15 +3270,15 @@ class ShareRelationships:
     if self.invitations is not None:
       oprot.writeFieldBegin('invitations', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.invitations))
-      for iter156 in self.invitations:
-        iter156.write(oprot)
+      for iter233 in self.invitations:
+        iter233.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.memberships is not None:
       oprot.writeFieldBegin('memberships', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.memberships))
-      for iter157 in self.memberships:
-        iter157.write(oprot)
+      for iter234 in self.memberships:
+        iter234.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.invitationRestrictions is not None:
@@ -2890,33 +3358,33 @@ class ManageNotebookSharesParameters:
       elif fid == 3:
         if ftype == TType.LIST:
           self.membershipsToUpdate = []
-          (_etype161, _size158) = iprot.readListBegin()
-          for _i162 in xrange(_size158):
-            _elem163 = MemberShareRelationship()
-            _elem163.read(iprot)
-            self.membershipsToUpdate.append(_elem163)
+          (_etype238, _size235) = iprot.readListBegin()
+          for _i239 in xrange(_size235):
+            _elem240 = MemberShareRelationship()
+            _elem240.read(iprot)
+            self.membershipsToUpdate.append(_elem240)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.invitationsToCreateOrUpdate = []
-          (_etype167, _size164) = iprot.readListBegin()
-          for _i168 in xrange(_size164):
-            _elem169 = InvitationShareRelationship()
-            _elem169.read(iprot)
-            self.invitationsToCreateOrUpdate.append(_elem169)
+          (_etype244, _size241) = iprot.readListBegin()
+          for _i245 in xrange(_size241):
+            _elem246 = InvitationShareRelationship()
+            _elem246.read(iprot)
+            self.invitationsToCreateOrUpdate.append(_elem246)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 5:
         if ftype == TType.LIST:
           self.unshares = []
-          (_etype173, _size170) = iprot.readListBegin()
-          for _i174 in xrange(_size170):
-            _elem175 = evernote.edam.type.ttypes.UserIdentity()
-            _elem175.read(iprot)
-            self.unshares.append(_elem175)
+          (_etype250, _size247) = iprot.readListBegin()
+          for _i251 in xrange(_size247):
+            _elem252 = evernote.edam.type.ttypes.UserIdentity()
+            _elem252.read(iprot)
+            self.unshares.append(_elem252)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2941,22 +3409,22 @@ class ManageNotebookSharesParameters:
     if self.membershipsToUpdate is not None:
       oprot.writeFieldBegin('membershipsToUpdate', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.membershipsToUpdate))
-      for iter176 in self.membershipsToUpdate:
-        iter176.write(oprot)
+      for iter253 in self.membershipsToUpdate:
+        iter253.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.invitationsToCreateOrUpdate is not None:
       oprot.writeFieldBegin('invitationsToCreateOrUpdate', TType.LIST, 4)
       oprot.writeListBegin(TType.STRUCT, len(self.invitationsToCreateOrUpdate))
-      for iter177 in self.invitationsToCreateOrUpdate:
-        iter177.write(oprot)
+      for iter254 in self.invitationsToCreateOrUpdate:
+        iter254.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.unshares is not None:
       oprot.writeFieldBegin('unshares', TType.LIST, 5)
       oprot.writeListBegin(TType.STRUCT, len(self.unshares))
-      for iter178 in self.unshares:
-        iter178.write(oprot)
+      for iter255 in self.unshares:
+        iter255.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -3106,11 +3574,11 @@ class ManageNotebookSharesResult:
       if fid == 1:
         if ftype == TType.LIST:
           self.errors = []
-          (_etype182, _size179) = iprot.readListBegin()
-          for _i183 in xrange(_size179):
-            _elem184 = ManageNotebookSharesError()
-            _elem184.read(iprot)
-            self.errors.append(_elem184)
+          (_etype259, _size256) = iprot.readListBegin()
+          for _i260 in xrange(_size256):
+            _elem261 = ManageNotebookSharesError()
+            _elem261.read(iprot)
+            self.errors.append(_elem261)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3127,8 +3595,8 @@ class ManageNotebookSharesResult:
     if self.errors is not None:
       oprot.writeFieldBegin('errors', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.errors))
-      for iter185 in self.errors:
-        iter185.write(oprot)
+      for iter262 in self.errors:
+        iter262.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -3199,11 +3667,11 @@ class SharedNoteTemplate:
       elif fid == 2:
         if ftype == TType.LIST:
           self.recipientContacts = []
-          (_etype189, _size186) = iprot.readListBegin()
-          for _i190 in xrange(_size186):
-            _elem191 = evernote.edam.type.ttypes.Contact()
-            _elem191.read(iprot)
-            self.recipientContacts.append(_elem191)
+          (_etype266, _size263) = iprot.readListBegin()
+          for _i267 in xrange(_size263):
+            _elem268 = evernote.edam.type.ttypes.Contact()
+            _elem268.read(iprot)
+            self.recipientContacts.append(_elem268)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3229,8 +3697,8 @@ class SharedNoteTemplate:
     if self.recipientContacts is not None:
       oprot.writeFieldBegin('recipientContacts', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.recipientContacts))
-      for iter192 in self.recipientContacts:
-        iter192.write(oprot)
+      for iter269 in self.recipientContacts:
+        iter269.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.privilege is not None:
@@ -3312,11 +3780,11 @@ class NotebookShareTemplate:
       elif fid == 2:
         if ftype == TType.LIST:
           self.recipientContacts = []
-          (_etype196, _size193) = iprot.readListBegin()
-          for _i197 in xrange(_size193):
-            _elem198 = evernote.edam.type.ttypes.Contact()
-            _elem198.read(iprot)
-            self.recipientContacts.append(_elem198)
+          (_etype273, _size270) = iprot.readListBegin()
+          for _i274 in xrange(_size270):
+            _elem275 = evernote.edam.type.ttypes.Contact()
+            _elem275.read(iprot)
+            self.recipientContacts.append(_elem275)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3342,8 +3810,8 @@ class NotebookShareTemplate:
     if self.recipientContacts is not None:
       oprot.writeFieldBegin('recipientContacts', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.recipientContacts))
-      for iter199 in self.recipientContacts:
-        iter199.write(oprot)
+      for iter276 in self.recipientContacts:
+        iter276.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.privilege is not None:
@@ -3414,11 +3882,11 @@ class CreateOrUpdateNotebookSharesResult:
       elif fid == 2:
         if ftype == TType.LIST:
           self.matchingShares = []
-          (_etype203, _size200) = iprot.readListBegin()
-          for _i204 in xrange(_size200):
-            _elem205 = evernote.edam.type.ttypes.SharedNotebook()
-            _elem205.read(iprot)
-            self.matchingShares.append(_elem205)
+          (_etype280, _size277) = iprot.readListBegin()
+          for _i281 in xrange(_size277):
+            _elem282 = evernote.edam.type.ttypes.SharedNotebook()
+            _elem282.read(iprot)
+            self.matchingShares.append(_elem282)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3439,8 +3907,8 @@ class CreateOrUpdateNotebookSharesResult:
     if self.matchingShares is not None:
       oprot.writeFieldBegin('matchingShares', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.matchingShares))
-      for iter206 in self.matchingShares:
-        iter206.write(oprot)
+      for iter283 in self.matchingShares:
+        iter283.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -3813,22 +4281,22 @@ class NoteShareRelationships:
       if fid == 1:
         if ftype == TType.LIST:
           self.invitations = []
-          (_etype210, _size207) = iprot.readListBegin()
-          for _i211 in xrange(_size207):
-            _elem212 = NoteInvitationShareRelationship()
-            _elem212.read(iprot)
-            self.invitations.append(_elem212)
+          (_etype287, _size284) = iprot.readListBegin()
+          for _i288 in xrange(_size284):
+            _elem289 = NoteInvitationShareRelationship()
+            _elem289.read(iprot)
+            self.invitations.append(_elem289)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.LIST:
           self.memberships = []
-          (_etype216, _size213) = iprot.readListBegin()
-          for _i217 in xrange(_size213):
-            _elem218 = NoteMemberShareRelationship()
-            _elem218.read(iprot)
-            self.memberships.append(_elem218)
+          (_etype293, _size290) = iprot.readListBegin()
+          for _i294 in xrange(_size290):
+            _elem295 = NoteMemberShareRelationship()
+            _elem295.read(iprot)
+            self.memberships.append(_elem295)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3851,15 +4319,15 @@ class NoteShareRelationships:
     if self.invitations is not None:
       oprot.writeFieldBegin('invitations', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.invitations))
-      for iter219 in self.invitations:
-        iter219.write(oprot)
+      for iter296 in self.invitations:
+        iter296.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.memberships is not None:
       oprot.writeFieldBegin('memberships', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.memberships))
-      for iter220 in self.memberships:
-        iter220.write(oprot)
+      for iter297 in self.memberships:
+        iter297.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.invitationRestrictions is not None:
@@ -3934,42 +4402,42 @@ class ManageNoteSharesParameters:
       elif fid == 2:
         if ftype == TType.LIST:
           self.membershipsToUpdate = []
-          (_etype224, _size221) = iprot.readListBegin()
-          for _i225 in xrange(_size221):
-            _elem226 = NoteMemberShareRelationship()
-            _elem226.read(iprot)
-            self.membershipsToUpdate.append(_elem226)
+          (_etype301, _size298) = iprot.readListBegin()
+          for _i302 in xrange(_size298):
+            _elem303 = NoteMemberShareRelationship()
+            _elem303.read(iprot)
+            self.membershipsToUpdate.append(_elem303)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.LIST:
           self.invitationsToUpdate = []
-          (_etype230, _size227) = iprot.readListBegin()
-          for _i231 in xrange(_size227):
-            _elem232 = NoteInvitationShareRelationship()
-            _elem232.read(iprot)
-            self.invitationsToUpdate.append(_elem232)
+          (_etype307, _size304) = iprot.readListBegin()
+          for _i308 in xrange(_size304):
+            _elem309 = NoteInvitationShareRelationship()
+            _elem309.read(iprot)
+            self.invitationsToUpdate.append(_elem309)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.LIST:
           self.membershipsToUnshare = []
-          (_etype236, _size233) = iprot.readListBegin()
-          for _i237 in xrange(_size233):
-            _elem238 = iprot.readI32();
-            self.membershipsToUnshare.append(_elem238)
+          (_etype313, _size310) = iprot.readListBegin()
+          for _i314 in xrange(_size310):
+            _elem315 = iprot.readI32();
+            self.membershipsToUnshare.append(_elem315)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 5:
         if ftype == TType.LIST:
           self.invitationsToUnshare = []
-          (_etype242, _size239) = iprot.readListBegin()
-          for _i243 in xrange(_size239):
-            _elem244 = iprot.readI64();
-            self.invitationsToUnshare.append(_elem244)
+          (_etype319, _size316) = iprot.readListBegin()
+          for _i320 in xrange(_size316):
+            _elem321 = iprot.readI64();
+            self.invitationsToUnshare.append(_elem321)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3990,29 +4458,29 @@ class ManageNoteSharesParameters:
     if self.membershipsToUpdate is not None:
       oprot.writeFieldBegin('membershipsToUpdate', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.membershipsToUpdate))
-      for iter245 in self.membershipsToUpdate:
-        iter245.write(oprot)
+      for iter322 in self.membershipsToUpdate:
+        iter322.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.invitationsToUpdate is not None:
       oprot.writeFieldBegin('invitationsToUpdate', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.invitationsToUpdate))
-      for iter246 in self.invitationsToUpdate:
-        iter246.write(oprot)
+      for iter323 in self.invitationsToUpdate:
+        iter323.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.membershipsToUnshare is not None:
       oprot.writeFieldBegin('membershipsToUnshare', TType.LIST, 4)
       oprot.writeListBegin(TType.I32, len(self.membershipsToUnshare))
-      for iter247 in self.membershipsToUnshare:
-        oprot.writeI32(iter247)
+      for iter324 in self.membershipsToUnshare:
+        oprot.writeI32(iter324)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.invitationsToUnshare is not None:
       oprot.writeFieldBegin('invitationsToUnshare', TType.LIST, 5)
       oprot.writeListBegin(TType.I64, len(self.invitationsToUnshare))
-      for iter248 in self.invitationsToUnshare:
-        oprot.writeI64(iter248)
+      for iter325 in self.invitationsToUnshare:
+        oprot.writeI64(iter325)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -4152,3 +4620,72 @@ class ManageNoteSharesResult:
   """
   Attributes:
    - errors
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'errors', (TType.STRUCT,(ManageNoteSharesError, ManageNoteSharesError.thrift_spec)), None, ), # 1
+  )
+
+  def __init__(self, errors=None,):
+    self.errors = errors
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.errors = []
+          (_etype329, _size326) = iprot.readListBegin()
+          for _i330 in xrange(_size326):
+            _elem331 = ManageNoteSharesError()
+            _elem331.read(iprot)
+            self.errors.append(_elem331)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ManageNoteSharesResult')
+    if self.errors is not None:
+      oprot.writeFieldBegin('errors', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.errors))
+      for iter332 in self.errors:
+        iter332.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.errors)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
