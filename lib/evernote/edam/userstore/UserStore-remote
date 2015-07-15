@@ -10,11 +10,11 @@
 import sys
 import pprint
 from urlparse import urlparse
-from thrift.transport import TTransport
-from thrift.transport import TSocket
-from thrift.transport import TSSLSocket
-from thrift.transport import THttpClient
-from thrift.protocol import TBinaryProtocol
+from enthrift.transport import TTransport
+from enthrift.transport import TSocket
+from enthrift.transport import TSSLSocket
+from enthrift.transport import THttpClient
+from enthrift.protocol import TBinaryProtocol
 
 from evernote.edam.userstore import UserStore
 from evernote.edam.userstore.ttypes import *

@@ -6,17 +6,17 @@
 #  options string: py
 #
 
-from thrift.Thrift import TType, TMessageType, TException, TApplicationException
+from enthrift.Thrift import TType, TMessageType, TException, TApplicationException
 import evernote.edam.userstore.ttypes
 import evernote.edam.type.ttypes
 import evernote.edam.error.ttypes
 import evernote.edam.limits.ttypes
 
 
-from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol, TProtocol
+from enthrift.transport import TTransport
+from enthrift.protocol import TBinaryProtocol, TProtocol
 try:
-  from thrift.protocol import fastbinary
+  from enthrift.protocol import fastbinary
 except:
   fastbinary = None
 

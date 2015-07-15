@@ -13,8 +13,6 @@ import evernote.edam.userstore.constants as UserStoreConstants
 import enthrift.protocol.TBinaryProtocol as TBinaryProtocol
 import enthrift.transport.THttpClient as THttpClient
 
-print "EDAM Version: " + str(UserStoreConstants.EDAM_VERSION_MAJOR) + "." + str(UserStoreConstants.EDAM_VERSION_MINOR)
-
 class EvernoteClient(object):
 
     def __init__(self, **options):
