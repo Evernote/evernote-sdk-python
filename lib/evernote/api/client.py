@@ -13,6 +13,12 @@ import evernote.edam.userstore.constants as UserStoreConstants
 import enthrift.protocol.TBinaryProtocol as TBinaryProtocol
 import enthrift.transport.THttpClient as THttpClient
 
+class SimpleClient(object):
+    pass
+
+class EDAMClient(object):
+    pass
+
 class EvernoteClient(object):
 
     def __init__(self, **options):
