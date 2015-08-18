@@ -9115,3 +9115,253 @@ class UserIdentity(object):
 
   def __ne__(self, other):
     return not (self == other)
+
+class NoncancelableSubscription(object):
+  """
+  Records information related to a subscription which has been purchased by a user
+  on a non-cancelable service such as iTunes - but which is not the active subscription
+  (one tracked in accounting) because the user also has purchased a subscription at a
+  higher service level.
+  
+  <dl>
+  <dt>subscriptionId</dt>
+      <dd>Unique id of noncancelable subscription</dd>
+  <dt>user</dt>
+      <dd>User that owns the subscription</dd>
+  <dt>premiumServiceStatus</dt>
+      <dd>Current state of subscription (active, canceled, etc).</dd>
+  <dt>premiumCommerceService</dt>
+      <dd>One of the noncancelable services (currently either iTunes or Amazon)</dd>
+  <dt>itunesReceiptData</dt>
+      <dd>For an iTunes subscription, contains the encoded data of the receipt. It is
+      required information for obtaining a subscription update from iTunes.</dd>
+  <dt>amazonUserId</dt>
+      <dd>For an amazon subscription, the amazon user id. Required information for
+      obtaining a subscription update from amazon.</dd>
+  <dt>amazonPurchaseToken</dt>
+      <dd>For an amazon subscription, the amazon purchase token. Required information for
+      obtaining a subscription update from amazon.</dd>
+  <dt>premiumServiceSku</dt>
+      <dd>The sku purchased for this subscription. Identifies time period and service
+      level.</dd>
+  <dt>nextPaymentDue</dt>
+      <dd>Date which subscription should renew. Used by commerce logic as date to check
+      for a subscription update from the service.</dd>
+  <dt>premiumLockUntil</dt>
+      <dd>Allows for locking operations.</dd>
+  <dt>unitPrice</dt>
+      <dd>Unit price for backup payment charge.</dd>
+  <dt>currency</dt>
+      <dd>Currency of payment</dd>
+  <dt>unitPrice</dt>
+      <dd>Charge in smallest unit of currency</dd>
+  <dt>itunesOriginalTransactionId</dt>
+      <dd>For an iTunes subscription, contains the original transaction id as obtained
+      from any transaction record in the decoded receipt pertaining to this
+      non-cancelable subscription.</dd>
+  </dl>
+  
+  Attributes:
+   - subscriptionId
+   - user
+   - premiumServiceStatus
+   - premiumCommerceService
+   - itunesReceiptData
+   - amazonUserId
+   - amazonPurchaseToken
+   - premiumServiceSku
+   - nextPaymentDue
+   - premiumLockUntil
+   - currency
+   - unitPrice
+   - itunesOriginalTransactionId
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'subscriptionId', None, None, ), # 1
+    (2, TType.STRUCT, 'user', (User, User.thrift_spec), None, ), # 2
+    (3, TType.I32, 'premiumServiceStatus', None, None, ), # 3
+    (4, TType.STRING, 'premiumCommerceService', None, None, ), # 4
+    (5, TType.STRING, 'itunesReceiptData', None, None, ), # 5
+    (6, TType.STRING, 'amazonUserId', None, None, ), # 6
+    (7, TType.STRING, 'amazonPurchaseToken', None, None, ), # 7
+    (8, TType.STRING, 'premiumServiceSku', None, None, ), # 8
+    (9, TType.I64, 'nextPaymentDue', None, None, ), # 9
+    (10, TType.I64, 'premiumLockUntil', None, None, ), # 10
+    (11, TType.STRING, 'currency', None, None, ), # 11
+    (12, TType.I32, 'unitPrice', None, None, ), # 12
+    (13, TType.STRING, 'itunesOriginalTransactionId', None, None, ), # 13
+  )
+
+  def __init__(self, subscriptionId=None, user=None, premiumServiceStatus=None, premiumCommerceService=None, itunesReceiptData=None, amazonUserId=None, amazonPurchaseToken=None, premiumServiceSku=None, nextPaymentDue=None, premiumLockUntil=None, currency=None, unitPrice=None, itunesOriginalTransactionId=None,):
+    self.subscriptionId = subscriptionId
+    self.user = user
+    self.premiumServiceStatus = premiumServiceStatus
+    self.premiumCommerceService = premiumCommerceService
+    self.itunesReceiptData = itunesReceiptData
+    self.amazonUserId = amazonUserId
+    self.amazonPurchaseToken = amazonPurchaseToken
+    self.premiumServiceSku = premiumServiceSku
+    self.nextPaymentDue = nextPaymentDue
+    self.premiumLockUntil = premiumLockUntil
+    self.currency = currency
+    self.unitPrice = unitPrice
+    self.itunesOriginalTransactionId = itunesOriginalTransactionId
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.subscriptionId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.user = User()
+          self.user.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.premiumServiceStatus = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.premiumCommerceService = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRING:
+          self.itunesReceiptData = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.STRING:
+          self.amazonUserId = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
+        if ftype == TType.STRING:
+          self.amazonPurchaseToken = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 8:
+        if ftype == TType.STRING:
+          self.premiumServiceSku = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 9:
+        if ftype == TType.I64:
+          self.nextPaymentDue = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 10:
+        if ftype == TType.I64:
+          self.premiumLockUntil = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 11:
+        if ftype == TType.STRING:
+          self.currency = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 12:
+        if ftype == TType.I32:
+          self.unitPrice = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 13:
+        if ftype == TType.STRING:
+          self.itunesOriginalTransactionId = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('NoncancelableSubscription')
+    if self.subscriptionId is not None:
+      oprot.writeFieldBegin('subscriptionId', TType.I32, 1)
+      oprot.writeI32(self.subscriptionId)
+      oprot.writeFieldEnd()
+    if self.user is not None:
+      oprot.writeFieldBegin('user', TType.STRUCT, 2)
+      self.user.write(oprot)
+      oprot.writeFieldEnd()
+    if self.premiumServiceStatus is not None:
+      oprot.writeFieldBegin('premiumServiceStatus', TType.I32, 3)
+      oprot.writeI32(self.premiumServiceStatus)
+      oprot.writeFieldEnd()
+    if self.premiumCommerceService is not None:
+      oprot.writeFieldBegin('premiumCommerceService', TType.STRING, 4)
+      oprot.writeString(self.premiumCommerceService)
+      oprot.writeFieldEnd()
+    if self.itunesReceiptData is not None:
+      oprot.writeFieldBegin('itunesReceiptData', TType.STRING, 5)
+      oprot.writeString(self.itunesReceiptData)
+      oprot.writeFieldEnd()
+    if self.amazonUserId is not None:
+      oprot.writeFieldBegin('amazonUserId', TType.STRING, 6)
+      oprot.writeString(self.amazonUserId)
+      oprot.writeFieldEnd()
+    if self.amazonPurchaseToken is not None:
+      oprot.writeFieldBegin('amazonPurchaseToken', TType.STRING, 7)
+      oprot.writeString(self.amazonPurchaseToken)
+      oprot.writeFieldEnd()
+    if self.premiumServiceSku is not None:
+      oprot.writeFieldBegin('premiumServiceSku', TType.STRING, 8)
+      oprot.writeString(self.premiumServiceSku)
+      oprot.writeFieldEnd()
+    if self.nextPaymentDue is not None:
+      oprot.writeFieldBegin('nextPaymentDue', TType.I64, 9)
+      oprot.writeI64(self.nextPaymentDue)
+      oprot.writeFieldEnd()
+    if self.premiumLockUntil is not None:
+      oprot.writeFieldBegin('premiumLockUntil', TType.I64, 10)
+      oprot.writeI64(self.premiumLockUntil)
+      oprot.writeFieldEnd()
+    if self.currency is not None:
+      oprot.writeFieldBegin('currency', TType.STRING, 11)
+      oprot.writeString(self.currency)
+      oprot.writeFieldEnd()
+    if self.unitPrice is not None:
+      oprot.writeFieldBegin('unitPrice', TType.I32, 12)
+      oprot.writeI32(self.unitPrice)
+      oprot.writeFieldEnd()
+    if self.itunesOriginalTransactionId is not None:
+      oprot.writeFieldBegin('itunesOriginalTransactionId', TType.STRING, 13)
+      oprot.writeString(self.itunesOriginalTransactionId)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.subscriptionId is None:
+      raise TProtocol.TProtocolException(message='Required field subscriptionId is unset!')
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
