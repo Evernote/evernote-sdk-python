@@ -19,8 +19,8 @@ giphy_api_key="dc6zaTOxFJmzC" #public beta key
 
 #API Key information
 #to get a API key go here: https://dev.evernote.com#apikey
-CONSUMER_KEY="PUT API KEY HERE" #INPUT CONSUMER KEY HERE
-CONSUMER_SECRET="PUT API SECRET HERE" #INPUT CONSUMER SECRET HERE
+CONSUMER_KEY="INPUT CONSUMER KEY HERE" #INPUT CONSUMER KEY HERE
+CONSUMER_SECRET="INPUT CONSUMER SECRET HERE" #INPUT CONSUMER SECRET HERE
 sandbox = True #if True will use sandbox.evernote.com, if False will use www.evenrote.com
 
 # PORT FOR DEVELOPERMENT SERVER
@@ -117,9 +117,8 @@ def main():
 				session['oauth_token_secret'] = request_token['oauth_token_secret']
 				authorize_url = client.get_authorize_url(request_token)
 			except KeyError:
-				return render_template("error.html", error_message="Invalid API key and/or secret.  Please check the values of cosumer_key and sonsumer_secret in the server.py file are valid and refresh to reset.")
+				return render_template("error.html", error_message="Invalid API key and/or secret.  Please check the values of consumer_key and consumer_secret in the server.py file are valid and refresh to reset.")
 			else:
-				print authorize_url
 				return redirect(authorize_url+"&suggestedNotebookName=Giphy") #suggest notebook name of giphy to use
 		
 	"""POST: shows confomation of evernote gif save and presents option 

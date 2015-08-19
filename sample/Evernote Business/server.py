@@ -159,7 +159,6 @@ def main():
 			except NameError:
 				content_list = [{"image":image_data, "in_app_link":in_app_link, "title":str(note.title).decode('utf-8')}]
 		
-		print note
 		#render the template with the data we just retrivied
 		return render_template('index.html', templates=content_list, num_of_notes = days_pervious_to_search)
 

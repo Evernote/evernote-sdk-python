@@ -14,8 +14,8 @@ import base64 # for URL encoding images
 
 #API Key information
 #to get a API key go here: https://dev.evernote.com#apikey
-CONSUMER_KEY="PUT API KEY HERE" #INPUT CONSUMER KEY HERE
-CONSUMER_SECRET="PUT API SECRET HERE" #INPUT CONSUMER SECRET HERE
+CONSUMER_KEY="INPUT CONSUMER KEY HERE" #INPUT CONSUMER KEY HERE
+CONSUMER_SECRET="INPUT CONSUMER SECRET HERE" #INPUT CONSUMER SECRET HERE
 sandbox = True #if True will use sandbox.evernote.com, if False will use www.evenrote.com
 
 # PORT FOR DEVELOPERMENT SERVER
@@ -160,8 +160,7 @@ def main():
 
 
 			metadata_notes_list = personal_search_results
-			print metadata_notes_list
-			print len(metadata_notes_list)
+
 			#if the search returns less than 4 notes create 4 note templates for them:
 			if len(metadata_notes_list) < 4:
 				standard_template_notes = create_standard_templates(session["access_token"])
