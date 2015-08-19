@@ -10,7 +10,6 @@ from flask import Flask, render_template, request, session, redirect, url_for
 #Other Imports
 import requests # to get note thumnails through the HTTP API 
 import sys # to exit if no API key is inputted
-import templates_enml # file that has the note template data
 import base64 # for URL encoding images
 import math # for changing the search query
 
@@ -32,7 +31,7 @@ else:
 #Throw an error and exit if there is no Consumer key or secret entered
 # to get a key go to https://dev.evernote.com#apikey
 if CONSUMER_KEY=="PUT API KEY HERE" or CONSUMER_KEY=="" or CONSUMER_SECRET=="PUT API SECRET HERE" or CONSUMER_SECRET=="":
-	print """ERROR: Edit the server.py file and add your consumer key and consumer secret in the corresponding varibles at the begining of the file.
+	print """ERROR: Edit the server.py file and add your consumer key and consumer secret in lines 18 an 19 at the begining of "server.py".
 	\nIf you do not have a Evernote consumer key and secret go to https://dev.evernote.com#apikey to get one (for free!).\n"""
 	sys.exit(1)
 
@@ -88,11 +87,17 @@ def main():
 			#setup Evernote client
 			client = EvernoteClient(token=session["access_token"], sandbox=sandbox)
 			user_store = client.get_user_store()
-			note_store = client.get_note_store()
-			business_store = client.get_business_note_store()
+			note_store = client.get_note_store()			
 		except Errors.EDAMSystemException:
 			#if the user authentication token fails to work prompt them to reautenticate
-			return redirect(url_for("main")) 
+			return render_template("error.html", error_message="Your session is no longer valid.  Please click here <a href=\'/clear'>click here</a> to reset and login again.")
+
+		#if the user is not a part of the business, tell the user
+		user = user_store.getUser()
+		if not user.accounting.businessId:
+			return render_template("error.html", error_message="This account is not a part of a business.  Please click here <a href=\'/clear'>click here</a> to reset and try another account.")
+		else:
+			business_store = client.get_business_note_store()
 
 		#setup search
 		notebook_filter=NoteStoreTypes.NoteFilter()
@@ -102,7 +107,7 @@ def main():
 		# if less than 5 results increase to 10, 100, etc. until more than 5 are found or 
 		# the number results between iterations are the same
 		search_results_len = None
-		while search_results_len<5:
+		while search_results_len<10:
 			#setup counter
 			try:
 				counter += 1
@@ -114,12 +119,17 @@ def main():
 			notebook_filter.words = "created:day-"+days_pervious_to_search+" updated:day-"+days_pervious_to_search
 
 			#perform search
-			search_results = business_store.findNotesMetadata(notebook_filter,0 , 40000, result_spec)  
+			search_results = business_store.findNotesMetadata(notebook_filter,0 , 40000, result_spec)
 			
 			#break if you get the same number of results for a order of magnitude increase in the number of days
 			# (assume that is the total number of search results present)
-			if len(search_results.notes)==search_results_len:
+			if len(search_results.notes)==search_results_len and search_results_len != 0:
 				break
+
+			# if you search the last 10,000 days and there are not business notes
+			# assume there are no business notes and inform the user
+			if counter == 4 and search_results_len==0:
+				return render_template("error.html", error_message="This account has no business notes!  Please click please add and sync some business notes and refresh the page.")
 
 			search_results_len = len(search_results.notes)
 
@@ -145,9 +155,11 @@ def main():
 
 			#wrap all this data in a dictionary and put it in a list
 			try:
-				content_list.append({"image":image_data, "in_app_link":in_app_link, "title":note.title})
+				content_list.append({"image":image_data, "in_app_link":in_app_link, "title":str(note.title).decode('utf-8')})
 			except NameError:
-				content_list = [{"image":image_data, "in_app_link":in_app_link, "title":note.title}]
+				content_list = [{"image":image_data, "in_app_link":in_app_link, "title":str(note.title).decode('utf-8')}]
+		
+		print note
 		#render the template with the data we just retrivied
 		return render_template('index.html', templates=content_list, num_of_notes = days_pervious_to_search)
 
@@ -167,7 +179,7 @@ def main():
 			authorize_url = client.get_authorize_url(request_token) #get redirect URL
 		except KeyError:
 			#If there is an error alert the user and prompt them to reauthenticate
-			return render_template("error.html", error_message="invalid API key and/or secret.  Please check the values of cosumer_key and sonsumer_secret in the server.py file are valid and <a href=\'/clear'>click here</a> to reset.")
+			return render_template("error.html", error_message="Invalid API key and/or secret.  Please verify that the values of CONSUMER_KEY and CONSUMER_SECRET in  lines 18 an 19 of server.py are valid and then <a href=\'/clear'>click here</a> to reset.")
 		else:
 			#Present the user with a page descibing what the appliction does, and prompt them to authorize the app to access their Evernote account
 			return render_template('splash.html', auth_url = authorize_url) #suggest notebook name of giphy to user
