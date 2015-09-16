@@ -5620,7 +5620,7 @@ class Client(Iface):
     args = getResourceByHash_args()
     args.authenticationToken = authenticationToken
     args.noteGuid = noteGuid
-    args.contentHash = contentHash
+    args.contentHash = bytearray.fromhex(contentHash)
     args.withData = withData
     args.withRecognition = withRecognition
     args.withAlternateData = withAlternateData
