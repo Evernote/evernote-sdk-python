@@ -14,9 +14,11 @@ Prerequisites
 In order to run the sample code and demos in this SDK you will need a Evernote sandbox account and either a API key and secret or a developer token.  To get a user account on Evernote's sandbox service where you will do your development, sign up for an account at https://sandbox.evernote.com/Registration.action
 
 *	Obtian an API key and secret
- Go to http://dev.evernote.com/#apikey and fill out the form to get an API key and secret.
+
+Go to http://dev.evernote.com/#apikey and fill out the form to get an API key and secret.
 
 * How to get a developer token
+
 In order to run some of the sample code, you need a developer token. Get one at https://sandbox.evernote.com/api/DeveloperToken.action
 
 
