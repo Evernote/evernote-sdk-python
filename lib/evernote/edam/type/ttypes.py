@@ -7052,6 +7052,7 @@ class NotebookRestrictions(object):
   in effect, as accessed by the same authentication token from which
   the values were obtained.
   
+  <dl>
   <dt>noReadNotes</dt>
     <dd>The client is not able to read notes from the service and
     the notebook is write-only.
@@ -7133,6 +7134,10 @@ class NotebookRestrictions(object):
     <dd>The client may not share notes in the notebook via the shareNoteWithBusiness
     method.
     </dd>
+  <dt>noRenameNotebook</dt>
+    <dd>The client may not rename this notebook</dd>
+  
+  </dl>
   
   Attributes:
    - noReadNotes
@@ -7156,6 +7161,7 @@ class NotebookRestrictions(object):
    - updateWhichSharedNotebookRestrictions
    - expungeWhichSharedNotebookRestrictions
    - noShareNotesWithBusiness
+   - noRenameNotebook
   """
 
   thrift_spec = (
@@ -7181,9 +7187,10 @@ class NotebookRestrictions(object):
     (19, TType.I32, 'updateWhichSharedNotebookRestrictions', None, None, ), # 19
     (20, TType.I32, 'expungeWhichSharedNotebookRestrictions', None, None, ), # 20
     (21, TType.BOOL, 'noShareNotesWithBusiness', None, None, ), # 21
+    (22, TType.BOOL, 'noRenameNotebook', None, None, ), # 22
   )
 
-  def __init__(self, noReadNotes=None, noCreateNotes=None, noUpdateNotes=None, noExpungeNotes=None, noShareNotes=None, noEmailNotes=None, noSendMessageToRecipients=None, noUpdateNotebook=None, noExpungeNotebook=None, noSetDefaultNotebook=None, noSetNotebookStack=None, noPublishToPublic=None, noPublishToBusinessLibrary=None, noCreateTags=None, noUpdateTags=None, noExpungeTags=None, noSetParentTag=None, noCreateSharedNotebooks=None, updateWhichSharedNotebookRestrictions=None, expungeWhichSharedNotebookRestrictions=None, noShareNotesWithBusiness=None,):
+  def __init__(self, noReadNotes=None, noCreateNotes=None, noUpdateNotes=None, noExpungeNotes=None, noShareNotes=None, noEmailNotes=None, noSendMessageToRecipients=None, noUpdateNotebook=None, noExpungeNotebook=None, noSetDefaultNotebook=None, noSetNotebookStack=None, noPublishToPublic=None, noPublishToBusinessLibrary=None, noCreateTags=None, noUpdateTags=None, noExpungeTags=None, noSetParentTag=None, noCreateSharedNotebooks=None, updateWhichSharedNotebookRestrictions=None, expungeWhichSharedNotebookRestrictions=None, noShareNotesWithBusiness=None, noRenameNotebook=None,):
     self.noReadNotes = noReadNotes
     self.noCreateNotes = noCreateNotes
     self.noUpdateNotes = noUpdateNotes
@@ -7205,6 +7212,7 @@ class NotebookRestrictions(object):
     self.updateWhichSharedNotebookRestrictions = updateWhichSharedNotebookRestrictions
     self.expungeWhichSharedNotebookRestrictions = expungeWhichSharedNotebookRestrictions
     self.noShareNotesWithBusiness = noShareNotesWithBusiness
+    self.noRenameNotebook = noRenameNotebook
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -7320,6 +7328,11 @@ class NotebookRestrictions(object):
           self.noShareNotesWithBusiness = iprot.readBool();
         else:
           iprot.skip(ftype)
+      elif fid == 22:
+        if ftype == TType.BOOL:
+          self.noRenameNotebook = iprot.readBool();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -7413,6 +7426,10 @@ class NotebookRestrictions(object):
     if self.noShareNotesWithBusiness is not None:
       oprot.writeFieldBegin('noShareNotesWithBusiness', TType.BOOL, 21)
       oprot.writeBool(self.noShareNotesWithBusiness)
+      oprot.writeFieldEnd()
+    if self.noRenameNotebook is not None:
+      oprot.writeFieldBegin('noRenameNotebook', TType.BOOL, 22)
+      oprot.writeBool(self.noRenameNotebook)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
