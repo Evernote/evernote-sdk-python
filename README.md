@@ -27,7 +27,7 @@ Authentication
 --------------
 There are two ways to authenticate to the Evernote API, developer tokens and OAuth. Developer tokens provide instant access to your Evernote account via the API. For public applications, use of webhook notifications, and advanced permissions we recommend using OAuth.
 
-### OAuth ###
+##### OAuth #####
 ```python
 client = EvernoteClient(
     consumer_key='YOUR CONSUMER KEY',
@@ -46,7 +46,7 @@ access_token = client.get_access_token(
     request.GET.get('oauth_verifier', '')
 )
 ```
-### Developer Tokens ###
+##### Developer Tokens #####
 For testing or just to get you appliction up and running quickly you can get a developer token which works similarly to a OAuth access token for you account.  To learn more about developer tokens go to https://dev.evernote.com/doc/articles/dev_tokens.php
 
 Now you can make other API calls
@@ -67,7 +67,7 @@ client = EvernoteClient(token=access_token)
 user_store = client.get_user_store()
 user_store.getUser()
 ```
-You can omit authenticationToken in the arguments of UserStore functions.  The 
+You can omit authenticationToken in the arguments of UserStore functions.
 
 ##### NoteStore #####
 If you want to call NoteStore.listNotebooks:
@@ -88,8 +88,8 @@ Now you can take a look at the code in the "sample" folder.  There are serveral 
 * Sample code for every method in the folder "all_methods"
 * An examples of a Evernote Business application in "Evernote Business"
 * A test script in "client"
-* A web application that saves random GIFs to Evernote
-* A web application that makes and serves Evernote template notes
+* A web application that saves random GIFs to Evernote in "giphy"
+* A web application that makes and serves Evernote template notes in "templates"
 
 
 ### References ###
