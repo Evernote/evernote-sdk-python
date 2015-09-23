@@ -83,7 +83,8 @@ business_note_store = client.get_business_note_store()
 business_note_store.listNotebooks()
 ```
 
-##### Next Steps #####
+Next Steps
+----------
 Now you can take a look at the code in the "sample" folder.  There are serveral examples including:
 * Sample code for every method in the folder "all_methods"
 * An examples of a Evernote Business application in "Evernote Business"
