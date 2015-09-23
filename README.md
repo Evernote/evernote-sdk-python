@@ -2,6 +2,7 @@ Evernote SDK for Python
 ============================================
 
 Evernote API version 1.28
+[Getting Started Guide](https://www.evernote.com/l/AAx5Wy2HPa9JqakerbR1mmK9QbCMzSlBfz8)
 
 Overview
 --------
@@ -22,8 +23,8 @@ Go to http://dev.evernote.com/#apikey and fill out the form to get an API key an
 In order to run some of the sample code, you need a developer token. Get one at https://sandbox.evernote.com/api/DeveloperToken.action
 
 
-Usage
------
+Authentication
+--------------
 There are two ways to authenticate to the Evernote API, developer tokens and OAuth. Developer tokens provide instant access to your Evernote account via the API. For public applications, use of webhook notifications, and advanced permissions we recommend using OAuth.
 
 ### OAuth ###
@@ -55,37 +56,41 @@ note_store = client.get_note_store()
 notebooks = note_store.listNotebooks()
 ```
 
-### UserStore ###
+Usage
+-----
+Once you have a developer or access token you can access Evernote through the API on behalf of a user (or yourself!).  There are two main structures avalible to access Evernote data throught the API, the UserStore and NoteStore.  The UserStore is the container for accessing and calling methods related to user information while the NoteStore is a contianer for accessing and calling methods related to notes, file attachments, pictures, note content, note metadata, notebooks, stacks and anything related to note storage.
+
+##### UserStore #####
 Once you acquire token, you can use UserStore. For example, if you want to call UserStore.getUser:
 ```python
 client = EvernoteClient(token=access_token)
 user_store = client.get_user_store()
 user_store.getUser()
 ```
-You can omit authenticationToken in the arguments of UserStore functions.
+You can omit authenticationToken in the arguments of UserStore functions.  The 
 
-### NoteStore ###
+##### NoteStore #####
 If you want to call NoteStore.listNotebooks:
 ```python
 note_store = client.get_note_store()
 note_store.listNotebooks()
 ```
 
-### NoteStore for linked notebooks ###
-If you want to get tags for linked notebooks:
-```python
-linked_notebook = note_store.listLinkedNotebooks()[0]
-shared_note_store = client.getSharedNoteStore(linked_notebook)
-shared_notebook = shared_note_store.getSharedNotebookByAuth()
-shared_note_store.listTagsByNotebook(shared_notebook.notebookGuid)
-```
-
-### NoteStore for Business ###
-If you want to get the list of notebooks in your business account:
+##### NoteStore for Business #####
+If a user is a part of a Evernote Business account you also have access to the users Evernote Business note store which contians notes owed by the business that are accessiable to the user you are acting on behalf of.  Once you get the business note store object it behaves in a similar fasion to personal note stores
 ```python
 business_note_store = client.get_business_note_store()
 business_note_store.listNotebooks()
 ```
+
+##### Next Steps #####
+Now you can take a look at the code in the "sample" folder.  There are serveral examples including:
+* Sample code for every method in the folder "all_methods"
+* An examples of a Evernote Business application in "Evernote Business"
+* A test script in "client"
+* A web application that saves random GIFs to Evernote
+* A web application that makes and serves Evernote template notes
+
 
 ### References ###
 - Evernote Developers: http://dev.evernote.com/
