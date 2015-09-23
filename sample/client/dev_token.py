@@ -134,18 +134,6 @@ created_note = note_store.createNote(note)
 
 print "Successfully created a new note with GUID: %s\n" %created_note.guid
 
-#Share notebook
-user_identity = Types.UserIdentity()
-user_identity.type = Types.UserIdentityType.EMAIL
-user_identity.stringIdentifier = "mcarroll+spam117@evernote.com"
-
-invite = NoteStoreTypes.InvitationShareRelationship()
-invite.recipientUserIdentity = user_identity
-invite.displayName = "Look at my notebook!"
-invite.privilege = NoteStoreTypes.ShareRelationshipPrivilegeLevel.FULL_ACCESS
-invite.allowPreview = True
-sharerUserId = user.id
-
 
 # Evernote Business 
 # To learn more about Evernote Business see https://evernote.com/business

@@ -22,8 +22,8 @@ from evernote.api.client import EvernoteClient
 # Real applications authenticate with Evernote using OAuth
 # to get an API key and secret visit
 # https://dev.evernote.com/#apikey
-CONSUMER_KEY="internal-dev" #INPUT CONSUMER KEY HERE
-CONSUMER_SECRET="platform123" #INPUT CONSUMER SECRET HERE
+CONSUMER_KEY = "INPUT CONSUMER KEY HERE"
+CONSUMER_SECRET = "INPUT CONSUMER SECRET HERE"
 sandbox = True #if True will use sandbox.evernote.com, if False will use www.evenrote.com
 
 #if sandbox True will use sandbox.evernote.com, if False will use www.evenrote.com

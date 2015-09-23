@@ -7,15 +7,17 @@ Overview
 --------
 This SDK contains wrapper code used to call the Evernote Cloud API from Python.
 
-The SDK also contains a sample script. The code demonstrates the basic use of the SDK for single-user scripts as well as OAuth for multiuser applictions. Applications deployed to users are expected to use OAuth to authenticate to the Evernote service.
+The SDK also contains sample scripts and demos. These examples demonstrate the basic use of the SDK for single-user scripts as well as OAuth for multiuser applictions. Applications deployed to users are expected to use OAuth to authenticate to the Evernote service.
 
 Prerequisites
 -------------
-In order to use the code in this SDK, you need to obtain an API key from http://dev.evernote.com/#apikey You'll also find full API documentation on that page.
+In order to run the sample code and demos in this SDK you will need a Evernote sandbox account and either a API key and secret or a developer token.  To get a user account on Evernote's sandbox service where you will do your development, sign up for an account at https://sandbox.evernote.com/Registration.action
 
-In order to run the sample code, you need a user account on the sandbox service where you will do your development. Sign up for an account at https://sandbox.evernote.com/Registration.action
+*	Obtian an API key and secret
+ Go to http://dev.evernote.com/#apikey and fill out the form to get an API key and secret.
 
-In order to run the client client sample code, you need a developer token. Get one at https://sandbox.evernote.com/api/DeveloperToken.action
+* How to get a developer token
+In order to run some of the sample code, you need a developer token. Get one at https://sandbox.evernote.com/api/DeveloperToken.action
 
 
 Usage
