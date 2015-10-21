@@ -5,7 +5,7 @@ Evernote API version 1.28
 
 This SDK is intended for use with Python 2.X
 
-[Getting Started Guide](https://www.evernote.com/l/AAx5Wy2HPa9JqakerbR1mmK9QbCMzSlBfz8)
+[Getting Started Guide](https://dev.evernote.com/doc/start/python.php)
 
 Overview
 --------
