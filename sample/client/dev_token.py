@@ -2,7 +2,7 @@
 # A simple Evernote API demo script that lists all notebooks in the user's
 # account all the notes in the user's default notebook, creates a simple
 # test note in the default notebook, and lists joined and unjoin accessible
-# buiness notebooks in the Business accont (if applicable)
+# buiness notebooks in the Business account (if applicable)
 #
 # Before running this sample, you must fill in your Evernote developer token.
 #
@@ -163,4 +163,4 @@ if user.accounting.businessId:
         if accessible_business_notebook.guid not in [joined_business_notebook.guid for joined_business_notebook in joined_business_notebooks]:
             print "  * ", accessible_business_notebook.name
 else:
-    print "Your don't have Evernote Business"
+    print "You don't have Evernote Business"

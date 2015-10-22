@@ -2,7 +2,7 @@
 from evernote.api.client import EvernoteClient # for connecting to the Evenrote API
 import evernote.edam.type.ttypes as Types # for note and tags datatypes types
 import evernote.edam.notestore.ttypes as NoteStoreTypes # for note filter and result spec datatypes
-import evernote.edam.error.ttypes as Errors # For Evernote error handeling
+import evernote.edam.error.ttypes as Errors # For Evernote error handling
 
 #Flask Imports
 from flask import Flask, render_template, request, session, redirect, url_for
@@ -12,7 +12,7 @@ import requests #for getting Giphy images
 import sys # to exit if no API key is inputted
 import binascii #for taking the hash of the files for Evernote upload
 import hashlib #for taking the hash of the files for Evernote upload
-import json #for handeling Giphy data
+import json #for handling Giphy data
 
 #Giphy public beta API key
 giphy_api_key="dc6zaTOxFJmzC" #public beta key

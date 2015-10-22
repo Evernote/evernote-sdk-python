@@ -1,5 +1,5 @@
 #Evernote imports
-from evernote.api.client import EvernoteClient # for connecting to the Evenrote API
+from evernote.api.client import EvernoteClient # for connecting to the Evernote API
 import evernote.edam.type.ttypes as Types # for note and tags datatypes types
 import evernote.edam.notestore.ttypes as NoteStoreTypes # for note filter and result spec datatypes
 import evernote.edam.error.ttypes as Errors # for handeling errors sent from the Evernote Cloud
@@ -17,12 +17,12 @@ import math # for changing the search query
 #to get a API key go here: https://dev.evernote.com#apikey
 CONSUMER_KEY="PUT API KEY HERE" #INPUT CONSUMER KEY HERE
 CONSUMER_SECRET="PUT API SECRET HERE" #INPUT CONSUMER SECRET HERE
-sandbox = True #if True will use sandbox.evernote.com, if False will use www.evenrote.com
+sandbox = True #if True will use sandbox.evernote.com, if False will use www.evernote.com
 
 # PORT FOR DEVELOPERMENT SERVER
 port=1337
 
-#if sandbox True will use sandbox.evernote.com, if False will use www.evenrote.com
+#if sandbox True will use sandbox.evernote.com, if False will use www.evernote.com
 if sandbox:
 	EN_URL="https://sandbox.evernote.com"
 else:
@@ -163,7 +163,7 @@ def main():
 		return render_template('index.html', templates=content_list, num_of_notes = days_pervious_to_search)
 
 
-	#if their Evernote access_token session varible is not set, redirect them to Evernote to authoirze the applicaiton
+	#if their Evernote access_token session varible is not set, redirect them to Evernote to authorize the applicaiton
 	else:
 		#Setup Evernote client
 		client = EvernoteClient(
