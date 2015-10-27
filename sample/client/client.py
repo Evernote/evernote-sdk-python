@@ -1,10 +1,12 @@
 #
-# A simple Evernote API demo script that lists all notebooks in the user's
-# account all the notes in the user's default notebook, creates a simple
-# test note in the default notebook, and lists joined and unjoin accessible
-# buiness notebooks in the Business account (if applicable)
+# A simple Evernote API demo script that lists all notebooks in the
+# user's account all the notes in the user's default notebook, creates
+# a simple test note in the default notebook, and lists joined and
+# unjoin accessible buiness notebooks in the Business account
+# (if present)
 #
-# Before running this sample, you must fill in your Evernote developer token or API key.
+# Before running this sample, you must fill in your Evernote developer
+# token or API key.
 #
 # To run (Unix):
 #   export PYTHONPATH=../../lib; python EDAMTest.py
@@ -22,7 +24,11 @@ import evernote.edam.notestore.ttypes as NoteStoreTypes
 # Evernote client imports
 from evernote.api.client import EvernoteClient
 
-# Before running this sample, you must fill in your Evernote developer token or API key.
+#######################################################################
+# Before running this sample, you must fill in your Evernote developer
+# token or API key.
+#######################################################################
+
 # Developer Token
 auth_token = "your developer token"
 
@@ -30,28 +36,29 @@ auth_token = "your developer token"
 CONSUMER_KEY = "INPUT CONSUMER KEY HERE"
 CONSUMER_SECRET = "INPUT CONSUMER SECRET HERE"
 
-# Initial development shoudl be performed on Evernote's sandbox 
-# development server. To use the production service, change 
-# sandbox=False and replace your developer token above with a token 
+# Initial development shoudl be performed on Evernote's sandbox
+# development server. To use the production service, change
+# sandbox=False and replace your developer token above with a token
 # from  https://www.evernote.com/api/DeveloperToken.action to work with
-# a production developer token, avalible at 
+# a production developer token, avalible at
 # https://sandbox.evernote.com/api/DeveloperToken.action
-# or a production API key (request your sandbox API key be moved to 
-# production here: https://dev.evernote.com/support) change the 
-# following value to "False" if True will use sandbox.evernote.com, 
+# or a production API key (request your sandbox API key be moved to
+# production here: https://dev.evernote.com/support) change the
+# following value to "False" if True will use sandbox.evernote.com,
 # if False will use www.evenrote.com
-sandbox = True 
+sandbox = True
 
 
 # Real applications authenticate with Evernote using OAuth, but for the
-# purpose of exploring the API, you can get a developer token that allows
-# you to access your own Evernote account. To get a developer token, visit
-# https://sandbox.evernote.com/api/DeveloperToken.action
+# purpose of exploring the API, you can get a developer token that
+# allows you to access your own Evernote account. To get a developer
+# token, visit https://sandbox.evernote.com/api/DeveloperToken.action
 # to get an API key and secret visit https://dev.evernote.com/#apikey
 
 # If no developer token or API is defined alert the user and quit
-if auth_token == "your developer token" and CONSUMER_KEY = "INPUT CONSUMER KEY HERE" and 
-CONSUMER_SECRET = "INPUT CONSUMER SECRET HERE":
+if auth_token == "your developer token"
+and CONSUMER_KEY == "INPUT CONSUMER KEY HERE"
+and CONSUMER_SECRET == "INPUT CONSUMER SECRET HERE":
     print "Please fill in your developer token or API Key and secret"
     print "To get a developer token, visit " \
         "https://sandbox.evernote.com/api/DeveloperToken.action" \
@@ -63,39 +70,57 @@ CONSUMER_SECRET = "INPUT CONSUMER SECRET HERE":
 elif auth_token != "your devleoper token":
     client = EvernoteClient(token=auth_token, sandbox=sandbox)
 
-# If the user provides a API key use it to generate a Evernote client object
-elif CONSUMER_KEY != "INPUT CONSUMER KEY HERE" and CONSUMER_SECRET != "INPUT CONSUMER SECRET HERE":
-    #setup client
+# When a API key and secret is provided (and not a developer token)
+# use the key and secret  to generate a Evernote client object
+elif CONSUMER_KEY != "INPUT CONSUMER KEY HERE"
+and CONSUMER_SECRET != "INPUT CONSUMER SECRET HERE":
+    # Setup client
     client = EvernoteClient(
-    consumer_key=CONSUMER_KEY,
-    consumer_secret=CONSUMER_SECRET,
-    sandbox= sandbox
+        consumer_key=CONSUMER_KEY,
+        consumer_secret=CONSUMER_SECRET,
+        sandbox=sandbox
     )
 
-    request_token = client.get_request_token("http://evernote") #set callback URL
+    # Set callback URL
+    request_token = client.get_request_token("http://evernote")
     try:
-        oauth_token = request_token['oauth_token'] #set temporary oauth token
-        oauth_token_secret = request_token['oauth_token_secret'] # set temporary oaut token secret
-        authorize_url = client.get_authorize_url(request_token) #get redirect URL
+        # Set temporary oauth token
+        temp_token = request_token['oauth_token']
+        # Set temporary OAuth secret
+        temp_secret = request_token['oauth_token_secret']
+        # Get redirect URL
+        auth_url = client.get_authorize_url(request_token)
     except KeyError:
-        print "Incorrect consumer key or secret.  Please enter a valid consumer key and secret and try again.  \n\nPlease note that key must be approved to be used on www.evernote.com while all new keys are active by default on sandbox.evernote.com\n\n"
-        sys.exit(1)    
-
+        print "Incorrect consumer key or secret."
+        print "Please enter a valid consumer key and secret and try again."
+        print ""
+        print "All new keys are active by default on sandbox.evernote.com"
+        print "Keys must be approved to be used on www.evernote.com"
+        print ""
+        sys.exit(1)
 
     print "Please complete the following steps to continue: "
-    print "(1) Go to: " + authorize_url
-    print "(2) Grant access to your application"
-    print "(3) Look at the URL you are directed to and find the string after '&oauth_verifier=' and before '&sandbox_lnb'"
-    oauth_verifier = raw_input("(4) Enter that string (the OAuth verifier) here: ")
+    print "1. Go to: %s" % auth_url
+    print "2. Grant access to your application"
+    print "3. Inspect at the URL you are directed to"
+    print "4. Find the code in between '&oauth_verifier=' and '&sandbox_lnb'"
+    print "5. Enter that code (the OAuth verifier) below: "
+    verifier = raw_input("OAuth verifier: ")
 
-    auth_token=None
+    auth_token = None
 
-    #get access token
+    # Get access token
     while not auth_token:
         try:
-            auth_token = client.get_access_token(oauth_token, oauth_token_secret, oauth_verifier)
+            auth_token = client.get_access_token(
+                temp_token,
+                temp_secret,
+                verifier
+            )
         except:
-            oauth_verifier = raw_input("Incorrect OAuth verifier.\nTry again or press control+Z to exit.\nOAuthVerifier: ")        
+            print "Incorrect OAuth verifier."
+            print "Try again or press control+Z to exit."
+            verifier = raw_input("OAuthVerifier: ")
 
 user_store = client.get_user_store()
 
@@ -110,7 +135,7 @@ if not version_ok:
     exit(1)
 
 user = user_store.getUser()
- 
+
 print "Your username is %s" % user.username
 print "Your ID is %s" % user.id
 
@@ -122,24 +147,25 @@ print "Found ", len(notebooks), " notebooks:"
 for notebook in notebooks:
     print "  * ", notebook.name
 
-#list all the notes in the default notebook:
+# List all the notes in the default notebook:
 default_notebook = note_store.getDefaultNotebook()
 
-#setup search criteria
+# Setup search criteria
 note_filter = NoteStoreTypes.NoteFilter()
 note_filter.notebookGuid = default_notebook.guid
-result_spec = NoteStoreTypes.NotesMetadataResultSpec()
-result_spec.includeTitle = True
+spec = NoteStoreTypes.NotesMetadataResultSpec()
+spec.includeTitle = True
 offset = 0
 max_notes = 20
 
-#perform search
-search_results = note_store.findNotesMetadata(note_filter, offset, max_notes, result_spec)
+# Perform search
+results = note_store.findNotesMetadata(note_filter, offset, max_notes, spec)
 
-#display search results if there are results:
-if len(search_results.notes) != 0:
-    print "\nFound", len(search_results.notes), "notes in the default notebook,", default_notebook.name
-    for note in search_results.notes:
+# Display search results if there are results:
+if len(results.notes) != 0:
+    print "\nFound %d notes in the default notebook %s" \
+        % (len(results.notes), default_notebook.name)
+    for note in results.notes:
         print "\t+ ", note.title
 
 print "\nCreating a new note in the default notebook"
@@ -149,10 +175,11 @@ print "\nCreating a new note in the default notebook"
 note = Types.Note()
 note.title = "Test note from EDAMTest.py"
 
-# To include an attachment such as an image in a note, first create a Resource
-# for the attachment. At a minimum, the Resource contains the binary attachment
-# data, an MD5 hash of the binary data, and the attachment MIME type.
-# It can also include attributes such as filename and location.
+# To include an attachment such as an image in a note, first create a
+# resource for the attachment. At a minimum, the Resource contains the
+# binary attachment data, an MD5 hash of the binary data, and the
+# attachment MIME type. It can also include attributes such as filename
+# and location.
 image = open('enlogo.png', 'rb').read()
 md5 = hashlib.md5()
 md5.update(image)
@@ -170,14 +197,15 @@ resource.data = data
 # Now, add the new Resource to the note's list of resources
 note.resources = [resource]
 
-# To display the Resource as part of the note's content, include an <en-media>
-# tag in the note's ENML content. The en-media tag identifies the corresponding
-# Resource using the MD5 hash.
+# To display the Resource as part of the note's content, include an
+# <en-media> tag in the note's ENML content. The en-media tag
+# identifies the corresponding resource using the MD5 hash.
 hash_hex = binascii.hexlify(hash)
 
-# The content of an Evernote note is represented using Evernote Markup Language
-# (ENML). The full ENML specification can be found in the Evernote API Overview
-# at http://dev.evernote.com/documentation/cloud/chapters/ENML.php
+# The content of an Evernote note is represented using Evernote Markup
+# Language (ENML). The full ENML specification can be found in the
+# Evernote API Overview at
+# http://dev.evernote.com/documentation/cloud/chapters/ENML.php
 note.content = '<?xml version="1.0" encoding="UTF-8"?>'
 note.content += '<!DOCTYPE en-note SYSTEM ' \
     '"http://xml.evernote.com/pub/enml2.dtd">'
@@ -190,12 +218,13 @@ note.content += '</en-note>'
 # attributes such as the new note's unique GUID.
 created_note = note_store.createNote(note)
 
-print "Successfully created a new note with GUID: %s\n" %created_note.guid
+print "Successfully created a new note with GUID: %s\n" % created_note.guid
 
 
-# Evernote Business 
+# Evernote Business
 # To learn more about Evernote Business see https://evernote.com/business
-# For Evernote Business documentation see https://dev.evernote.com/doc/articles/business.php
+# For Evernote Business documentation see
+# https://dev.evernote.com/doc/articles/business.php
 
 # Check to see if the user is a part of a Evernote Business account
 if user.accounting.businessId:
@@ -206,19 +235,25 @@ if user.accounting.businessId:
     business_store = client.get_business_note_store()
 
     # List all of the notebooks in the business' account
-    joined_business_notebooks = business_store.listNotebooks()
-    print "Found", len(joined_business_notebooks), "joined business notebooks:"
-    for business_notebook in joined_business_notebooks:
+    joined_b_ntbks = business_store.listNotebooks()
+    joined_b_ntbk_guids = []
+    print "Found", len(joined_b_notebooks), "joined business notebooks:"
+    for business_notebook in joined_b_ntbks:
         print "  * ", business_notebook.name
+        joined_b_ntbk_guids.append(business_notebook.guid)
     print ""
 
-    accessible_business_notebooks = business_store.listAccessibleBusinessNotebooks()
-    
-    num_of_unjoin_business_notebooks = len(accessible_business_notebooks)-len(joined_business_notebooks)
+    # Get a list of accessible business notebooks
+    accessible_b_ntbks = business_store.listAccessibleBusinessNotebooks()
 
-    print "Found " + str(num_of_unjoin_business_notebooks) + " additional business notebooks accessible to you:"
+    # Infer the list of unjoin business notebooks
+    unjoined_b_ntbks = list(set(accessible_b_ntbks)-set(joined_b_ntbks))
+
+    # Print the results to the user
+    print "Found %d additional business notebooks accessible to you:" % \
+        len(num_unjoined_biz_ntbk)
     for accessible_business_notebook in accessible_business_notebooks:
-        if accessible_business_notebook.guid not in [joined_business_notebook.guid for joined_business_notebook in joined_business_notebooks]:
+        if accessible_business_notebook.guid not in join_b_ntbk_guids:
             print "  * ", accessible_business_notebook.name
 else:
     print "You don't have Evernote Business"
