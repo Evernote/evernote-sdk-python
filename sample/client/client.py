@@ -2,79 +2,100 @@
 # A simple Evernote API demo script that lists all notebooks in the user's
 # account all the notes in the user's default notebook, creates a simple
 # test note in the default notebook, and lists joined and unjoin accessible
-# buiness notebooks in the Business accont (if applicable)
+# buiness notebooks in the Business account (if applicable)
 #
-# Before running this sample, you must fill in your Evernote developer token.
+# Before running this sample, you must fill in your Evernote developer token or API key.
 #
 # To run (Unix):
 #   export PYTHONPATH=../../lib; python EDAMTest.py
 #
 
+# Standard Library Imports for hashing resources
 import hashlib
 import binascii
+
+# Evernote datatype imports
 import evernote.edam.userstore.constants as UserStoreConstants
 import evernote.edam.type.ttypes as Types
 import evernote.edam.notestore.ttypes as NoteStoreTypes
-import sys
 
+# Evernote client imports
 from evernote.api.client import EvernoteClient
 
-# Real applications authenticate with Evernote using OAuth
-# to get an API key and secret visit
-# https://dev.evernote.com/#apikey
+# Before running this sample, you must fill in your Evernote developer token or API key.
+# Developer Token
+auth_token = "your developer token"
+
+# OR API Key
 CONSUMER_KEY = "INPUT CONSUMER KEY HERE"
 CONSUMER_SECRET = "INPUT CONSUMER SECRET HERE"
-sandbox = True #if True will use sandbox.evernote.com, if False will use www.evenrote.com
 
-#if sandbox True will use sandbox.evernote.com, if False will use www.evenrote.com
-if sandbox:
-    EN_URL="https://sandbox.evernote.com"
-else:
-    EN_URL="https://www.evernote.com"
-
-#Throw an error and exit if there is no Consumer key or secret entered
-# to get a key go to https://dev.evernote.com#apikey
-if CONSUMER_KEY=="PUT API KEY HERE" or CONSUMER_KEY=="" or CONSUMER_SECRET=="PUT API SECRET HERE" or CONSUMER_SECRET=="":
-    print """ERROR: Edit the server.py file and add your consumer key and consumer secret in lines 24 and 25 at the begining of "oauth.py".
-    \nIf you do not have a Evernote consumer key and secret go to https://dev.evernote.com#apikey to get one (for free!).\n"""
-    sys.exit(1)
+# Initial development shoudl be performed on Evernote's sandbox 
+# development server. To use the production service, change 
+# sandbox=False and replace your developer token above with a token 
+# from  https://www.evernote.com/api/DeveloperToken.action to work with
+# a production developer token, avalible at 
+# https://sandbox.evernote.com/api/DeveloperToken.action
+# or a production API key (request your sandbox API key be moved to 
+# production here: https://dev.evernote.com/support) change the 
+# following value to "False" if True will use sandbox.evernote.com, 
+# if False will use www.evenrote.com
+sandbox = True 
 
 
-# Initial development is performed on our sandbox server. To use the production
-# service, change sandbox=False and request your API be approved for access 
-# on Evernote's production service 
+# Real applications authenticate with Evernote using OAuth, but for the
+# purpose of exploring the API, you can get a developer token that allows
+# you to access your own Evernote account. To get a developer token, visit
+# https://sandbox.evernote.com/api/DeveloperToken.action
+# to get an API key and secret visit https://dev.evernote.com/#apikey
 
-#setup client
-client = EvernoteClient(
-consumer_key=CONSUMER_KEY,
-consumer_secret=CONSUMER_SECRET,
-sandbox= sandbox
-)
+# If no developer token or API is defined alert the user and quit
+if auth_token == "your developer token" and CONSUMER_KEY = "INPUT CONSUMER KEY HERE" and 
+CONSUMER_SECRET = "INPUT CONSUMER SECRET HERE":
+    print "Please fill in your developer token or API Key and secret"
+    print "To get a developer token, visit " \
+        "https://sandbox.evernote.com/api/DeveloperToken.action" \
+        "\nto get a API key and secret please visit" \
+        "https://dev.evernote.com/#apikey"
+    exit(1)
 
-request_token = client.get_request_token("http://evernote") #set callback URL
-try:
-    oauth_token = request_token['oauth_token'] #set temporary oauth token
-    oauth_token_secret = request_token['oauth_token_secret'] # set temporary oaut token secret
-    authorize_url = client.get_authorize_url(request_token) #get redirect URL
-except KeyError:
-    print "Incorrect consumer key or secret.  Please enter a valid consumer key and secret and try again.  \n\nPlease note that key must be approved to be used on www.evernote.com while all new keys are active by default on sandbox.evernote.com\n\n"
-    sys.exit(1)    
+# If the user provides both default to developer token
+elif auth_token != "your devleoper token":
+    client = EvernoteClient(token=auth_token, sandbox=sandbox)
 
+# If the user provides a API key use it to generate a Evernote client object
+elif CONSUMER_KEY != "INPUT CONSUMER KEY HERE" and CONSUMER_SECRET != "INPUT CONSUMER SECRET HERE":
+    #setup client
+    client = EvernoteClient(
+    consumer_key=CONSUMER_KEY,
+    consumer_secret=CONSUMER_SECRET,
+    sandbox= sandbox
+    )
 
-print "Please complete the following steps to continue: "
-print "(1) Go to: " + authorize_url
-print "(2) Grant access to your application"
-print "(3) Look at the URL you are directed to and find the string after '&oauth_verifier=' and before '&sandbox_lnb'"
-oauth_verifier = raw_input("(4) Enter that string (the OAuth verifier) here: ")
-
-auth_token=None
-
-#get access token
-while not auth_token:
+    request_token = client.get_request_token("http://evernote") #set callback URL
     try:
-        auth_token = client.get_access_token(oauth_token, oauth_token_secret, oauth_verifier)
-    except:
-        oauth_verifier = raw_input("Incorrect OAuth verifier.\nTry again or press control+Z to exit.\nOAuthVerifier: ")        
+        oauth_token = request_token['oauth_token'] #set temporary oauth token
+        oauth_token_secret = request_token['oauth_token_secret'] # set temporary oaut token secret
+        authorize_url = client.get_authorize_url(request_token) #get redirect URL
+    except KeyError:
+        print "Incorrect consumer key or secret.  Please enter a valid consumer key and secret and try again.  \n\nPlease note that key must be approved to be used on www.evernote.com while all new keys are active by default on sandbox.evernote.com\n\n"
+        sys.exit(1)    
+
+
+    print "Please complete the following steps to continue: "
+    print "(1) Go to: " + authorize_url
+    print "(2) Grant access to your application"
+    print "(3) Look at the URL you are directed to and find the string after '&oauth_verifier=' and before '&sandbox_lnb'"
+    oauth_verifier = raw_input("(4) Enter that string (the OAuth verifier) here: ")
+
+    auth_token=None
+
+    #get access token
+    while not auth_token:
+        try:
+            auth_token = client.get_access_token(oauth_token, oauth_token_secret, oauth_verifier)
+        except:
+            oauth_verifier = raw_input("Incorrect OAuth verifier.\nTry again or press control+Z to exit.\nOAuthVerifier: ")        
 
 user_store = client.get_user_store()
 
@@ -87,8 +108,6 @@ print "Is my Evernote API version up to date? ", str(version_ok)
 print ""
 if not version_ok:
     exit(1)
-
-
 
 user = user_store.getUser()
  
@@ -173,18 +192,6 @@ created_note = note_store.createNote(note)
 
 print "Successfully created a new note with GUID: %s\n" %created_note.guid
 
-#Share notebook
-user_identity = Types.UserIdentity()
-user_identity.type = Types.UserIdentityType.EMAIL
-user_identity.stringIdentifier = "mcarroll+spam117@evernote.com"
-
-invite = NoteStoreTypes.InvitationShareRelationship()
-invite.recipientUserIdentity = user_identity
-invite.displayName = "Look at my notebook!"
-invite.privilege = NoteStoreTypes.ShareRelationshipPrivilegeLevel.FULL_ACCESS
-invite.allowPreview = True
-sharerUserId = user.id
-
 
 # Evernote Business 
 # To learn more about Evernote Business see https://evernote.com/business
@@ -214,4 +221,4 @@ if user.accounting.businessId:
         if accessible_business_notebook.guid not in [joined_business_notebook.guid for joined_business_notebook in joined_business_notebooks]:
             print "  * ", accessible_business_notebook.name
 else:
-    print "You don't have Evernote Business :("
+    print "You don't have Evernote Business"
