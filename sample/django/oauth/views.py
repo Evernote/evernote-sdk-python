@@ -3,10 +3,8 @@ from evernote.api.client import EvernoteClient
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
-
-EN_CONSUMER_KEY = 'your consumer key'
-EN_CONSUMER_SECRET = 'your consumer secret'
-
+# rename config.py.template to config.py and paste your credentials. 
+from config import EN_CONSUMER_KEY, EN_CONSUMER_SECRET
 
 def get_evernote_client(token=None):
     if token:
