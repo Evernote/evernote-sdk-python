@@ -19,7 +19,7 @@ setup(
     description='Evernote SDK for Python',
     long_description=read('README.md'),
     packages=find_packages('lib'),
-    package_dir={'': 'lib'},
+    packages=find_packages('lib',exclude=["*.thrift", "*.thrift.*", "thrift.*", "thrift"]),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
@@ -28,6 +28,7 @@ setup(
     ],
     license='BSD',
     install_requires=[
+        'thrift',
         'oauth2',
     ],
 )
