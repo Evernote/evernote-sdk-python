@@ -129,6 +129,37 @@ business_note_store = client.get_business_note_store()
 business_note_store.listNotebooks()
 ```
 
+### Using developer tokens ###
+If you are building a script or application that will only access your own personal Evernote account, then you don't need to implement OAuth.
+
+```
+developer_token = "my developer token"
+ 
+# Set up the NoteStore client 
+client = EvernoteClient(token=developer_token)
+note_store = client.get_note_store()
+ 
+# Make API calls
+notebooks = note_store.listNotebooks()
+for notebook in notebooks:
+    print "Notebook: ", notebook.name
+
+```
+If you use yinxiang
+```
+developer_token = "my developer token"
+ 
+# Set up the NoteStore client 
+client = EvernoteClient(token=developer_token, yinxiang=True)
+note_store = client.get_note_store()
+ 
+# Make API calls
+notebooks = note_store.listNotebooks()
+for notebook in notebooks:
+    print "Notebook: ", notebook.name
+
+```
+
 ### References ###
 - Evernote Developers: http://dev.evernote.com/
 - API Document: http://dev.evernote.com/documentation/reference/
