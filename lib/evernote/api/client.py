@@ -13,6 +13,7 @@ import evernote.edam.userstore.constants as UserStoreConstants
 import thrift.protocol.TBinaryProtocol as TBinaryProtocol
 import thrift.transport.THttpClient as THttpClient
 
+__version__ = '1.25.0'
 
 class EvernoteClient(object):
 
