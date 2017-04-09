@@ -18,7 +18,18 @@ from evernote.api.client import EvernoteClient
 # Real applications authenticate with Evernote using OAuth, but for the
 # purpose of exploring the API, you can get a developer token that allows
 # you to access your own Evernote account. To get a developer token, visit
-# https://sandbox.evernote.com/api/DeveloperToken.action
+# https://SERVICE_HOST/api/DeveloperToken.action
+#
+# There are three Evernote services:
+#
+# Sandbox: https://sandbox.evernote.com/
+# Production (International): https://www.evernote.com/
+# Production (China): https://app.yinxiang.com/
+#
+# For more information about Sandbox and Evernote China services, please 
+# refer to https://dev.evernote.com/doc/articles/testing.php 
+# and https://dev.evernote.com/doc/articles/bootstrap.php
+
 auth_token = "your developer token"
 
 if auth_token == "your developer token":
@@ -27,11 +38,18 @@ if auth_token == "your developer token":
         "https://sandbox.evernote.com/api/DeveloperToken.action"
     exit(1)
 
+
+# To access Sandbox service, set sandbox to True 
+# To access production (International) service, set both sandbox and china to False
+# To access production (China) service, set sandbox to False and china to True
+sandbox = True
+china = False
+
 # Initial development is performed on our sandbox server. To use the production
 # service, change sandbox=False and replace your
 # developer token above with a token from
 # https://www.evernote.com/api/DeveloperToken.action
-client = EvernoteClient(token=auth_token, sandbox=True)
+client = EvernoteClient(token=auth_token, sandbox=sandbox, china=china)
 
 user_store = client.get_user_store()
 
