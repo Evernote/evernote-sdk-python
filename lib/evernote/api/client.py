@@ -78,7 +78,7 @@ class EvernoteClient(object):
 
     def get_note_store(self):
         user_store = self.get_user_store()
-        note_store_uri = user_store.getNoteStoreUrl()
+        note_store_uri = self._get_endpoint("/shard/s1/notestore")
         store = Store(self.token, NoteStore.Client, note_store_uri)
         if not store:  # Trick for PyDev code completion
             store = NoteStore.Client()
