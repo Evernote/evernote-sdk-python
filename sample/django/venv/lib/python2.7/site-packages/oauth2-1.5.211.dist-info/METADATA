@@ -1,0 +1,15 @@
+Metadata-Version: 2.0
+Name: oauth2
+Version: 1.5.211
+Summary: library for OAuth version 1.0
+Home-page: http://github.com/simplegeo/python-oauth2
+Author: Joe Stump
+Author-email: joe@simplegeo.com
+License: MIT License
+Keywords: oauth
+Platform: UNKNOWN
+Requires-Dist: httplib2
+
+UNKNOWN
+
+
