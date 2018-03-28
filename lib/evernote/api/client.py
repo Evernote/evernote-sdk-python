@@ -78,7 +78,7 @@ class EvernoteClient(object):
 
     def get_note_store(self):
         user_store = self.get_user_store()
-        note_store_uri = user_store.getNoteStoreUrl()
+        note_store_uri = user_store.getUserUrls().noteStoreUrl
         store = Store(self.token, NoteStore.Client, note_store_uri)
         if not store:  # Trick for PyDev code completion
             store = NoteStore.Client()
@@ -156,7 +156,7 @@ class Store(object):
 
     def _get_thrift_client(self, client_class, url):
         http_client = THttpClient.THttpClient(url)
-        http_client.addHeaders(**{
+        http_client.setCustomHeaders({
             'User-Agent': "%s / %s; Python / %s;"
             % (self._user_agent_id, self._get_sdk_version(), sys.version.replace('\n',""))
         })
