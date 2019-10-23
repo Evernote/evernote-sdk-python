@@ -76,7 +76,7 @@ Usage
 client = EvernoteClient(
     consumer_key='YOUR CONSUMER KEY',
     consumer_secret='YOUR CONSUMER SECRET',
-    sandbox=True # Default: True
+    sandbox=True # Default: True, In Production: sandbox=False
 )
 request_token = client.get_request_token('YOUR CALLBACK URL')
 client.get_authorize_url(request_token)
@@ -100,7 +100,7 @@ notebooks = note_store.listNotebooks()
 ### UserStore ###
 Once you acquire token, you can use UserStore. For example, if you want to call UserStore.getUser:
 ```python
-client = EvernoteClient(token=access_token)
+client = EvernoteClient(token=access_token)     # In production, EvernoteClient(token=access_token, sandbox=False)
 user_store = client.get_user_store()
 user_store.getUser()
 ```
