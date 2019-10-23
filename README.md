@@ -100,7 +100,7 @@ notebooks = note_store.listNotebooks()
 ### UserStore ###
 Once you acquire token, you can use UserStore. For example, if you want to call UserStore.getUser:
 ```python
-client = EvernoteClient(token=access_token)
+client = EvernoteClient(token=access_token)     # In production, EvernoteClient(token=access_token, sandbox=False)
 user_store = client.get_user_store()
 user_store.getUser()
 ```
