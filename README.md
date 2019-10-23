@@ -76,7 +76,7 @@ Usage
 client = EvernoteClient(
     consumer_key='YOUR CONSUMER KEY',
     consumer_secret='YOUR CONSUMER SECRET',
-    sandbox=True # Default: True
+    sandbox=True # Default: True, In Production: sandbox=False
 )
 request_token = client.get_request_token('YOUR CALLBACK URL')
 client.get_authorize_url(request_token)
