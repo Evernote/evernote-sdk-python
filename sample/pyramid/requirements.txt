@@ -6,7 +6,7 @@ Pygments==1.6rc1
 WebOb==1.2.3
 evernote==1.25.0
 evernote-oauth-sample==0.0
-httplib2==0.7.7
+httplib2==0.18.0
 oauth2==1.5.211
 pyramid==1.4
 pyramid-debugtoolbar==1.0.4
