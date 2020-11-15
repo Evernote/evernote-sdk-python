@@ -1,7 +1,7 @@
-__title__ = 'evernote'
-__description__ = 'Evernote SDK for Python'
+__title__ = 'evernote2'
+__description__ = 'another Evernote SDK for Python'
 __url__ = 'https://github.com/JackonYang/evernote-sdk-python'
-__version__ = '1.9.1'
+__version__ = '0.0.1'
 # __build__ = 0x022500
 __author__ = 'Jackon Yang'
 __author_email__ = 'i@jackon.me'
