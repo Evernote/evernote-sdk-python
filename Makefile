@@ -24,7 +24,7 @@ flake8:
 ci:
 	pytest tests --junitxml=report.xml
 
-publish:
+release:
 	# remove old versions first
 	rm -fr build dist .egg $(SOURCE_DIR).egg-info
 	pip install 'twine>=3.2.0'
