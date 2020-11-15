@@ -604,7 +604,7 @@ class Data(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -1229,7 +1229,7 @@ class UserAttributes(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -1379,7 +1379,7 @@ class BusinessUserAttributes(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -1758,7 +1758,7 @@ class Accounting(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -1881,7 +1881,7 @@ class BusinessUserInfo(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2088,7 +2088,7 @@ class AccountLimits(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2446,7 +2446,7 @@ class User(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2606,7 +2606,7 @@ class Contact(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2799,7 +2799,7 @@ class Identity(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2933,7 +2933,7 @@ class Tag(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3033,7 +3033,7 @@ class LazyMap(object):
         if self.fullMap is not None:
             oprot.writeFieldBegin('fullMap', TType.MAP, 2)
             oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.fullMap))
-            for kiter28, viter29 in self.fullMap.items():
+            for kiter28, viter29 in list(self.fullMap.items()):
                 oprot.writeString(kiter28.encode('utf-8') if sys.version_info[0] == 2 else kiter28)
                 oprot.writeString(viter29.encode('utf-8') if sys.version_info[0] == 2 else viter29)
             oprot.writeMapEnd()
@@ -3046,7 +3046,7 @@ class LazyMap(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3304,7 +3304,7 @@ class ResourceAttributes(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3564,7 +3564,7 @@ class Resource(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3976,7 +3976,7 @@ class NoteAttributes(object):
         if self.classifications is not None:
             oprot.writeFieldBegin('classifications', TType.MAP, 26)
             oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.classifications))
-            for kiter37, viter38 in self.classifications.items():
+            for kiter37, viter38 in list(self.classifications.items()):
                 oprot.writeString(kiter37.encode('utf-8') if sys.version_info[0] == 2 else kiter37)
                 oprot.writeString(viter38.encode('utf-8') if sys.version_info[0] == 2 else viter38)
             oprot.writeMapEnd()
@@ -4009,7 +4009,7 @@ class NoteAttributes(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -4148,7 +4148,7 @@ class SharedNote(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -4303,7 +4303,7 @@ class NoteRestrictions(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -4410,7 +4410,7 @@ class NoteLimits(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -4833,7 +4833,7 @@ class Note(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -4962,7 +4962,7 @@ class Publishing(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -5068,7 +5068,7 @@ class BusinessNotebook(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -5162,7 +5162,7 @@ class SavedSearchScope(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -5328,7 +5328,7 @@ class SavedSearch(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -5421,7 +5421,7 @@ class SharedNotebookRecipientSettings(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -5541,7 +5541,7 @@ class NotebookRecipientSettings(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -5861,7 +5861,7 @@ class SharedNotebook(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -6259,7 +6259,7 @@ class NotebookRestrictions(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -6610,7 +6610,7 @@ class Notebook(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -6850,7 +6850,7 @@ class LinkedNotebook(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -6978,7 +6978,7 @@ class NotebookDescriptor(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -7157,7 +7157,7 @@ class UserProfile(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -7274,7 +7274,7 @@ class RelatedContentImage(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -7576,7 +7576,7 @@ class RelatedContent(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -7738,7 +7738,7 @@ class BusinessInvitation(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -7844,7 +7844,7 @@ class UserIdentity(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):

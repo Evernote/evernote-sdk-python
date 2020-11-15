@@ -2011,7 +2011,7 @@ class checkVersion_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2074,7 +2074,7 @@ class checkVersion_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2134,7 +2134,7 @@ class getBootstrapInfo_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2196,7 +2196,7 @@ class getBootstrapInfo_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2322,7 +2322,7 @@ class authenticateLongSession_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2414,7 +2414,7 @@ class authenticateLongSession_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2509,7 +2509,7 @@ class completeTwoFactorAuthentication_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2598,7 +2598,7 @@ class completeTwoFactorAuthentication_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2660,7 +2660,7 @@ class revokeLongSession_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2734,7 +2734,7 @@ class revokeLongSession_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2796,7 +2796,7 @@ class authenticateToBusiness_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2882,7 +2882,7 @@ class authenticateToBusiness_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -2944,7 +2944,7 @@ class getUser_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3030,7 +3030,7 @@ class getUser_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3092,7 +3092,7 @@ class getPublicUserInfo_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3190,7 +3190,7 @@ class getPublicUserInfo_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3253,7 +3253,7 @@ class getUserUrls_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3339,7 +3339,7 @@ class getUserUrls_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3412,7 +3412,7 @@ class inviteToBusiness_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3487,7 +3487,7 @@ class inviteToBusiness_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3560,7 +3560,7 @@ class removeFromBusiness_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3647,7 +3647,7 @@ class removeFromBusiness_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3732,7 +3732,7 @@ class updateBusinessUserIdentifier_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3820,7 +3820,7 @@ class updateBusinessUserIdentifier_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3883,7 +3883,7 @@ class listBusinessUsers_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -3977,7 +3977,7 @@ class listBusinessUsers_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -4050,7 +4050,7 @@ class listBusinessInvitations_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -4145,7 +4145,7 @@ class listBusinessInvitations_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -4207,7 +4207,7 @@ class getAccountLimits_args(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
@@ -4281,7 +4281,7 @@ class getAccountLimits_result(object):
 
     def __repr__(self):
         L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
+             for key, value in list(self.__dict__.items())]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
     def __eq__(self, other):
