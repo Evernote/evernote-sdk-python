@@ -24,17 +24,16 @@ Goal:
 ## Plans
 
 
-#### version 2.0.0 - Work In Progress
+#### version 1.0.0 - Work In Progress
 
 - [ ] API: list notebooks
 - [ ] API: get note metadata
 - [ ] API: get note content
-- [ ] add requirements.txt
-- [ ] release to pypi
 
-#### version 1.9.x - env and workflow setup
+#### version 0.0.1 - env and workflow setup
 
 - [x] import evernote module and run hello world
 - [x] unittest workflow
-- [ ] workflow of release to pypi
-- [ ] test coverage
+- [x] test coverage
+- [x] workflow of release to pypi
+- [x] add requirements.txt
