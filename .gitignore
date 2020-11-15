@@ -1,6 +1,51 @@
-*.pyc
+# .gitignore by jackon.me
+
+*.log
+coverage.xml
+
+*.py[cod]
+
+#vim
 *.swp
-build
-dist
-*.egg-info
+.ropeproject/
+
+# SVN
+.svn
+
+# C extensions
+*.so
+
+# Installer logs
+pip-log.txt
+*.egg-info/
+dist/
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+.cache/
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+
+# Windows
+[Dd]esktop.ini
+Thumbs.db
+$RECYCLE.BIN/
+
+# macOS
 .DS_Store
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+
+# Node.js
+node_modules/
