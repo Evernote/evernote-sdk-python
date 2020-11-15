@@ -31,3 +31,10 @@ Goal:
 - [ ] API: get note content
 - [ ] add requirements.txt
 - [ ] release to pypi
+
+#### version 1.9.x - env and workflow setup
+
+- [x] import evernote module and run hello world
+- [x] unittest workflow
+- [ ] workflow of release to pypi
+- [ ] test coverage
