@@ -7407,10 +7407,10 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -7436,10 +7436,10 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -7465,13 +7465,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -7497,13 +7497,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -7529,10 +7529,10 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -7558,10 +7558,10 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -7587,13 +7587,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -7619,10 +7619,10 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -7648,10 +7648,10 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -7677,13 +7677,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -7709,13 +7709,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -7741,10 +7741,10 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -7770,13 +7770,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -7802,13 +7802,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -7834,13 +7834,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -7866,13 +7866,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -7898,13 +7898,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -7930,13 +7930,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -7962,10 +7962,10 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -7991,13 +7991,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8023,10 +8023,10 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -8052,13 +8052,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8084,13 +8084,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8116,13 +8116,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8148,13 +8148,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8180,13 +8180,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8212,13 +8212,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8244,13 +8244,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8276,13 +8276,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8308,13 +8308,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8340,13 +8340,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8372,13 +8372,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8404,13 +8404,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8436,13 +8436,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8468,13 +8468,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8500,13 +8500,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8532,13 +8532,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8564,13 +8564,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8596,13 +8596,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8628,13 +8628,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8660,13 +8660,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8692,13 +8692,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8724,13 +8724,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8756,13 +8756,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8788,13 +8788,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8820,13 +8820,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8852,13 +8852,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8884,13 +8884,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8916,13 +8916,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8948,13 +8948,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -8980,13 +8980,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -9012,13 +9012,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -9044,13 +9044,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -9076,13 +9076,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -9108,10 +9108,10 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -9137,13 +9137,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9169,16 +9169,16 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMInvalidContactsException as invalidContactsException:
+        except evernote2.edam.error.ttypes.EDAMInvalidContactsException as invalidContactsException:
             msg_type = TMessageType.REPLY
             result.invalidContactsException = invalidContactsException
         except TApplicationException as ex:
@@ -9204,13 +9204,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9236,13 +9236,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9268,13 +9268,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9300,13 +9300,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9332,13 +9332,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9364,13 +9364,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9396,13 +9396,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9428,13 +9428,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9460,13 +9460,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9492,13 +9492,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9524,13 +9524,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9556,13 +9556,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9588,13 +9588,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9620,13 +9620,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
         except TApplicationException as ex:
@@ -9652,13 +9652,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9684,13 +9684,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9716,13 +9716,13 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
-        except evernote.edam.error.ttypes.EDAMUserException as userException:
+        except evernote2.edam.error.ttypes.EDAMUserException as userException:
             msg_type = TMessageType.REPLY
             result.userException = userException
-        except evernote.edam.error.ttypes.EDAMNotFoundException as notFoundException:
+        except evernote2.edam.error.ttypes.EDAMNotFoundException as notFoundException:
             msg_type = TMessageType.REPLY
             result.notFoundException = notFoundException
-        except evernote.edam.error.ttypes.EDAMSystemException as systemException:
+        except evernote2.edam.error.ttypes.EDAMSystemException as systemException:
             msg_type = TMessageType.REPLY
             result.systemException = systemException
         except TApplicationException as ex:
@@ -9833,13 +9833,13 @@ class getSyncState_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -9884,8 +9884,8 @@ class getSyncState_result(object):
 all_structs.append(getSyncState_result)
 getSyncState_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [SyncState, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
 )
 
 
@@ -10018,13 +10018,13 @@ class getFilteredSyncChunk_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -10069,8 +10069,8 @@ class getFilteredSyncChunk_result(object):
 all_structs.append(getFilteredSyncChunk_result)
 getFilteredSyncChunk_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [SyncChunk, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
 )
 
 
@@ -10102,7 +10102,7 @@ class getLinkedNotebookSyncState_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.linkedNotebook = evernote.edam.type.ttypes.LinkedNotebook()
+                    self.linkedNotebook = evernote2.edam.type.ttypes.LinkedNotebook()
                     self.linkedNotebook.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -10144,7 +10144,7 @@ all_structs.append(getLinkedNotebookSyncState_args)
 getLinkedNotebookSyncState_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'linkedNotebook', [evernote.edam.type.ttypes.LinkedNotebook, None], None, ),  # 2
+    (2, TType.STRUCT, 'linkedNotebook', [evernote2.edam.type.ttypes.LinkedNotebook, None], None, ),  # 2
 )
 
 
@@ -10181,19 +10181,19 @@ class getLinkedNotebookSyncState_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -10242,9 +10242,9 @@ class getLinkedNotebookSyncState_result(object):
 all_structs.append(getLinkedNotebookSyncState_result)
 getLinkedNotebookSyncState_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [SyncState, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -10282,7 +10282,7 @@ class getLinkedNotebookSyncChunk_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.linkedNotebook = evernote.edam.type.ttypes.LinkedNotebook()
+                    self.linkedNotebook = evernote2.edam.type.ttypes.LinkedNotebook()
                     self.linkedNotebook.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -10351,7 +10351,7 @@ all_structs.append(getLinkedNotebookSyncChunk_args)
 getLinkedNotebookSyncChunk_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'linkedNotebook', [evernote.edam.type.ttypes.LinkedNotebook, None], None, ),  # 2
+    (2, TType.STRUCT, 'linkedNotebook', [evernote2.edam.type.ttypes.LinkedNotebook, None], None, ),  # 2
     (3, TType.I32, 'afterUSN', None, None, ),  # 3
     (4, TType.I32, 'maxEntries', None, None, ),  # 4
     (5, TType.BOOL, 'fullSyncOnly', None, None, ),  # 5
@@ -10391,19 +10391,19 @@ class getLinkedNotebookSyncChunk_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -10452,9 +10452,9 @@ class getLinkedNotebookSyncChunk_result(object):
 all_structs.append(getLinkedNotebookSyncChunk_result)
 getLinkedNotebookSyncChunk_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [SyncChunk, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -10547,7 +10547,7 @@ class listNotebooks_result(object):
                     self.success = []
                     (_etype336, _size333) = iprot.readListBegin()
                     for _i337 in range(_size333):
-                        _elem338 = evernote.edam.type.ttypes.Notebook()
+                        _elem338 = evernote2.edam.type.ttypes.Notebook()
                         _elem338.read(iprot)
                         self.success.append(_elem338)
                     iprot.readListEnd()
@@ -10555,13 +10555,13 @@ class listNotebooks_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -10608,9 +10608,9 @@ class listNotebooks_result(object):
         return not (self == other)
 all_structs.append(listNotebooks_result)
 listNotebooks_result.thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, [evernote.edam.type.ttypes.Notebook, None], False), None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (0, TType.LIST, 'success', (TType.STRUCT, [evernote2.edam.type.ttypes.Notebook, None], False), None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
 )
 
 
@@ -10703,7 +10703,7 @@ class listAccessibleBusinessNotebooks_result(object):
                     self.success = []
                     (_etype343, _size340) = iprot.readListBegin()
                     for _i344 in range(_size340):
-                        _elem345 = evernote.edam.type.ttypes.Notebook()
+                        _elem345 = evernote2.edam.type.ttypes.Notebook()
                         _elem345.read(iprot)
                         self.success.append(_elem345)
                     iprot.readListEnd()
@@ -10711,13 +10711,13 @@ class listAccessibleBusinessNotebooks_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -10764,9 +10764,9 @@ class listAccessibleBusinessNotebooks_result(object):
         return not (self == other)
 all_structs.append(listAccessibleBusinessNotebooks_result)
 listAccessibleBusinessNotebooks_result.thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, [evernote.edam.type.ttypes.Notebook, None], False), None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (0, TType.LIST, 'success', (TType.STRUCT, [evernote2.edam.type.ttypes.Notebook, None], False), None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
 )
 
 
@@ -10870,25 +10870,25 @@ class getNotebook_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Notebook()
+                    self.success = evernote2.edam.type.ttypes.Notebook()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -10936,10 +10936,10 @@ class getNotebook_result(object):
         return not (self == other)
 all_structs.append(getNotebook_result)
 getNotebook_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Notebook, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Notebook, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -11029,19 +11029,19 @@ class getDefaultNotebook_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Notebook()
+                    self.success = evernote2.edam.type.ttypes.Notebook()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -11085,9 +11085,9 @@ class getDefaultNotebook_result(object):
         return not (self == other)
 all_structs.append(getDefaultNotebook_result)
 getDefaultNotebook_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Notebook, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Notebook, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
 )
 
 
@@ -11119,7 +11119,7 @@ class createNotebook_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notebook = evernote.edam.type.ttypes.Notebook()
+                    self.notebook = evernote2.edam.type.ttypes.Notebook()
                     self.notebook.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -11161,7 +11161,7 @@ all_structs.append(createNotebook_args)
 createNotebook_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'notebook', [evernote.edam.type.ttypes.Notebook, None], None, ),  # 2
+    (2, TType.STRUCT, 'notebook', [evernote2.edam.type.ttypes.Notebook, None], None, ),  # 2
 )
 
 
@@ -11190,19 +11190,19 @@ class createNotebook_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Notebook()
+                    self.success = evernote2.edam.type.ttypes.Notebook()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -11246,9 +11246,9 @@ class createNotebook_result(object):
         return not (self == other)
 all_structs.append(createNotebook_result)
 createNotebook_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Notebook, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Notebook, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
 )
 
 
@@ -11280,7 +11280,7 @@ class updateNotebook_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notebook = evernote.edam.type.ttypes.Notebook()
+                    self.notebook = evernote2.edam.type.ttypes.Notebook()
                     self.notebook.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -11322,7 +11322,7 @@ all_structs.append(updateNotebook_args)
 updateNotebook_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'notebook', [evernote.edam.type.ttypes.Notebook, None], None, ),  # 2
+    (2, TType.STRUCT, 'notebook', [evernote2.edam.type.ttypes.Notebook, None], None, ),  # 2
 )
 
 
@@ -11358,19 +11358,19 @@ class updateNotebook_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -11419,9 +11419,9 @@ class updateNotebook_result(object):
 all_structs.append(updateNotebook_result)
 updateNotebook_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -11530,19 +11530,19 @@ class expungeNotebook_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -11591,9 +11591,9 @@ class expungeNotebook_result(object):
 all_structs.append(expungeNotebook_result)
 expungeNotebook_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -11686,7 +11686,7 @@ class listTags_result(object):
                     self.success = []
                     (_etype350, _size347) = iprot.readListBegin()
                     for _i351 in range(_size347):
-                        _elem352 = evernote.edam.type.ttypes.Tag()
+                        _elem352 = evernote2.edam.type.ttypes.Tag()
                         _elem352.read(iprot)
                         self.success.append(_elem352)
                     iprot.readListEnd()
@@ -11694,13 +11694,13 @@ class listTags_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -11747,9 +11747,9 @@ class listTags_result(object):
         return not (self == other)
 all_structs.append(listTags_result)
 listTags_result.thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, [evernote.edam.type.ttypes.Tag, None], False), None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (0, TType.LIST, 'success', (TType.STRUCT, [evernote2.edam.type.ttypes.Tag, None], False), None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
 )
 
 
@@ -11856,7 +11856,7 @@ class listTagsByNotebook_result(object):
                     self.success = []
                     (_etype357, _size354) = iprot.readListBegin()
                     for _i358 in range(_size354):
-                        _elem359 = evernote.edam.type.ttypes.Tag()
+                        _elem359 = evernote2.edam.type.ttypes.Tag()
                         _elem359.read(iprot)
                         self.success.append(_elem359)
                     iprot.readListEnd()
@@ -11864,19 +11864,19 @@ class listTagsByNotebook_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -11927,10 +11927,10 @@ class listTagsByNotebook_result(object):
         return not (self == other)
 all_structs.append(listTagsByNotebook_result)
 listTagsByNotebook_result.thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, [evernote.edam.type.ttypes.Tag, None], False), None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.LIST, 'success', (TType.STRUCT, [evernote2.edam.type.ttypes.Tag, None], False), None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -12034,25 +12034,25 @@ class getTag_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Tag()
+                    self.success = evernote2.edam.type.ttypes.Tag()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -12100,10 +12100,10 @@ class getTag_result(object):
         return not (self == other)
 all_structs.append(getTag_result)
 getTag_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Tag, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Tag, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -12135,7 +12135,7 @@ class createTag_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.tag = evernote.edam.type.ttypes.Tag()
+                    self.tag = evernote2.edam.type.ttypes.Tag()
                     self.tag.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -12177,7 +12177,7 @@ all_structs.append(createTag_args)
 createTag_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'tag', [evernote.edam.type.ttypes.Tag, None], None, ),  # 2
+    (2, TType.STRUCT, 'tag', [evernote2.edam.type.ttypes.Tag, None], None, ),  # 2
 )
 
 
@@ -12208,25 +12208,25 @@ class createTag_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Tag()
+                    self.success = evernote2.edam.type.ttypes.Tag()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -12274,10 +12274,10 @@ class createTag_result(object):
         return not (self == other)
 all_structs.append(createTag_result)
 createTag_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Tag, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Tag, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -12309,7 +12309,7 @@ class updateTag_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.tag = evernote.edam.type.ttypes.Tag()
+                    self.tag = evernote2.edam.type.ttypes.Tag()
                     self.tag.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -12351,7 +12351,7 @@ all_structs.append(updateTag_args)
 updateTag_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'tag', [evernote.edam.type.ttypes.Tag, None], None, ),  # 2
+    (2, TType.STRUCT, 'tag', [evernote2.edam.type.ttypes.Tag, None], None, ),  # 2
 )
 
 
@@ -12387,19 +12387,19 @@ class updateTag_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -12448,9 +12448,9 @@ class updateTag_result(object):
 all_structs.append(updateTag_result)
 updateTag_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -12552,19 +12552,19 @@ class untagAll_result(object):
                 break
             if fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -12609,9 +12609,9 @@ class untagAll_result(object):
 all_structs.append(untagAll_result)
 untagAll_result.thrift_spec = (
     None,  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -12720,19 +12720,19 @@ class expungeTag_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -12781,9 +12781,9 @@ class expungeTag_result(object):
 all_structs.append(expungeTag_result)
 expungeTag_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -12876,7 +12876,7 @@ class listSearches_result(object):
                     self.success = []
                     (_etype364, _size361) = iprot.readListBegin()
                     for _i365 in range(_size361):
-                        _elem366 = evernote.edam.type.ttypes.SavedSearch()
+                        _elem366 = evernote2.edam.type.ttypes.SavedSearch()
                         _elem366.read(iprot)
                         self.success.append(_elem366)
                     iprot.readListEnd()
@@ -12884,13 +12884,13 @@ class listSearches_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -12937,9 +12937,9 @@ class listSearches_result(object):
         return not (self == other)
 all_structs.append(listSearches_result)
 listSearches_result.thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, [evernote.edam.type.ttypes.SavedSearch, None], False), None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (0, TType.LIST, 'success', (TType.STRUCT, [evernote2.edam.type.ttypes.SavedSearch, None], False), None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
 )
 
 
@@ -13043,25 +13043,25 @@ class getSearch_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.SavedSearch()
+                    self.success = evernote2.edam.type.ttypes.SavedSearch()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -13109,10 +13109,10 @@ class getSearch_result(object):
         return not (self == other)
 all_structs.append(getSearch_result)
 getSearch_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.SavedSearch, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.SavedSearch, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -13144,7 +13144,7 @@ class createSearch_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.search = evernote.edam.type.ttypes.SavedSearch()
+                    self.search = evernote2.edam.type.ttypes.SavedSearch()
                     self.search.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -13186,7 +13186,7 @@ all_structs.append(createSearch_args)
 createSearch_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'search', [evernote.edam.type.ttypes.SavedSearch, None], None, ),  # 2
+    (2, TType.STRUCT, 'search', [evernote2.edam.type.ttypes.SavedSearch, None], None, ),  # 2
 )
 
 
@@ -13215,19 +13215,19 @@ class createSearch_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.SavedSearch()
+                    self.success = evernote2.edam.type.ttypes.SavedSearch()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -13271,9 +13271,9 @@ class createSearch_result(object):
         return not (self == other)
 all_structs.append(createSearch_result)
 createSearch_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.SavedSearch, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.SavedSearch, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
 )
 
 
@@ -13305,7 +13305,7 @@ class updateSearch_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.search = evernote.edam.type.ttypes.SavedSearch()
+                    self.search = evernote2.edam.type.ttypes.SavedSearch()
                     self.search.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -13347,7 +13347,7 @@ all_structs.append(updateSearch_args)
 updateSearch_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'search', [evernote.edam.type.ttypes.SavedSearch, None], None, ),  # 2
+    (2, TType.STRUCT, 'search', [evernote2.edam.type.ttypes.SavedSearch, None], None, ),  # 2
 )
 
 
@@ -13383,19 +13383,19 @@ class updateSearch_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -13444,9 +13444,9 @@ class updateSearch_result(object):
 all_structs.append(updateSearch_result)
 updateSearch_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -13555,19 +13555,19 @@ class expungeSearch_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -13616,9 +13616,9 @@ class expungeSearch_result(object):
 all_structs.append(expungeSearch_result)
 expungeSearch_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -13740,19 +13740,19 @@ class findNoteOffset_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -13801,9 +13801,9 @@ class findNoteOffset_result(object):
 all_structs.append(findNoteOffset_result)
 findNoteOffset_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -13951,19 +13951,19 @@ class findNotesMetadata_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -14012,9 +14012,9 @@ class findNotesMetadata_result(object):
 all_structs.append(findNotesMetadata_result)
 findNotesMetadata_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [NotesMetadataList, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -14137,19 +14137,19 @@ class findNoteCounts_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -14198,9 +14198,9 @@ class findNoteCounts_result(object):
 all_structs.append(findNoteCounts_result)
 findNoteCounts_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [NoteCollectionCounts, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -14317,25 +14317,25 @@ class getNoteWithResultSpec_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Note()
+                    self.success = evernote2.edam.type.ttypes.Note()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -14383,10 +14383,10 @@ class getNoteWithResultSpec_result(object):
         return not (self == other)
 all_structs.append(getNoteWithResultSpec_result)
 getNoteWithResultSpec_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Note, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Note, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -14538,25 +14538,25 @@ class getNote_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Note()
+                    self.success = evernote2.edam.type.ttypes.Note()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -14604,10 +14604,10 @@ class getNote_result(object):
         return not (self == other)
 all_structs.append(getNote_result)
 getNote_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Note, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Note, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -14711,25 +14711,25 @@ class getNoteApplicationData_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.LazyMap()
+                    self.success = evernote2.edam.type.ttypes.LazyMap()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -14777,10 +14777,10 @@ class getNoteApplicationData_result(object):
         return not (self == other)
 all_structs.append(getNoteApplicationData_result)
 getNoteApplicationData_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.LazyMap, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.LazyMap, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -14901,19 +14901,19 @@ class getNoteApplicationDataEntry_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -14962,9 +14962,9 @@ class getNoteApplicationDataEntry_result(object):
 all_structs.append(getNoteApplicationDataEntry_result)
 getNoteApplicationDataEntry_result.thrift_spec = (
     (0, TType.STRING, 'success', 'UTF8', None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -15097,19 +15097,19 @@ class setNoteApplicationDataEntry_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -15158,9 +15158,9 @@ class setNoteApplicationDataEntry_result(object):
 all_structs.append(setNoteApplicationDataEntry_result)
 setNoteApplicationDataEntry_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -15281,19 +15281,19 @@ class unsetNoteApplicationDataEntry_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -15342,9 +15342,9 @@ class unsetNoteApplicationDataEntry_result(object):
 all_structs.append(unsetNoteApplicationDataEntry_result)
 unsetNoteApplicationDataEntry_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -15453,19 +15453,19 @@ class getNoteContent_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -15514,9 +15514,9 @@ class getNoteContent_result(object):
 all_structs.append(getNoteContent_result)
 getNoteContent_result.thrift_spec = (
     (0, TType.STRING, 'success', 'UTF8', None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -15649,19 +15649,19 @@ class getNoteSearchText_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -15710,9 +15710,9 @@ class getNoteSearchText_result(object):
 all_structs.append(getNoteSearchText_result)
 getNoteSearchText_result.thrift_spec = (
     (0, TType.STRING, 'success', 'UTF8', None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -15821,19 +15821,19 @@ class getResourceSearchText_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -15882,9 +15882,9 @@ class getResourceSearchText_result(object):
 all_structs.append(getResourceSearchText_result)
 getResourceSearchText_result.thrift_spec = (
     (0, TType.STRING, 'success', 'UTF8', None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -15998,19 +15998,19 @@ class getNoteTagNames_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -16062,9 +16062,9 @@ class getNoteTagNames_result(object):
 all_structs.append(getNoteTagNames_result)
 getNoteTagNames_result.thrift_spec = (
     (0, TType.LIST, 'success', (TType.STRING, 'UTF8', False), None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -16096,7 +16096,7 @@ class createNote_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.note = evernote.edam.type.ttypes.Note()
+                    self.note = evernote2.edam.type.ttypes.Note()
                     self.note.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -16138,7 +16138,7 @@ all_structs.append(createNote_args)
 createNote_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'note', [evernote.edam.type.ttypes.Note, None], None, ),  # 2
+    (2, TType.STRUCT, 'note', [evernote2.edam.type.ttypes.Note, None], None, ),  # 2
 )
 
 
@@ -16169,25 +16169,25 @@ class createNote_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Note()
+                    self.success = evernote2.edam.type.ttypes.Note()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -16235,10 +16235,10 @@ class createNote_result(object):
         return not (self == other)
 all_structs.append(createNote_result)
 createNote_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Note, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Note, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -16270,7 +16270,7 @@ class updateNote_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.note = evernote.edam.type.ttypes.Note()
+                    self.note = evernote2.edam.type.ttypes.Note()
                     self.note.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -16312,7 +16312,7 @@ all_structs.append(updateNote_args)
 updateNote_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'note', [evernote.edam.type.ttypes.Note, None], None, ),  # 2
+    (2, TType.STRUCT, 'note', [evernote2.edam.type.ttypes.Note, None], None, ),  # 2
 )
 
 
@@ -16343,25 +16343,25 @@ class updateNote_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Note()
+                    self.success = evernote2.edam.type.ttypes.Note()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -16409,10 +16409,10 @@ class updateNote_result(object):
         return not (self == other)
 all_structs.append(updateNote_result)
 updateNote_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Note, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Note, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -16521,19 +16521,19 @@ class deleteNote_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -16582,9 +16582,9 @@ class deleteNote_result(object):
 all_structs.append(deleteNote_result)
 deleteNote_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -16693,19 +16693,19 @@ class expungeNote_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -16754,9 +16754,9 @@ class expungeNote_result(object):
 all_structs.append(expungeNote_result)
 expungeNote_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -16872,25 +16872,25 @@ class copyNote_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Note()
+                    self.success = evernote2.edam.type.ttypes.Note()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -16938,10 +16938,10 @@ class copyNote_result(object):
         return not (self == other)
 all_structs.append(copyNote_result)
 copyNote_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Note, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Note, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -17056,19 +17056,19 @@ class listNoteVersions_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -17120,9 +17120,9 @@ class listNoteVersions_result(object):
 all_structs.append(listNoteVersions_result)
 listNoteVersions_result.thrift_spec = (
     (0, TType.LIST, 'success', (TType.STRUCT, [NoteVersionId, None], False), None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -17274,25 +17274,25 @@ class getNoteVersion_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Note()
+                    self.success = evernote2.edam.type.ttypes.Note()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -17340,10 +17340,10 @@ class getNoteVersion_result(object):
         return not (self == other)
 all_structs.append(getNoteVersion_result)
 getNoteVersion_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Note, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Note, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -17495,25 +17495,25 @@ class getResource_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Resource()
+                    self.success = evernote2.edam.type.ttypes.Resource()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -17561,10 +17561,10 @@ class getResource_result(object):
         return not (self == other)
 all_structs.append(getResource_result)
 getResource_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Resource, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Resource, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -17668,25 +17668,25 @@ class getResourceApplicationData_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.LazyMap()
+                    self.success = evernote2.edam.type.ttypes.LazyMap()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -17734,10 +17734,10 @@ class getResourceApplicationData_result(object):
         return not (self == other)
 all_structs.append(getResourceApplicationData_result)
 getResourceApplicationData_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.LazyMap, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.LazyMap, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -17858,19 +17858,19 @@ class getResourceApplicationDataEntry_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -17919,9 +17919,9 @@ class getResourceApplicationDataEntry_result(object):
 all_structs.append(getResourceApplicationDataEntry_result)
 getResourceApplicationDataEntry_result.thrift_spec = (
     (0, TType.STRING, 'success', 'UTF8', None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -18054,19 +18054,19 @@ class setResourceApplicationDataEntry_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -18115,9 +18115,9 @@ class setResourceApplicationDataEntry_result(object):
 all_structs.append(setResourceApplicationDataEntry_result)
 setResourceApplicationDataEntry_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -18238,19 +18238,19 @@ class unsetResourceApplicationDataEntry_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -18299,9 +18299,9 @@ class unsetResourceApplicationDataEntry_result(object):
 all_structs.append(unsetResourceApplicationDataEntry_result)
 unsetResourceApplicationDataEntry_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -18333,7 +18333,7 @@ class updateResource_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.resource = evernote.edam.type.ttypes.Resource()
+                    self.resource = evernote2.edam.type.ttypes.Resource()
                     self.resource.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -18375,7 +18375,7 @@ all_structs.append(updateResource_args)
 updateResource_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'resource', [evernote.edam.type.ttypes.Resource, None], None, ),  # 2
+    (2, TType.STRUCT, 'resource', [evernote2.edam.type.ttypes.Resource, None], None, ),  # 2
 )
 
 
@@ -18411,19 +18411,19 @@ class updateResource_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -18472,9 +18472,9 @@ class updateResource_result(object):
 all_structs.append(updateResource_result)
 updateResource_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -18583,19 +18583,19 @@ class getResourceData_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -18644,9 +18644,9 @@ class getResourceData_result(object):
 all_structs.append(getResourceData_result)
 getResourceData_result.thrift_spec = (
     (0, TType.STRING, 'success', 'BINARY', None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -18798,25 +18798,25 @@ class getResourceByHash_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Resource()
+                    self.success = evernote2.edam.type.ttypes.Resource()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -18864,10 +18864,10 @@ class getResourceByHash_result(object):
         return not (self == other)
 all_structs.append(getResourceByHash_result)
 getResourceByHash_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Resource, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Resource, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -18976,19 +18976,19 @@ class getResourceRecognition_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -19037,9 +19037,9 @@ class getResourceRecognition_result(object):
 all_structs.append(getResourceRecognition_result)
 getResourceRecognition_result.thrift_spec = (
     (0, TType.STRING, 'success', 'BINARY', None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -19148,19 +19148,19 @@ class getResourceAlternateData_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -19209,9 +19209,9 @@ class getResourceAlternateData_result(object):
 all_structs.append(getResourceAlternateData_result)
 getResourceAlternateData_result.thrift_spec = (
     (0, TType.STRING, 'success', 'BINARY', None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -19315,25 +19315,25 @@ class getResourceAttributes_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.ResourceAttributes()
+                    self.success = evernote2.edam.type.ttypes.ResourceAttributes()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -19381,10 +19381,10 @@ class getResourceAttributes_result(object):
         return not (self == other)
 all_structs.append(getResourceAttributes_result)
 getResourceAttributes_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.ResourceAttributes, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.ResourceAttributes, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -19486,19 +19486,19 @@ class getPublicNotebook_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Notebook()
+                    self.success = evernote2.edam.type.ttypes.Notebook()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -19542,9 +19542,9 @@ class getPublicNotebook_result(object):
         return not (self == other)
 all_structs.append(getPublicNotebook_result)
 getPublicNotebook_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Notebook, None], None, ),  # 0
-    (1, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Notebook, None], None, ),  # 0
+    (1, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
 )
 
 
@@ -19578,7 +19578,7 @@ class shareNotebook_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.sharedNotebook = evernote.edam.type.ttypes.SharedNotebook()
+                    self.sharedNotebook = evernote2.edam.type.ttypes.SharedNotebook()
                     self.sharedNotebook.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -19629,7 +19629,7 @@ all_structs.append(shareNotebook_args)
 shareNotebook_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'sharedNotebook', [evernote.edam.type.ttypes.SharedNotebook, None], None, ),  # 2
+    (2, TType.STRUCT, 'sharedNotebook', [evernote2.edam.type.ttypes.SharedNotebook, None], None, ),  # 2
     (3, TType.STRING, 'message', 'UTF8', None, ),  # 3
 )
 
@@ -19661,25 +19661,25 @@ class shareNotebook_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.SharedNotebook()
+                    self.success = evernote2.edam.type.ttypes.SharedNotebook()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -19727,10 +19727,10 @@ class shareNotebook_result(object):
         return not (self == other)
 all_structs.append(shareNotebook_result)
 shareNotebook_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.SharedNotebook, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.SharedNotebook, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -19843,25 +19843,25 @@ class createOrUpdateNotebookShares_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 4:
                 if ftype == TType.STRUCT:
-                    self.invalidContactsException = evernote.edam.error.ttypes.EDAMInvalidContactsException()
+                    self.invalidContactsException = evernote2.edam.error.ttypes.EDAMInvalidContactsException()
                     self.invalidContactsException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -19914,10 +19914,10 @@ class createOrUpdateNotebookShares_result(object):
 all_structs.append(createOrUpdateNotebookShares_result)
 createOrUpdateNotebookShares_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [CreateOrUpdateNotebookSharesResult, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
-    (4, TType.STRUCT, 'invalidContactsException', [evernote.edam.error.ttypes.EDAMInvalidContactsException, None], None, ),  # 4
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (4, TType.STRUCT, 'invalidContactsException', [evernote2.edam.error.ttypes.EDAMInvalidContactsException, None], None, ),  # 4
 )
 
 
@@ -19949,7 +19949,7 @@ class updateSharedNotebook_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.sharedNotebook = evernote.edam.type.ttypes.SharedNotebook()
+                    self.sharedNotebook = evernote2.edam.type.ttypes.SharedNotebook()
                     self.sharedNotebook.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -19991,7 +19991,7 @@ all_structs.append(updateSharedNotebook_args)
 updateSharedNotebook_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'sharedNotebook', [evernote.edam.type.ttypes.SharedNotebook, None], None, ),  # 2
+    (2, TType.STRUCT, 'sharedNotebook', [evernote2.edam.type.ttypes.SharedNotebook, None], None, ),  # 2
 )
 
 
@@ -20027,19 +20027,19 @@ class updateSharedNotebook_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -20088,9 +20088,9 @@ class updateSharedNotebook_result(object):
 all_structs.append(updateSharedNotebook_result)
 updateSharedNotebook_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -20129,7 +20129,7 @@ class setNotebookRecipientSettings_args(object):
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.recipientSettings = evernote.edam.type.ttypes.NotebookRecipientSettings()
+                    self.recipientSettings = evernote2.edam.type.ttypes.NotebookRecipientSettings()
                     self.recipientSettings.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -20176,7 +20176,7 @@ setNotebookRecipientSettings_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
     (2, TType.STRING, 'notebookGuid', 'UTF8', None, ),  # 2
-    (3, TType.STRUCT, 'recipientSettings', [evernote.edam.type.ttypes.NotebookRecipientSettings, None], None, ),  # 3
+    (3, TType.STRUCT, 'recipientSettings', [evernote2.edam.type.ttypes.NotebookRecipientSettings, None], None, ),  # 3
 )
 
 
@@ -20207,25 +20207,25 @@ class setNotebookRecipientSettings_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.Notebook()
+                    self.success = evernote2.edam.type.ttypes.Notebook()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -20273,10 +20273,10 @@ class setNotebookRecipientSettings_result(object):
         return not (self == other)
 all_structs.append(setNotebookRecipientSettings_result)
 setNotebookRecipientSettings_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.Notebook, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.Notebook, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -20371,7 +20371,7 @@ class listSharedNotebooks_result(object):
                     self.success = []
                     (_etype385, _size382) = iprot.readListBegin()
                     for _i386 in range(_size382):
-                        _elem387 = evernote.edam.type.ttypes.SharedNotebook()
+                        _elem387 = evernote2.edam.type.ttypes.SharedNotebook()
                         _elem387.read(iprot)
                         self.success.append(_elem387)
                     iprot.readListEnd()
@@ -20379,19 +20379,19 @@ class listSharedNotebooks_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -20442,10 +20442,10 @@ class listSharedNotebooks_result(object):
         return not (self == other)
 all_structs.append(listSharedNotebooks_result)
 listSharedNotebooks_result.thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, [evernote.edam.type.ttypes.SharedNotebook, None], False), None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (0, TType.LIST, 'success', (TType.STRUCT, [evernote2.edam.type.ttypes.SharedNotebook, None], False), None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -20477,7 +20477,7 @@ class createLinkedNotebook_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.linkedNotebook = evernote.edam.type.ttypes.LinkedNotebook()
+                    self.linkedNotebook = evernote2.edam.type.ttypes.LinkedNotebook()
                     self.linkedNotebook.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -20519,7 +20519,7 @@ all_structs.append(createLinkedNotebook_args)
 createLinkedNotebook_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'linkedNotebook', [evernote.edam.type.ttypes.LinkedNotebook, None], None, ),  # 2
+    (2, TType.STRUCT, 'linkedNotebook', [evernote2.edam.type.ttypes.LinkedNotebook, None], None, ),  # 2
 )
 
 
@@ -20550,25 +20550,25 @@ class createLinkedNotebook_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.LinkedNotebook()
+                    self.success = evernote2.edam.type.ttypes.LinkedNotebook()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -20616,10 +20616,10 @@ class createLinkedNotebook_result(object):
         return not (self == other)
 all_structs.append(createLinkedNotebook_result)
 createLinkedNotebook_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.LinkedNotebook, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.LinkedNotebook, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -20651,7 +20651,7 @@ class updateLinkedNotebook_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.linkedNotebook = evernote.edam.type.ttypes.LinkedNotebook()
+                    self.linkedNotebook = evernote2.edam.type.ttypes.LinkedNotebook()
                     self.linkedNotebook.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -20693,7 +20693,7 @@ all_structs.append(updateLinkedNotebook_args)
 updateLinkedNotebook_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'linkedNotebook', [evernote.edam.type.ttypes.LinkedNotebook, None], None, ),  # 2
+    (2, TType.STRUCT, 'linkedNotebook', [evernote2.edam.type.ttypes.LinkedNotebook, None], None, ),  # 2
 )
 
 
@@ -20729,19 +20729,19 @@ class updateLinkedNotebook_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -20790,9 +20790,9 @@ class updateLinkedNotebook_result(object):
 all_structs.append(updateLinkedNotebook_result)
 updateLinkedNotebook_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -20887,7 +20887,7 @@ class listLinkedNotebooks_result(object):
                     self.success = []
                     (_etype392, _size389) = iprot.readListBegin()
                     for _i393 in range(_size389):
-                        _elem394 = evernote.edam.type.ttypes.LinkedNotebook()
+                        _elem394 = evernote2.edam.type.ttypes.LinkedNotebook()
                         _elem394.read(iprot)
                         self.success.append(_elem394)
                     iprot.readListEnd()
@@ -20895,19 +20895,19 @@ class listLinkedNotebooks_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -20958,10 +20958,10 @@ class listLinkedNotebooks_result(object):
         return not (self == other)
 all_structs.append(listLinkedNotebooks_result)
 listLinkedNotebooks_result.thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, [evernote.edam.type.ttypes.LinkedNotebook, None], False), None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (0, TType.LIST, 'success', (TType.STRUCT, [evernote2.edam.type.ttypes.LinkedNotebook, None], False), None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -21070,19 +21070,19 @@ class expungeLinkedNotebook_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -21131,9 +21131,9 @@ class expungeLinkedNotebook_result(object):
 all_structs.append(expungeLinkedNotebook_result)
 expungeLinkedNotebook_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -21237,25 +21237,25 @@ class authenticateToSharedNotebook_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.userstore.ttypes.AuthenticationResult()
+                    self.success = evernote2.edam.userstore.ttypes.AuthenticationResult()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -21303,10 +21303,10 @@ class authenticateToSharedNotebook_result(object):
         return not (self == other)
 all_structs.append(authenticateToSharedNotebook_result)
 authenticateToSharedNotebook_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.userstore.ttypes.AuthenticationResult, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.userstore.ttypes.AuthenticationResult, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -21398,25 +21398,25 @@ class getSharedNotebookByAuth_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.type.ttypes.SharedNotebook()
+                    self.success = evernote2.edam.type.ttypes.SharedNotebook()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -21464,10 +21464,10 @@ class getSharedNotebookByAuth_result(object):
         return not (self == other)
 all_structs.append(getSharedNotebookByAuth_result)
 getSharedNotebookByAuth_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.type.ttypes.SharedNotebook, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.type.ttypes.SharedNotebook, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -21570,19 +21570,19 @@ class emailNote_result(object):
                 break
             if fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -21627,9 +21627,9 @@ class emailNote_result(object):
 all_structs.append(emailNote_result)
 emailNote_result.thrift_spec = (
     None,  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -21738,19 +21738,19 @@ class shareNote_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -21799,9 +21799,9 @@ class shareNote_result(object):
 all_structs.append(shareNote_result)
 shareNote_result.thrift_spec = (
     (0, TType.STRING, 'success', 'UTF8', None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -21903,19 +21903,19 @@ class stopSharingNote_result(object):
                 break
             if fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -21960,9 +21960,9 @@ class stopSharingNote_result(object):
 all_structs.append(stopSharingNote_result)
 stopSharingNote_result.thrift_spec = (
     None,  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -22078,25 +22078,25 @@ class authenticateToSharedNote_result(object):
                 break
             if fid == 0:
                 if ftype == TType.STRUCT:
-                    self.success = evernote.edam.userstore.ttypes.AuthenticationResult()
+                    self.success = evernote2.edam.userstore.ttypes.AuthenticationResult()
                     self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -22144,10 +22144,10 @@ class authenticateToSharedNote_result(object):
         return not (self == other)
 all_structs.append(authenticateToSharedNote_result)
 authenticateToSharedNote_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [evernote.edam.userstore.ttypes.AuthenticationResult, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (0, TType.STRUCT, 'success', [evernote2.edam.userstore.ttypes.AuthenticationResult, None], None, ),  # 0
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -22271,19 +22271,19 @@ class findRelated_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -22332,9 +22332,9 @@ class findRelated_result(object):
 all_structs.append(findRelated_result)
 findRelated_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [RelatedResult, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 
 
@@ -22366,7 +22366,7 @@ class updateNoteIfUsnMatches_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.note = evernote.edam.type.ttypes.Note()
+                    self.note = evernote2.edam.type.ttypes.Note()
                     self.note.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -22408,7 +22408,7 @@ all_structs.append(updateNoteIfUsnMatches_args)
 updateNoteIfUsnMatches_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'note', [evernote.edam.type.ttypes.Note, None], None, ),  # 2
+    (2, TType.STRUCT, 'note', [evernote2.edam.type.ttypes.Note, None], None, ),  # 2
 )
 
 
@@ -22445,19 +22445,19 @@ class updateNoteIfUsnMatches_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -22506,9 +22506,9 @@ class updateNoteIfUsnMatches_result(object):
 all_structs.append(updateNoteIfUsnMatches_result)
 updateNoteIfUsnMatches_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [UpdateNoteIfUsnMatchesResult, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -22619,19 +22619,19 @@ class manageNotebookShares_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -22680,9 +22680,9 @@ class manageNotebookShares_result(object):
 all_structs.append(manageNotebookShares_result)
 manageNotebookShares_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [ManageNotebookSharesResult, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 
 
@@ -22792,19 +22792,19 @@ class getNotebookShares_result(object):
                     iprot.skip(ftype)
             elif fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.systemException = evernote.edam.error.ttypes.EDAMSystemException()
+                    self.systemException = evernote2.edam.error.ttypes.EDAMSystemException()
                     self.systemException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -22853,9 +22853,9 @@ class getNotebookShares_result(object):
 all_structs.append(getNotebookShares_result)
 getNotebookShares_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [ShareRelationships, None], None, ),  # 0
-    (1, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
-    (2, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
-    (3, TType.STRUCT, 'systemException', [evernote.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 1
+    (2, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 2
+    (3, TType.STRUCT, 'systemException', [evernote2.edam.error.ttypes.EDAMSystemException, None], None, ),  # 3
 )
 fix_spec(all_structs)
 del all_structs

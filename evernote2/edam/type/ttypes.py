@@ -11,9 +11,10 @@ from thrift.protocol.TProtocol import TProtocolException
 from thrift.TRecursive import fix_spec
 
 import sys
-import evernote.edam.limits.ttypes
+import evernote2.edam.limits.ttypes
 
 from thrift.transport import TTransport
+
 all_structs = []
 
 

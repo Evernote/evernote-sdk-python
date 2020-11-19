@@ -11,7 +11,7 @@ from thrift.protocol.TProtocol import TProtocolException
 from thrift.TRecursive import fix_spec
 
 import sys
-import evernote.edam.type.ttypes
+import evernote2.edam.type.ttypes
 
 from thrift.transport import TTransport
 all_structs = []
@@ -511,7 +511,7 @@ class EDAMInvalidContactsException(TException):
                     self.contacts = []
                     (_etype3, _size0) = iprot.readListBegin()
                     for _i4 in range(_size0):
-                        _elem5 = evernote.edam.type.ttypes.Contact()
+                        _elem5 = evernote2.edam.type.ttypes.Contact()
                         _elem5.read(iprot)
                         self.contacts.append(_elem5)
                     iprot.readListEnd()
@@ -603,7 +603,7 @@ EDAMNotFoundException.thrift_spec = (
 all_structs.append(EDAMInvalidContactsException)
 EDAMInvalidContactsException.thrift_spec = (
     None,  # 0
-    (1, TType.LIST, 'contacts', (TType.STRUCT, [evernote.edam.type.ttypes.Contact, None], False), None, ),  # 1
+    (1, TType.LIST, 'contacts', (TType.STRUCT, [evernote2.edam.type.ttypes.Contact, None], False), None, ),  # 1
     (2, TType.STRING, 'parameter', 'UTF8', None, ),  # 2
     (3, TType.LIST, 'reasons', (TType.I32, None, False), None, ),  # 3
 )

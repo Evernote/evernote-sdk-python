@@ -11,8 +11,8 @@ from thrift.protocol.TProtocol import TProtocolException
 from thrift.TRecursive import fix_spec
 
 import sys
-import evernote.edam.type.ttypes
-import evernote.edam.error.ttypes
+import evernote2.edam.type.ttypes
+import evernote2.edam.error.ttypes
 
 from thrift.transport import TTransport
 all_structs = []
@@ -424,7 +424,7 @@ class AuthenticationResult(object):
                     iprot.skip(ftype)
             elif fid == 4:
                 if ftype == TType.STRUCT:
-                    self.user = evernote.edam.type.ttypes.User()
+                    self.user = evernote2.edam.type.ttypes.User()
                     self.user.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -989,7 +989,7 @@ AuthenticationResult.thrift_spec = (
     (1, TType.I64, 'currentTime', None, None, ),  # 1
     (2, TType.STRING, 'authenticationToken', 'UTF8', None, ),  # 2
     (3, TType.I64, 'expiration', None, None, ),  # 3
-    (4, TType.STRUCT, 'user', [evernote.edam.type.ttypes.User, None], None, ),  # 4
+    (4, TType.STRUCT, 'user', [evernote2.edam.type.ttypes.User, None], None, ),  # 4
     (5, TType.STRUCT, 'publicUserInfo', [PublicUserInfo, None], None, ),  # 5
     (6, TType.STRING, 'noteStoreUrl', 'UTF8', None, ),  # 6
     (7, TType.STRING, 'webApiUrlPrefix', 'UTF8', None, ),  # 7

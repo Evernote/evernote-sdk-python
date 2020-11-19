@@ -12,5 +12,6 @@ from thrift.TRecursive import fix_spec
 
 import sys
 from .ttypes import *
+
 EDAM_VERSION_MAJOR = 1
 EDAM_VERSION_MINOR = 28

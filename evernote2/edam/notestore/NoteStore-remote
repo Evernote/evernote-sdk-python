@@ -16,8 +16,8 @@ else:
 from thrift.transport import TTransport, TSocket, TSSLSocket, THttpClient
 from thrift.protocol.TBinaryProtocol import TBinaryProtocol
 
-from evernote.edam.notestore import NoteStore
-from evernote.edam.notestore.ttypes import *
+from evernote2.edam.notestore import NoteStore
+from evernote2.edam.notestore.ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('')

@@ -11,10 +11,10 @@ from thrift.protocol.TProtocol import TProtocolException
 from thrift.TRecursive import fix_spec
 
 import sys
-import evernote.edam.userstore.ttypes
-import evernote.edam.type.ttypes
-import evernote.edam.error.ttypes
-import evernote.edam.limits.ttypes
+import evernote2.edam.userstore.ttypes
+import evernote2.edam.type.ttypes
+import evernote2.edam.error.ttypes
+import evernote2.edam.limits.ttypes
 
 from thrift.transport import TTransport
 all_structs = []
@@ -411,7 +411,7 @@ class SyncChunk(object):
                     self.notes = []
                     (_etype3, _size0) = iprot.readListBegin()
                     for _i4 in range(_size0):
-                        _elem5 = evernote.edam.type.ttypes.Note()
+                        _elem5 = evernote2.edam.type.ttypes.Note()
                         _elem5.read(iprot)
                         self.notes.append(_elem5)
                     iprot.readListEnd()
@@ -422,7 +422,7 @@ class SyncChunk(object):
                     self.notebooks = []
                     (_etype9, _size6) = iprot.readListBegin()
                     for _i10 in range(_size6):
-                        _elem11 = evernote.edam.type.ttypes.Notebook()
+                        _elem11 = evernote2.edam.type.ttypes.Notebook()
                         _elem11.read(iprot)
                         self.notebooks.append(_elem11)
                     iprot.readListEnd()
@@ -433,7 +433,7 @@ class SyncChunk(object):
                     self.tags = []
                     (_etype15, _size12) = iprot.readListBegin()
                     for _i16 in range(_size12):
-                        _elem17 = evernote.edam.type.ttypes.Tag()
+                        _elem17 = evernote2.edam.type.ttypes.Tag()
                         _elem17.read(iprot)
                         self.tags.append(_elem17)
                     iprot.readListEnd()
@@ -444,7 +444,7 @@ class SyncChunk(object):
                     self.searches = []
                     (_etype21, _size18) = iprot.readListBegin()
                     for _i22 in range(_size18):
-                        _elem23 = evernote.edam.type.ttypes.SavedSearch()
+                        _elem23 = evernote2.edam.type.ttypes.SavedSearch()
                         _elem23.read(iprot)
                         self.searches.append(_elem23)
                     iprot.readListEnd()
@@ -455,7 +455,7 @@ class SyncChunk(object):
                     self.resources = []
                     (_etype27, _size24) = iprot.readListBegin()
                     for _i28 in range(_size24):
-                        _elem29 = evernote.edam.type.ttypes.Resource()
+                        _elem29 = evernote2.edam.type.ttypes.Resource()
                         _elem29.read(iprot)
                         self.resources.append(_elem29)
                     iprot.readListEnd()
@@ -506,7 +506,7 @@ class SyncChunk(object):
                     self.linkedNotebooks = []
                     (_etype57, _size54) = iprot.readListBegin()
                     for _i58 in range(_size54):
-                        _elem59 = evernote.edam.type.ttypes.LinkedNotebook()
+                        _elem59 = evernote2.edam.type.ttypes.LinkedNotebook()
                         _elem59.read(iprot)
                         self.linkedNotebooks.append(_elem59)
                     iprot.readListEnd()
@@ -1336,7 +1336,7 @@ class NoteList(object):
                     self.notes = []
                     (_etype94, _size91) = iprot.readListBegin()
                     for _i95 in range(_size91):
-                        _elem96 = evernote.edam.type.ttypes.Note()
+                        _elem96 = evernote2.edam.type.ttypes.Note()
                         _elem96.read(iprot)
                         self.notes.append(_elem96)
                     iprot.readListEnd()
@@ -1549,7 +1549,7 @@ class NoteMetadata(object):
                     iprot.skip(ftype)
             elif fid == 14:
                 if ftype == TType.STRUCT:
-                    self.attributes = evernote.edam.type.ttypes.NoteAttributes()
+                    self.attributes = evernote2.edam.type.ttypes.NoteAttributes()
                     self.attributes.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -2393,7 +2393,7 @@ class NoteEmailParameters(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.note = evernote.edam.type.ttypes.Note()
+                    self.note = evernote2.edam.type.ttypes.Note()
                     self.note.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -2908,7 +2908,7 @@ class RelatedResult(object):
                     self.notes = []
                     (_etype175, _size172) = iprot.readListBegin()
                     for _i176 in range(_size172):
-                        _elem177 = evernote.edam.type.ttypes.Note()
+                        _elem177 = evernote2.edam.type.ttypes.Note()
                         _elem177.read(iprot)
                         self.notes.append(_elem177)
                     iprot.readListEnd()
@@ -2919,7 +2919,7 @@ class RelatedResult(object):
                     self.notebooks = []
                     (_etype181, _size178) = iprot.readListBegin()
                     for _i182 in range(_size178):
-                        _elem183 = evernote.edam.type.ttypes.Notebook()
+                        _elem183 = evernote2.edam.type.ttypes.Notebook()
                         _elem183.read(iprot)
                         self.notebooks.append(_elem183)
                     iprot.readListEnd()
@@ -2930,7 +2930,7 @@ class RelatedResult(object):
                     self.tags = []
                     (_etype187, _size184) = iprot.readListBegin()
                     for _i188 in range(_size184):
-                        _elem189 = evernote.edam.type.ttypes.Tag()
+                        _elem189 = evernote2.edam.type.ttypes.Tag()
                         _elem189.read(iprot)
                         self.tags.append(_elem189)
                     iprot.readListEnd()
@@ -2941,7 +2941,7 @@ class RelatedResult(object):
                     self.containingNotebooks = []
                     (_etype193, _size190) = iprot.readListBegin()
                     for _i194 in range(_size190):
-                        _elem195 = evernote.edam.type.ttypes.NotebookDescriptor()
+                        _elem195 = evernote2.edam.type.ttypes.NotebookDescriptor()
                         _elem195.read(iprot)
                         self.containingNotebooks.append(_elem195)
                     iprot.readListEnd()
@@ -2952,7 +2952,7 @@ class RelatedResult(object):
                     self.experts = []
                     (_etype199, _size196) = iprot.readListBegin()
                     for _i200 in range(_size196):
-                        _elem201 = evernote.edam.type.ttypes.UserProfile()
+                        _elem201 = evernote2.edam.type.ttypes.UserProfile()
                         _elem201.read(iprot)
                         self.experts.append(_elem201)
                     iprot.readListEnd()
@@ -2963,7 +2963,7 @@ class RelatedResult(object):
                     self.relatedContent = []
                     (_etype205, _size202) = iprot.readListBegin()
                     for _i206 in range(_size202):
-                        _elem207 = evernote.edam.type.ttypes.RelatedContent()
+                        _elem207 = evernote2.edam.type.ttypes.RelatedContent()
                         _elem207.read(iprot)
                         self.relatedContent.append(_elem207)
                     iprot.readListEnd()
@@ -3292,7 +3292,7 @@ class UpdateNoteIfUsnMatchesResult(object):
                 break
             if fid == 1:
                 if ftype == TType.STRUCT:
-                    self.note = evernote.edam.type.ttypes.Note()
+                    self.note = evernote2.edam.type.ttypes.Note()
                     self.note.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -3486,7 +3486,7 @@ class InvitationShareRelationship(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.recipientUserIdentity = evernote.edam.type.ttypes.UserIdentity()
+                    self.recipientUserIdentity = evernote2.edam.type.ttypes.UserIdentity()
                     self.recipientUserIdentity.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -3929,7 +3929,7 @@ class ManageNotebookSharesParameters(object):
                     self.unshares = []
                     (_etype250, _size247) = iprot.readListBegin()
                     for _i251 in range(_size247):
-                        _elem252 = evernote.edam.type.ttypes.UserIdentity()
+                        _elem252 = evernote2.edam.type.ttypes.UserIdentity()
                         _elem252.read(iprot)
                         self.unshares.append(_elem252)
                     iprot.readListEnd()
@@ -4042,19 +4042,19 @@ class ManageNotebookSharesError(object):
                 break
             if fid == 1:
                 if ftype == TType.STRUCT:
-                    self.userIdentity = evernote.edam.type.ttypes.UserIdentity()
+                    self.userIdentity = evernote2.edam.type.ttypes.UserIdentity()
                     self.userIdentity.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -4236,7 +4236,7 @@ class SharedNoteTemplate(object):
                     self.recipientContacts = []
                     (_etype266, _size263) = iprot.readListBegin()
                     for _i267 in range(_size263):
-                        _elem268 = evernote.edam.type.ttypes.Contact()
+                        _elem268 = evernote2.edam.type.ttypes.Contact()
                         _elem268.read(iprot)
                         self.recipientContacts.append(_elem268)
                     iprot.readListEnd()
@@ -4357,7 +4357,7 @@ class NotebookShareTemplate(object):
                     self.recipientContacts = []
                     (_etype273, _size270) = iprot.readListBegin()
                     for _i274 in range(_size270):
-                        _elem275 = evernote.edam.type.ttypes.Contact()
+                        _elem275 = evernote2.edam.type.ttypes.Contact()
                         _elem275.read(iprot)
                         self.recipientContacts.append(_elem275)
                     iprot.readListEnd()
@@ -4459,7 +4459,7 @@ class CreateOrUpdateNotebookSharesResult(object):
                     self.matchingShares = []
                     (_etype280, _size277) = iprot.readListBegin()
                     for _i281 in range(_size277):
-                        _elem282 = evernote.edam.type.ttypes.SharedNotebook()
+                        _elem282 = evernote2.edam.type.ttypes.SharedNotebook()
                         _elem282.read(iprot)
                         self.matchingShares.append(_elem282)
                     iprot.readListEnd()
@@ -5200,13 +5200,13 @@ class ManageNoteSharesError(object):
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.STRUCT:
-                    self.userException = evernote.edam.error.ttypes.EDAMUserException()
+                    self.userException = evernote2.edam.error.ttypes.EDAMUserException()
                     self.userException.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 4:
                 if ftype == TType.STRUCT:
-                    self.notFoundException = evernote.edam.error.ttypes.EDAMNotFoundException()
+                    self.notFoundException = evernote2.edam.error.ttypes.EDAMNotFoundException()
                     self.notFoundException.read(iprot)
                 else:
                     iprot.skip(ftype)
@@ -5342,16 +5342,16 @@ SyncChunk.thrift_spec = (
     (1, TType.I64, 'currentTime', None, None, ),  # 1
     (2, TType.I32, 'chunkHighUSN', None, None, ),  # 2
     (3, TType.I32, 'updateCount', None, None, ),  # 3
-    (4, TType.LIST, 'notes', (TType.STRUCT, [evernote.edam.type.ttypes.Note, None], False), None, ),  # 4
-    (5, TType.LIST, 'notebooks', (TType.STRUCT, [evernote.edam.type.ttypes.Notebook, None], False), None, ),  # 5
-    (6, TType.LIST, 'tags', (TType.STRUCT, [evernote.edam.type.ttypes.Tag, None], False), None, ),  # 6
-    (7, TType.LIST, 'searches', (TType.STRUCT, [evernote.edam.type.ttypes.SavedSearch, None], False), None, ),  # 7
-    (8, TType.LIST, 'resources', (TType.STRUCT, [evernote.edam.type.ttypes.Resource, None], False), None, ),  # 8
+    (4, TType.LIST, 'notes', (TType.STRUCT, [evernote2.edam.type.ttypes.Note, None], False), None, ),  # 4
+    (5, TType.LIST, 'notebooks', (TType.STRUCT, [evernote2.edam.type.ttypes.Notebook, None], False), None, ),  # 5
+    (6, TType.LIST, 'tags', (TType.STRUCT, [evernote2.edam.type.ttypes.Tag, None], False), None, ),  # 6
+    (7, TType.LIST, 'searches', (TType.STRUCT, [evernote2.edam.type.ttypes.SavedSearch, None], False), None, ),  # 7
+    (8, TType.LIST, 'resources', (TType.STRUCT, [evernote2.edam.type.ttypes.Resource, None], False), None, ),  # 8
     (9, TType.LIST, 'expungedNotes', (TType.STRING, 'UTF8', False), None, ),  # 9
     (10, TType.LIST, 'expungedNotebooks', (TType.STRING, 'UTF8', False), None, ),  # 10
     (11, TType.LIST, 'expungedTags', (TType.STRING, 'UTF8', False), None, ),  # 11
     (12, TType.LIST, 'expungedSearches', (TType.STRING, 'UTF8', False), None, ),  # 12
-    (13, TType.LIST, 'linkedNotebooks', (TType.STRUCT, [evernote.edam.type.ttypes.LinkedNotebook, None], False), None, ),  # 13
+    (13, TType.LIST, 'linkedNotebooks', (TType.STRUCT, [evernote2.edam.type.ttypes.LinkedNotebook, None], False), None, ),  # 13
     (14, TType.LIST, 'expungedLinkedNotebooks', (TType.STRING, 'UTF8', False), None, ),  # 14
 )
 all_structs.append(SyncChunkFilter)
@@ -5394,7 +5394,7 @@ NoteList.thrift_spec = (
     None,  # 0
     (1, TType.I32, 'startIndex', None, None, ),  # 1
     (2, TType.I32, 'totalNotes', None, None, ),  # 2
-    (3, TType.LIST, 'notes', (TType.STRUCT, [evernote.edam.type.ttypes.Note, None], False), None, ),  # 3
+    (3, TType.LIST, 'notes', (TType.STRUCT, [evernote2.edam.type.ttypes.Note, None], False), None, ),  # 3
     (4, TType.LIST, 'stoppedWords', (TType.STRING, 'UTF8', False), None, ),  # 4
     (5, TType.LIST, 'searchedWords', (TType.STRING, 'UTF8', False), None, ),  # 5
     (6, TType.I32, 'updateCount', None, None, ),  # 6
@@ -5415,7 +5415,7 @@ NoteMetadata.thrift_spec = (
     (11, TType.STRING, 'notebookGuid', 'UTF8', None, ),  # 11
     (12, TType.LIST, 'tagGuids', (TType.STRING, 'UTF8', False), None, ),  # 12
     None,  # 13
-    (14, TType.STRUCT, 'attributes', [evernote.edam.type.ttypes.NoteAttributes, None], None, ),  # 14
+    (14, TType.STRUCT, 'attributes', [evernote2.edam.type.ttypes.NoteAttributes, None], None, ),  # 14
     None,  # 15
     None,  # 16
     None,  # 17
@@ -5482,7 +5482,7 @@ all_structs.append(NoteEmailParameters)
 NoteEmailParameters.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'guid', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'note', [evernote.edam.type.ttypes.Note, None], None, ),  # 2
+    (2, TType.STRUCT, 'note', [evernote2.edam.type.ttypes.Note, None], None, ),  # 2
     (3, TType.LIST, 'toAddresses', (TType.STRING, 'UTF8', False), None, ),  # 3
     (4, TType.LIST, 'ccAddresses', (TType.STRING, 'UTF8', False), None, ),  # 4
     (5, TType.STRING, 'subject', 'UTF8', None, ),  # 5
@@ -5510,13 +5510,13 @@ RelatedQuery.thrift_spec = (
 all_structs.append(RelatedResult)
 RelatedResult.thrift_spec = (
     None,  # 0
-    (1, TType.LIST, 'notes', (TType.STRUCT, [evernote.edam.type.ttypes.Note, None], False), None, ),  # 1
-    (2, TType.LIST, 'notebooks', (TType.STRUCT, [evernote.edam.type.ttypes.Notebook, None], False), None, ),  # 2
-    (3, TType.LIST, 'tags', (TType.STRUCT, [evernote.edam.type.ttypes.Tag, None], False), None, ),  # 3
-    (4, TType.LIST, 'containingNotebooks', (TType.STRUCT, [evernote.edam.type.ttypes.NotebookDescriptor, None], False), None, ),  # 4
+    (1, TType.LIST, 'notes', (TType.STRUCT, [evernote2.edam.type.ttypes.Note, None], False), None, ),  # 1
+    (2, TType.LIST, 'notebooks', (TType.STRUCT, [evernote2.edam.type.ttypes.Notebook, None], False), None, ),  # 2
+    (3, TType.LIST, 'tags', (TType.STRUCT, [evernote2.edam.type.ttypes.Tag, None], False), None, ),  # 3
+    (4, TType.LIST, 'containingNotebooks', (TType.STRUCT, [evernote2.edam.type.ttypes.NotebookDescriptor, None], False), None, ),  # 4
     None,  # 5
-    (6, TType.LIST, 'experts', (TType.STRUCT, [evernote.edam.type.ttypes.UserProfile, None], False), None, ),  # 6
-    (7, TType.LIST, 'relatedContent', (TType.STRUCT, [evernote.edam.type.ttypes.RelatedContent, None], False), None, ),  # 7
+    (6, TType.LIST, 'experts', (TType.STRUCT, [evernote2.edam.type.ttypes.UserProfile, None], False), None, ),  # 6
+    (7, TType.LIST, 'relatedContent', (TType.STRUCT, [evernote2.edam.type.ttypes.RelatedContent, None], False), None, ),  # 7
     (8, TType.STRING, 'cacheKey', 'UTF8', None, ),  # 8
     (9, TType.I32, 'cacheExpires', None, None, ),  # 9
 )
@@ -5536,7 +5536,7 @@ RelatedResultSpec.thrift_spec = (
 all_structs.append(UpdateNoteIfUsnMatchesResult)
 UpdateNoteIfUsnMatchesResult.thrift_spec = (
     None,  # 0
-    (1, TType.STRUCT, 'note', [evernote.edam.type.ttypes.Note, None], None, ),  # 1
+    (1, TType.STRUCT, 'note', [evernote2.edam.type.ttypes.Note, None], None, ),  # 1
     (2, TType.BOOL, 'updated', None, None, ),  # 2
 )
 all_structs.append(ShareRelationshipRestrictions)
@@ -5551,7 +5551,7 @@ all_structs.append(InvitationShareRelationship)
 InvitationShareRelationship.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'displayName', 'UTF8', None, ),  # 1
-    (2, TType.STRUCT, 'recipientUserIdentity', [evernote.edam.type.ttypes.UserIdentity, None], None, ),  # 2
+    (2, TType.STRUCT, 'recipientUserIdentity', [evernote2.edam.type.ttypes.UserIdentity, None], None, ),  # 2
     (3, TType.I32, 'privilege', None, None, ),  # 3
     None,  # 4
     (5, TType.I32, 'sharerUserId', None, None, ),  # 5
@@ -5580,14 +5580,14 @@ ManageNotebookSharesParameters.thrift_spec = (
     (2, TType.STRING, 'inviteMessage', 'UTF8', None, ),  # 2
     (3, TType.LIST, 'membershipsToUpdate', (TType.STRUCT, [MemberShareRelationship, None], False), None, ),  # 3
     (4, TType.LIST, 'invitationsToCreateOrUpdate', (TType.STRUCT, [InvitationShareRelationship, None], False), None, ),  # 4
-    (5, TType.LIST, 'unshares', (TType.STRUCT, [evernote.edam.type.ttypes.UserIdentity, None], False), None, ),  # 5
+    (5, TType.LIST, 'unshares', (TType.STRUCT, [evernote2.edam.type.ttypes.UserIdentity, None], False), None, ),  # 5
 )
 all_structs.append(ManageNotebookSharesError)
 ManageNotebookSharesError.thrift_spec = (
     None,  # 0
-    (1, TType.STRUCT, 'userIdentity', [evernote.edam.type.ttypes.UserIdentity, None], None, ),  # 1
-    (2, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 2
-    (3, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
+    (1, TType.STRUCT, 'userIdentity', [evernote2.edam.type.ttypes.UserIdentity, None], None, ),  # 1
+    (2, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 2
+    (3, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 3
 )
 all_structs.append(ManageNotebookSharesResult)
 ManageNotebookSharesResult.thrift_spec = (
@@ -5598,7 +5598,7 @@ all_structs.append(SharedNoteTemplate)
 SharedNoteTemplate.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'noteGuid', 'UTF8', None, ),  # 1
-    (2, TType.LIST, 'recipientContacts', (TType.STRUCT, [evernote.edam.type.ttypes.Contact, None], False), None, ),  # 2
+    (2, TType.LIST, 'recipientContacts', (TType.STRUCT, [evernote2.edam.type.ttypes.Contact, None], False), None, ),  # 2
     (3, TType.I32, 'privilege', None, None, ),  # 3
     (4, TType.I64, 'recipientThreadId', None, None, ),  # 4
 )
@@ -5606,7 +5606,7 @@ all_structs.append(NotebookShareTemplate)
 NotebookShareTemplate.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'notebookGuid', 'UTF8', None, ),  # 1
-    (2, TType.LIST, 'recipientContacts', (TType.STRUCT, [evernote.edam.type.ttypes.Contact, None], False), None, ),  # 2
+    (2, TType.LIST, 'recipientContacts', (TType.STRUCT, [evernote2.edam.type.ttypes.Contact, None], False), None, ),  # 2
     (3, TType.I32, 'privilege', None, None, ),  # 3
     (4, TType.I64, 'recipientThreadId', None, None, ),  # 4
 )
@@ -5614,7 +5614,7 @@ all_structs.append(CreateOrUpdateNotebookSharesResult)
 CreateOrUpdateNotebookSharesResult.thrift_spec = (
     None,  # 0
     (1, TType.I32, 'updateSequenceNum', None, None, ),  # 1
-    (2, TType.LIST, 'matchingShares', (TType.STRUCT, [evernote.edam.type.ttypes.SharedNotebook, None], False), None, ),  # 2
+    (2, TType.LIST, 'matchingShares', (TType.STRUCT, [evernote2.edam.type.ttypes.SharedNotebook, None], False), None, ),  # 2
 )
 all_structs.append(NoteShareRelationshipRestrictions)
 NoteShareRelationshipRestrictions.thrift_spec = (
@@ -5662,8 +5662,8 @@ ManageNoteSharesError.thrift_spec = (
     None,  # 0
     (1, TType.I64, 'identityID', None, None, ),  # 1
     (2, TType.I32, 'userID', None, None, ),  # 2
-    (3, TType.STRUCT, 'userException', [evernote.edam.error.ttypes.EDAMUserException, None], None, ),  # 3
-    (4, TType.STRUCT, 'notFoundException', [evernote.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 4
+    (3, TType.STRUCT, 'userException', [evernote2.edam.error.ttypes.EDAMUserException, None], None, ),  # 3
+    (4, TType.STRUCT, 'notFoundException', [evernote2.edam.error.ttypes.EDAMNotFoundException, None], None, ),  # 4
 )
 all_structs.append(ManageNoteSharesResult)
 ManageNoteSharesResult.thrift_spec = (

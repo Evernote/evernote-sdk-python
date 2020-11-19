@@ -3,15 +3,17 @@ import functools
 import inspect
 import re
 import oauth2 as oauth
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
 import urllib.parse
-
-import evernote.edam.userstore.UserStore as UserStore
-import evernote.edam.notestore.NoteStore as NoteStore
-import evernote.edam.userstore.constants as UserStoreConstants
+import urllib.error
+import urllib.parse
 
 import thrift.protocol.TBinaryProtocol as TBinaryProtocol
 import thrift.transport.THttpClient as THttpClient
+
+import evernote2.edam.userstore.UserStore as UserStore
+import evernote2.edam.notestore.NoteStore as NoteStore
+import evernote2.edam.userstore.constants as UserStoreConstants
 
 
 class EvernoteClient(object):
@@ -158,7 +160,7 @@ class Store(object):
         http_client = THttpClient.THttpClient(url)
         http_client.setCustomHeaders({
             'User-Agent': "%s / %s; Python / %s;"
-            % (self._user_agent_id, self._get_sdk_version(), sys.version.replace('\n',""))
+            % (self._user_agent_id, self._get_sdk_version(), sys.version.replace('\n', ""))
         })
 
         thrift_protocol = TBinaryProtocol.TBinaryProtocol(http_client)
