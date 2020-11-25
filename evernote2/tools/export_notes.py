@@ -2,16 +2,20 @@ import os
 import shutil
 import csv
 import math
+import time
 
 from optparse import OptionParser
 
 from evernote2.api.client import EvernoteClient
 from evernote2.edam.notestore.ttypes import NoteFilter, NotesMetadataResultSpec
 from evernote2.edam.type.ttypes import NoteSortOrder
+from evernote2.edam.error.ttypes import EDAMSystemException, EDAMErrorCode
 
 import logging
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s | %(levelname)s | %(message)s")
+
+enex_file_basename = 'index.enex'
 
 
 def main():
@@ -71,7 +75,13 @@ def download_notes(token, sandbox, china, output_dir, max_notes_count):
     note_metas = download_metadata(note_store, max_notes_count, note_books_map)
     save_notemetas(note_metas, output_dir)
 
-    # download_note_content(note_store, note_metas)
+    enex_root = os.path.join(
+        output_dir, 'note-enex',
+    )
+    if not os.path.exists(enex_root):
+        os.makedirs(enex_root)
+
+    download_all_note_enex(note_store, enex_root, note_metas)
     # total_cnt_notebooks = len(note_books)
     # for nb_idx, notebook in enumerate(note_books):
     #     nb_seq = nb_idx + 1
@@ -190,6 +200,52 @@ def save_notemetas(note_metas, output_dir):
             csvwriter.writerow(record)
 
     logging.info('%s note metas saved in %s' % (len(note_metas), fn))
+
+
+def download_all_note_enex(note_store, enex_root, note_metas):
+    total_cnt = len(note_metas)
+
+    for idx, meta in enumerate(note_metas):
+        title = meta['title']
+        guid = meta['guid']
+        note_dir = os.path.join(
+            enex_root, 'note-%s' % guid)
+
+        text_file = os.path.join(note_dir, enex_file_basename)
+
+        if os.path.exists(text_file):
+            logging.info('(%s/%s) skip download since exists: %s, %s' % (
+                idx + 1, total_cnt, text_file, title))
+            continue
+
+        # download if not exists
+        downloaded = False
+        while not downloaded:
+            try:
+                download_one_note_enex(note_store, note_dir, guid)
+            except EDAMSystemException as e:
+                if e.errorCode == EDAMErrorCode.RATE_LIMIT_REACHED:
+                    duration = e.rateLimitDuration
+                    logging.info('Rate limit reacheded, sleep %s seconds and retry' % duration)
+                    time.sleep(duration)
+            else:
+                downloaded = True
+                logging.info('(%s/%s) saved: %s, %s' % (idx + 1, total_cnt, note_dir, title))
+
+
+def download_one_note_enex(note_store, note_dir, note_guid):
+    """
+
+    notes:
+
+        save `enex_file_basename` at the end of all,
+        so that we can check this file to know if the cache is good when resume running
+    """
+    # content_XHTML = note_store.getNote(
+    #     note_guid,
+    #     withContent=True,
+    #     withResourcesData=True,
+    # )
 
 
 if __name__ == '__main__':
