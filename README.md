@@ -11,6 +11,8 @@ the official evernote sdk for python is not that good.
 
 #### Install
 
+pypi page: [https://pypi.org/project/evernote2/](https://pypi.org/project/evernote2/)
+
 ```bash
 pip install evernote2
 ```
