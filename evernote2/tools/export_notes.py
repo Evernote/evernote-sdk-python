@@ -22,7 +22,7 @@ def main():
     parser.add_option('-s', '--sandbox', dest='is_sandbox', help='use sandbox', action='store_true', default=False)
     parser.add_option('-c', '--china', dest='is_china', help='use yinxiang.com instead of evernote.com', action='store_true', default=False)
     parser.add_option('-f', '--force-delete', dest='is_force_delete', help='delete output_dir if exists', action='store_true', default=False)
-    parser.add_option('-m', '--max-notes-count', dest='max_notes_count', help='max notes count to download', default=10000)
+    parser.add_option('-m', '--max-notes-count', dest='max_notes_count', help='max notes count to download', default='10000')
 
     (options, args) = parser.parse_args()
 
@@ -31,7 +31,7 @@ def main():
     is_sandbox = options.is_sandbox
     is_china = options.is_china
     is_force_delete = options.is_force_delete
-    max_notes_count = options.max_notes_count
+    max_notes_count = int(options.max_notes_count)
 
     if token is None:
         logging.error('error! token is None')
@@ -51,7 +51,7 @@ def init_output_dir(output_dir, is_force_delete):
         if not is_force_delete and len(os.listdir(output_dir)) > 0:
             raise Exception('%s exists and not exmpty' % output_dir)
 
-    if is_force_delete:
+    if is_force_delete and os.path.exists(output_dir):
         logging.warning('drop dir: %s' % output_dir)
         shutil.rmtree(output_dir)
 
@@ -71,6 +71,7 @@ def download_notes(token, sandbox, china, output_dir, max_notes_count):
     note_metas = download_metadata(note_store, max_notes_count, note_books_map)
     save_notemetas(note_metas, output_dir)
 
+    # download_note_content(note_store, note_metas)
     # total_cnt_notebooks = len(note_books)
     # for nb_idx, notebook in enumerate(note_books):
     #     nb_seq = nb_idx + 1
