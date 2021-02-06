@@ -19,7 +19,7 @@ In order to use the code in this SDK, you need to obtain an API key from http://
 
 In order to run the sample code, you need a user account on the sandbox service where you will do your development. Sign up for an account at https://sandbox.evernote.com/Registration.action
 
-In order to run the client client sample code, you need a developer token. Get one at https://sandbox.evernote.com/api/DeveloperToken.action
+In order to run the client sample code, you need a developer token. Get one at https://sandbox.evernote.com/api/DeveloperToken.action
 
 Getting Started - Client
 ------------------------
