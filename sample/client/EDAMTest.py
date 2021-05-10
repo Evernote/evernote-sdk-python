@@ -30,9 +30,9 @@ from evernote.api.client import EvernoteClient
 # refer to https://dev.evernote.com/doc/articles/testing.php 
 # and https://dev.evernote.com/doc/articles/bootstrap.php
 
-auth_token = "your developer token"
+auth_token = "S=s1:U=96602:E=180ac1eec02:C=179546dbec8:P=1cd:A=en-devtoken:V=2:H=526e15e5d5a9a9fa9210ef338ef71c84"
 
-if auth_token == "your developer token":
+if auth_token == "S=s1:U=96602:E=180ac1eec02:C=179546dbec8:P=1cd:A=en-devtoken:V=2:H=526e15e5d5a9a9fa9210ef338ef71c84":
     print "Please fill in your developer token"
     print "To get a developer token, visit " \
         "https://sandbox.evernote.com/api/DeveloperToken.action"
@@ -51,7 +51,7 @@ china = False
 # https://www.evernote.com/api/DeveloperToken.action
 client = EvernoteClient(token=auth_token, sandbox=sandbox, china=china)
 
-user_store = client.get_user_store()
+user_store = https://sandbox.evernote.com/shard/s1/notestore
 
 version_ok = user_store.checkVersion(
     "Evernote EDAMTest (Python)",
