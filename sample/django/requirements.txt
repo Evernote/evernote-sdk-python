@@ -1,4 +1,4 @@
-Django==1.9.2
+Django==2.2.24
 evernote==1.25.1
 httplib2==0.7.6
 oauth2==1.5.211
